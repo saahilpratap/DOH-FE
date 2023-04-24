@@ -1,0 +1,485 @@
+<div appBsModal #addUpdateExtAssessmentData="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createEditAuditProjectManagementModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form #addUpdateExtAssessmentDataForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <div class="kt-subheader__main">
+                        <h3 class="kt-subheader__title">
+                            <span>{{ l("Findings Report") }}</span>
+                        </h3>
+                        <span *ngIf="!isInternal()" class="kt-subheader__desc">
+                            {{l("External Findings Report")}}
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="kt-portlet kt-portlet--mobile">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    {{l("Finding Information")}}
+                                </h3>
+                            </div>
+                            <div class="kt-portlet__head-toolbar">
+                                <button type="button"
+                                        class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                                        (click)="close()">
+                                    <i class="fa fa-arrow-left"></i>{{ l("Back") }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body kt-padding-t-10">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Code" class="required">{{ l("FindingReport ID") }} </label>
+                                        <input type="text"
+                                               id="findingReport_Code"
+                                               class="form-control"
+                                               placeholder="System Generated"
+                                               name="Code"
+                                               [(ngModel)]="findingReport.code"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>{{"Created On" | localize}}</label>
+                                        <div id="creationTime" class="kt-input-icon">
+                                            <input id="creationTimePicker"
+                                                   type="text" disabled
+                                                   #creationTimePicker
+                                                   name="creationTimePicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.creationTime"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="businessEntLookUp" class="required">HealthCare Entity </label>
+                                        <select class="form-control" disabled
+                                                name="BusinessEntityIds"
+                                                id="businessEntLookUp"
+                                                [(ngModel)]="findingReport.businessEntityId"
+                                                [disabled]="findingReport.id ||isBusinessEntityUser()"
+                                                (change)="initializeBeLookUpFields()">
+                                            <option *ngFor="let businessEntityLookUp of businessEntitiesLookUp"
+                                                    [ngValue]="businessEntityLookUp.businessEntity.id">
+                                                {{businessEntityLookUp.businessEntity.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10">
+                                <h5>{{l('Identification')}}</h5>
+                            </div>
+                            <div class="row ">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Title" class="required">{{ l("Title") }} </label>
+                                        <input type="text"
+                                               id="findingReport_Title"
+                                               class="form-control"
+                                               name="title"
+                                               required
+                                               [(ngModel)]="findingReport.title" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Category">{{ l("Type") }}</label>
+                                        <select class="form-control" name="FindingReportType" id="FindingReportType" [(ngModel)]="findingReport.type" [disabled]="true" required>
+                                            <option [ngValue]="1">Internal</option>
+                                            <option [ngValue]="2"> External</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="criticalities">{{ l("Criticality") }}</label>
+                                        <select class="form-control"
+                                                name="criticalities"
+                                                id="criticalities"
+                                                [(ngModel)]="findingReport.criticalityId">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let cr of criticalities"
+                                                    [ngValue]="cr.id">
+                                                {{ cr.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Category" class="required">{{ l("Category") }} </label>
+                                        <select class="form-control"
+                                                name="CategoryType"
+                                                id="findingReport_Category"
+                                                [(ngModel)]="findingReport.category"
+                                                required>
+                                            <option [ngValue]="1">Regulatory Reporting</option>
+                                            <option [ngValue]="2"> Revenue</option>
+                                            <option [ngValue]="3">Other </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="filter_from_data">{{ l("Date Found") }}</label>
+                                        <div id="DateFound" class="kt-input-icon">
+                                            <input id="DateFoundPicker"
+                                                   type="datetime"
+                                                   #DateFoundPicker
+                                                   name="DateFoundPicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.dateFound"
+                                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4" *ngIf="isOtherCategorySelected()">
+                                    <div class="form-group">
+                                        <label for="findingReport_categoryName" class="required">{{ l("Category Name") }} </label>
+                                        <input type="text" id="findingReport_categoryName" class="form-control" name="categoryName" required [(ngModel)]="findingReport.categoryName" />
+                                    </div>
+                                </div>
+                                <div class="col-4" *ngIf="isInternal()">
+                                    <div class="form-group">
+                                        <label for="findingReport_finder" class="required">{{ l("Found By") }} </label>
+                                        <select class="form-control" name="finderType" id="findingReport_finder" [(ngModel)]="findingReport.finderId">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Classification" class="required">{{ l("Classification") }} </label>
+                                        <select class="form-control" name="classification" id="findingReport_Classification"
+                                        [(ngModel)]="findingReport.findingReportClassificationId" [disabled]="extfindingInput.isApprover">
+                                            <option [ngValue]="0">
+                                                Not Selected
+                                            </option>
+                                            <option *ngFor="let classification of classificationsLookUp" [ngValue]="classification.id">
+                                                {{ classification.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="findingReport_relatedcrs" class="required">{{ l("Control Requirements") }} </label>
+                                        <select class="form-control" disabled
+                                                name="ControlRequirementName"
+                                                id="findingReport_relatedcrs" required
+                                                [(ngModel)]="findingReport.controlRequirementId">
+                                            <optgroup *ngFor="let cs of controlRequirementsLookUp" label="{{ cs.domainName }}">
+                                                <option *ngFor="let c of cs.controlRequirementList" [ngValue]="c.id">{{c.controlStandardName}}-{{c.code}}-{{c.originalId}}</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Auditorname" class="required">{{ l("Auditor Vendor") }} </label>
+                                        <select class="form-control" disabled
+                                                name="vendorsList"
+                                                id="ExternalAssessment_Vendors"
+                                                [(ngModel)]="findingReport.vendorId" (change)="initializeAuditUsersLookUp()">
+                                            <option [ngValue]="0">
+                                                Not Selected
+                                            </option>
+                                            <option *ngFor="let auditeeCompany of auditCompaniesLookUp"
+                                                    [ngValue]="auditeeCompany.businessEntity.id">
+                                                {{ auditeeCompany.businessEntity.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Auditorname" class="required">{{ l("Auditor Name") }} </label>
+                                        <select class="form-control" [disabled]="extfindingInput.isApprover"
+                                                name="AuditorType"
+                                                id="findingReport_Auditorname"
+                                                [(ngModel)]="findingReport.auditorId">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let user of auditUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_assessmentName" class="required">{{ l("Assessment Name") }} </label>
+                                        <select class="form-control" disabled
+                                                name="assessmentType"
+                                                id="findingReport_assessmentName"
+                                                [(ngModel)]="findingReport.assessmentId">
+                                            <option *ngFor="let assessment of assessmentsLookUp"
+                                                    [ngValue]="assessment.id">
+                                                {{ assessment.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10" *ngIf="!isInternal()">
+                                <h5>IRM Information</h5>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="Business_Risk">
+                                            {{l("Business Risk")}}
+                                        </label>
+                                        <p-multiSelect name="bsrlookup" [options]="businessRisksLookUp" placeholder="Select Business Risk" optionLabel="title" [(ngModel)]="selectedBusinessRisks" [style]="{'width': '100%'}" [disabled]="!extfindingInput.isApprover" required></p-multiSelect>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="Exception">
+                                            {{l("Exception")}}
+                                        </label>
+                                        <p-multiSelect name="exlookup" [options]="exceptionsLookUp" placeholder="Select Exception" optionLabel="title" [(ngModel)]="selectedExceptions" [style]="{'width': '100%'}" [disabled]="!extfindingInput.isApprover" required></p-multiSelect>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="Incidents">
+                                            {{l("Incidents")}}
+                                        </label>
+                                        <p-multiSelect name="iclookup" [options]="incidentsLookUp" placeholder="Select Incidents" optionLabel="title" [(ngModel)]="selectedIncidents" [style]="{'width': '100%'}" [disabled]="!extfindingInput.isApprover" required></p-multiSelect>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10" *ngIf="!isInternal()">
+                                <h5>Add Remediation Plan</h5>
+                            </div>
+                            <div class="row kt-margin-t-20">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Action" class="required">{{ l("Action/Response") }} </label>
+                                        <select class="form-control"
+                                                name="action" [disabled]="extfindingInput.isApprover"
+                                                id="findingReport_Action"
+                                                [(ngModel)]="findingReport.findingAction">
+                                            <option [ngValue]="1">Accept</option>
+                                            <option [ngValue]="2">Mitigate</option>
+                                            <option [ngValue]="3">Transfer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="filter_from_data">Action Response Date</label>
+                                        <div id="actionResponseDatePicker" class="kt-input-icon">
+                                            <input id="actionResponseDatePicker" [disabled]="extfindingInput.isApprover"
+                                                   type="text"
+                                                   #actionResponseDatePicker
+                                                   name="actionResponseDatePicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.actionResponseDate"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="filter_from_data">Date Closed</label>
+                                        <div id="dateClosedPicker" class="kt-input-icon">
+                                            <input id="dateClosedPicker" [disabled]="extfindingInput.isApprover"
+                                                   type="text"
+                                                   #dateClosedPicker
+                                                   name="dateClosedPicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.dateClosed"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_AssignedTo" class="required">{{ l("Assigned To") }} </label>
+                                        <select class="form-control" [disabled]="extfindingInput.isApprover"
+                                                name="assignedTo"
+                                                id="findingReport_AssignedTo"
+                                                [(ngModel)]="findingReport.assignedToUserId">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Manager" class="required">{{ l("Manager") }} </label>
+                                        <select class="form-control" [disabled]="extfindingInput.isApprover"
+                                                name="manager"
+                                                id="findingReport_Manager"
+                                                [(ngModel)]="findingReport.findingManagerId">
+                                            <option [ngValue]="0">Not Selected</option>
+
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Coordinator" class="required">{{ l("Coordinator") }} </label>
+                                        <select class="form-control" [disabled]="extfindingInput.isApprover"
+                                                name="coordinator"
+                                                id="findingReport_Coordinator"
+                                                [(ngModel)]="findingReport.findingCoordinatorId">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Owner" class="required">{{ l("Owner") }} </label>
+                                        <select class="form-control" [disabled]="extfindingInput.isApprover"
+                                                name="owner"
+                                                id="findingReport_Owner"
+                                                [(ngModel)]="findingReport.findingOwnerId">
+                                            <option [ngValue]="0">Not Selected</option>
+
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_details">
+                                            {{l("Details")}}
+                                        </label>
+                                        <textarea id="findingReport_details"
+                                                  class="form-control"
+                                                  name="details"
+                                                  [(ngModel)]="findingReport.details"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="Remediation" class="required">{{ l("Remediation Plan") }} </label>
+                                        <p-multiSelect [options]="remediationfilter" placeholder="Select Remediation" optionLabel="title" [(ngModel)]="selectedRemediation" name="Related" [style]="{'width': '100%'}" [disabled]="!extfindingInput.isApprover" required></p-multiSelect>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p-accordion>
+                                <p-accordionTab header="Exceptions Remediation Plan" *ngIf="isEdit">
+                                    <grid-remediation-plan #remediationPlan [title]='title' [editIncidentID]="recordId"></grid-remediation-plan>
+                                </p-accordionTab>
+                                <p-accordionTab header="Attachments">
+                                    <!--<div class="row">
+                                        <div class="form-group">
+                                            <button type="button" class="btn kt-font-success"
+                                                    (click)="addAttachmentInputs()">
+                                                <span class="fa fa-plus icon-font-size-1-5"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row"
+                                         *ngFor="let attachmentInput of attachedFileCodes; let i = index">
+                                        <div class="col-7">
+                                            <div class="form-group">
+                                                <input type="text" id="findingReport_attachmentInput {{ i }}"
+                                                       class="form-control" name="{{ i }}" required
+                                                       [(ngModel)]="attachmentInput.title" placeholder="Title" />
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            <button type="button" class="btn kt-font-info"
+                                                    (click)="inputFile.click()">
+                                                <i class="la la-cloud-upload icon-font-size"> </i>
+                                            </button>
+                                            <input name="file i" id="file i"
+                                                   (change)="uploadAttachment($event, attachmentInput)"
+                                                   type="file" #inputFile hidden />
+                                        </div>
+                                        <div class="col-1">
+                                            <button type="button" class="btn kt-font-skype"
+                                                    (click)="downloadAttachment(attachmentInput.code)">
+                                                <i class="fa fa-download icon-font-size-1-5"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-1">
+                                            <div class="form-group">
+                                                <button type="button" class="btn kt-font-danger"
+                                                        (click)="deleteAttachmentInput(attachmentInput)">
+                                                    <span class="fas fa-trash-alt icon-font-size-1-5"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                </p-accordionTab>
+                                <p-accordionTab header="Entity Review & Approval">
+                                    <entity-review-approval *ngIf="beUsers.length > 0" [entityReviewers]="beUsers" [entityApprovers]="beUsers" [irm]="findingReport.entityIRMRelations" [entityUserSignaturePad]="entityUserSignaturePad" [primaryReviewerId]="primarReviwerId" [primaryApproverId]="primaryApproverId"></entity-review-approval>
+                                </p-accordionTab>
+                                <p-accordionTab header="Authority Review & Approval">
+                                    <authority-review-approval *ngIf="authorityUsers.length > 0" [authorityReviewers]="authorityUsers" [authorityApprovers]="authorityUsers" [irm]="findingReport.authorityIRMRelations" [authorityUserSignaturePad]="authorityUserSignaturePad"></authority-review-approval>
+                                </p-accordionTab>
+                            </p-accordion>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-info btn-sm btn-submit" (click)="save()"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,157 @@
+<div appBsModal #createAuditProjectEmailNotificationModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createAuditProjectEmailNotificationModal"
+     aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #emailNotificationForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                       
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label>{{'Page Name' | localize}}</label>
+                        <ng-select [items]="workflow"
+                                   [searchable]="false"
+                                   bindLabel="pageName"
+                                   bindValue="id"
+                                   (change)="onpageChange()"
+                                   [disabled]="auditstatusid"
+                                   [(ngModel)]="emailnotification.workFlowPageId"
+                                   placeholder="Page Name" required
+                                   name="name">
+                        </ng-select>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label>{{'Audit Status' | localize}}</label>
+                        <ng-select [items]="auditStatus"
+                                   [searchable]="false"
+                                   bindLabel="name"
+                                   bindValue="id"
+                                   [disabled]="auditstatusid"
+                                   [(ngModel)]="emailnotification.auditStatusId"
+                                   placeholder="Audit Status" required
+                                   name="auditstatus">
+                        </ng-select>
+                    </div>
+
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label>{{'Email Subject' | localize}}</label>
+
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="subjects" [disabled]="auditstatusid" [(ngModel)]="emailnotification.subject" class="form-control" required />
+                    </div>
+                    <br />
+                    <!--<div class="form-group1" id="prop">
+                        <label>{{'TO' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   [disabled]="auditstatusid"
+                                   (change)="onToPropertyChange($event)"
+                                   [(ngModel)]="txtTo"
+                                   name="titleto">
+                        </ng-select>
+                    </div>-->
+                <div class="form-group">
+                    <label>{{'TO' | localize}}</label>
+                    <input type="text" name="to" [disabled]="auditstatusid" [(ngModel)]="emailnotification.to" class="form-control" required />
+                </div>
+                    <br />
+                    <!--<div class="form-group1" id="prop">
+                        <label>{{'CC' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   [disabled]="auditstatusid"
+                                   (change)="onCcPropertyChange($event)"
+                                   [(ngModel)]="txtCc"
+                                   name="titlecc">
+                        </ng-select>
+                    </div>-->
+                <div class="form-group">
+                    <label>{{'CC' | localize}}</label>
+                    <input type="text" name="cc" [disabled]="auditstatusid" [(ngModel)]="emailnotification.cc" class="form-control" required />
+                </div>
+                    <br />
+                    <!--<div class="form-group1" id="prop">
+                        <label>{{'BCC' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   [disabled]="auditstatusid"
+                                   (change)="onBccPropertyChange($event)"
+                                   [(ngModel)]="txtBcc"
+                                   name="titleBcc">
+                        </ng-select>
+                    </div>-->
+                <div class="form-group">
+                    <label>{{'BCC' | localize}}</label>
+                    <input type="text" name="bcc" [disabled]="auditstatusid" [(ngModel)]="emailnotification.bcc" class="form-control" />
+                </div>
+                    <!--<div class="form-group1" id="props">
+                        <label>{{'Email Body' | localize}}</label>
+                        <ng-select [items]="propertiesName"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   [disabled]="auditstatusid"
+                                   (change)="onemailBodyPropertyChange($event)"
+                                   [(ngModel)]="txtBody"
+                                   name="EmailBody">
+                        </ng-select>
+                    </div>-->
+                    <br />
+                    <div class="form-group">
+                        <label>{{'Report Types' | localize}}</label>
+                        <input type="text" name="reportTypes" [disabled]="auditstatusid" [(ngModel)]="emailnotification.reportType" class="form-control" />
+                    </div>
+                    <div class="form-group mt-4" >
+                        <summernote-text-editor [name]="'New SummerNote'"
+                                                [getSummerNoteData]="getSummerNoteData" ></summernote-text-editor>
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <table class="border table">
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Attachment</th>
+                            </tr>
+                            <tr *ngFor="let item of attachedFileCodes; let i = index">
+                                <td>{{i+1}}</td>
+                                <td>
+                                    {{item.title}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="flag" (click)="SendNotification()"><i class="fa fa-envelope"></i> <span>{{"Skip notification & Update Status" | localize}}</span></button>                   
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="flag" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')" (click)="save()" ><i class="fa fa-envelope"></i> <span>{{"Send Email Notification" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

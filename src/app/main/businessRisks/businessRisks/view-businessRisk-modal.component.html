@@ -1,0 +1,84 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+      
+            <div class="modal-body">
+                <div class="border kt-padding-20" style="min-height:350px">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="kt-font-lg kt-font-bolder">{{"Business Risk" | localize}}</span>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label>{{"Priority" | localize}}</label>
+                                <div class="btn btn-label-danger btn-sm form-control kt-font-boldest kt-font-md">{{'Low' |localize}}</div>
+
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label>{{"Severity" | localize}}</label>
+
+                                <div class="btn btn-label-success btn-sm form-control kt-font-boldest kt-font-md">{{'Very High' |localize}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <span class="text-muted mt-3 font-weight-bold font-size-sm">{{item.businessRisk.code}}</span>
+                        <br />
+                        <span class="card-label font-weight-bolder text-dark">{{item.businessRisk.title}}</span>
+                    </div>
+                    <div class="kt-padding-t-20">
+                        <div class="form-group">
+                            <label class="kt-font-bold">{{"Vulnerability" | localize}}</label>
+                            <br />
+                            <span>{{ item.businessRisk.vulnerability }}</span>
+                        </div>
+                    </div>
+                    <div class="kt-padding-t-20">
+                        <div class="form-group">
+                            <label class="kt-font-bold">{{"RemediationPlan" | localize}}</label>
+                            <br />
+                            <span>{{ item.businessRisk.remediationPlan }}</span>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-20 kt-padding-b-50">
+                        <div class="col-6 kt-align-left">
+                            <div class="form-group">
+                                <label class="kt-font-bold">{{l("IdentificationDate")}}</label><br />
+                                <span>{{ item.businessRisk.identificationDate | momentFormat:'YYYY-MM-DD HH:mm:ss' }}</span>
+                            </div>
+                        </div>                       
+                        <div class="col-6 kt-align-left">
+                            <div class="form-group">
+                                <label class="kt-font-bold">{{l("ExpectedClosureDate")}}</label><br />
+                                <span>{{ item.businessRisk.expectedClosureDate | momentFormat:'YYYY-MM-DD HH:mm:ss' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 kt-align-center">
+                            <div class="form-group kt-margin-b-0">
+                                <label>{{"Impact" | localize}}</label>
+                                <div class="btn btn-label-warning btn-sm form-control kt-font-bold kt-font-sm">Revenue Loss</div>
+                            </div>
+                        </div>
+                        <div class="col-4"></div>
+                        <div class="col-4 kt-align-center">
+                            <div class="form-group kt-margin-b-0">
+                                <label>{{l("CompletionDate")}}</label>
+                                <div class="btn btn-label-danger btn-sm form-control kt-font-bold kt-font-sm">
+                                    {{ item.businessRisk.completionDate | momentFormat:'YYYY-MM-DD HH:mm:ss' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-sm btn btn-outline-danger" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

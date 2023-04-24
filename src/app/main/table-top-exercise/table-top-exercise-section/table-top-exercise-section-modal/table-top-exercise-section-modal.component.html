@@ -1,0 +1,66 @@
+<div appBsModal #tableTopExerciseSectionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="tableTopExerciseSectionModal" aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" [formGroup]="sectionform" (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Table Top Exercise Scenario')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label for="sectionName" class="required">{{"Scenario" | localize}} </label>
+                        <angular-editor id="ttx_Description"
+                                        [config]="editorConfig"
+                                        formControlName="sectionName"
+                                        placeholder="Scenario"
+                                        type="text"
+                                        name="sectionName"></angular-editor>
+                    </div>
+                    <div class="form-group">
+                        <label for="sectionName" class="">{{"Scenario Time" | localize}} </label>                      
+                        <input type="time" class="form-control" formControlName="counterLimit" value="00:00:00"/>
+                    </div>
+                    <div class="form-group" formArrayName="tableTopExerciseSectionQuestions">
+                        <label for="questionList" class="required">{{"Question List" | localize}} </label>
+                        <p-pickList [source]="questionList" [showTargetFilter]="true"
+                                    (onMoveToTarget)="passTargetQue($event)" [target]="questionList1" class="w-100" sourceHeader="Question" targetHeader="Selected Question"
+                                    [responsive]="true" [showSourceControls]="true" [showTargetControls]="true">
+                            <ng-template let-que pTemplate="item">
+                                <div class="ui-helper-clearfix">
+                                    <div>{{que.name}}</div>
+                                </div>
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                    <div class="form-group">
+                        <label for="attachmentSection">{{"Attachment" | localize}} </label>
+                        <ng-container>
+                            <file-upload [name]="'Section'"
+                                         [attachedFile]="attachedFileCodes"
+                                         [multiple]="true"
+                                         [attachedfileSize]="2097150"
+                                         [noFileUpload]="100"
+                                         [fileExtensionList]="fileExtensionList"
+                                         (attachmentData)="getAttachment($event)"
+                                         (deleteCode)="deleteAttachment($event)"></file-upload>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!sectionform.valid" [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

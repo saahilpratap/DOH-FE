@@ -1,0 +1,202 @@
+<div [@routerTransition]>
+  <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+        <div class="kt-subheader__main">
+            <h3 class="kt-subheader__title">
+                <span>{{l("Domains")}}</span>
+            </h3>
+            <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+            <span class="kt-subheader__desc">
+                {{l("All Domains")}}
+            </span>
+        </div>
+        <div class="kt-subheader__toolbar">
+            <div class="kt-subheader__wrapper">
+                <button *ngIf="'Pages.ComplianceManagement.Domains.Import' | permission"
+                        class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                        onclick="document.getElementById('importInput').click()">
+                    <i class="fa fa-file-excel"></i><i class="fa fa-plus"></i>
+                    <input id="importInput"
+                           #file
+                           type="file"
+                           multiple
+                           (change)="uploadFile($event)"
+                           hidden />
+                    Import
+                </button>
+                <button (click)="exportToExcel()" *ngIf="'Pages.ComplianceManagement.Domains.Export' | permission"
+                        class="btn btn-outline-success">
+                    <i class="fa fa-file-excel"></i> {{l("ExportToExcel")}}
+                </button>
+                <button *ngIf="isGranted('Pages.ComplianceManagement.Domains.Create')" (click)="createDomain()"
+                        class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                    <i class="fa fa-plus"></i> {{l("Create New Domain")}}
+                </button>
+            </div>
+
+        </div>
+      </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{l('Domains List')}}
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">
+                    <!--<button type="button" class="btn btn-danger btn-sm kt-margin-r-20" (click)="deleteAllRecord()" *ngIf="allDelete">
+                        <i class="fas fa-trash-alt icon-font-size-1"></i>
+                        {{l('Delete All')}}
+                    </button>-->
+                    <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                        <div class="input-group">
+                            <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                            <span class="input-group-btn margin-left--5">
+                                <button (click)="getDomains()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-padding-t-10">
+                <form class="kt-form" autocomplete="off">
+                    <div>
+                        <div class="row" [hidden]="!advancedFiltersAreShown">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="CodeFilter">{{l("ADD ID")}}</label>
+                                    <input type="text" class="form-control" id="CodeFilter" name="codeFilter" [(ngModel)]="codeFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="NameFilter">{{l("Name")}}</label>
+                                    <input type="text" class="form-control" id="NameFilter" name="nameFilter" [(ngModel)]="nameFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="AuthoritativeDocumentNameFilter">({{l("AuthoritativeDocument")}}) {{l("Name")}}</label>
+                                    <input type="text" class="form-control" id="AuthoritativeDocumentNameFilter" name="authoritativeDocumentNameFilter" [(ngModel)]="authoritativeDocumentNameFilter">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <div>
+                            <p-table #dataTable
+                                     (onLazyLoad)="getDomains($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns"
+                                     [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 20px !important">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <th style="width: 100px" [hidden]="!isGrantedAny('Pages.ComplianceManagement.Domains.Edit', 'Pages.ComplianceManagement.Domains.Delete')">
+                                            {{l('Actions')}}
+                                        </th>
+                                        <th style="width: 80px" pSortableColumn="id">
+                                            {{l('ADD ID')}}
+                                            <p-sortIcon field="domain.id"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="name">
+                                            {{l('Domain Name')}}
+                                            <p-sortIcon field="domain.name"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="authoritativeDocumentName">
+                                            {{l('Authoritative Document')}}
+                                            <p-sortIcon field="domain.authoritativeDocumentName"></p-sortIcon>
+                                        </th>
+
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                    <tr [pSelectableRow]="rowData">
+                                        <td style="width: 20px !important">
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>
+                                        <td style="width: 100px">
+                                            <a *ngIf="permission.isGranted('Pages.ComplianceManagement.Domains.View')"
+                                               class="kt-padding-r-20" (click)="createOrEditDomainModal.show(record.domain.id,1)">
+                                                <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                            </a>
+                                            <a *ngIf="permission.isGranted('Pages.ComplianceManagement.Domains.Edit')"
+                                               (click)="createOrEditDomainModal.show(record.domain.id)">
+                                                <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                            </a>
+                                            <a class="kt-padding-l-20" *ngIf="permission.isGranted('Pages.ComplianceManagement.Domains.Delete')"
+                                               (click)="deleteDomain(record.domain)">
+                                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                            </a>
+                                        </td>
+                                        <td style="width:80px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.domain.code" tooltipPosition="bottom">
+                                                {{record.domain.code}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.domain.name" tooltipPosition="bottom">
+                                                {{record.domain.name}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.authoritativeDocumentName" tooltipPosition="bottom">
+                                                {{record.authoritativeDocumentName}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                        <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getDomains($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                            </p-paginator>
+                            <span class="total-records-count">
+                                {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                            </span>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+                <!--<dev-express-grid [columnsName]="columns"
+                                  [dataSource]="primengTableHelper.records"
+                                  [url]="'createOrEditAuthoritativeDocumentModal.show'"
+                                  [checkBoxesMode]="false"></dev-express-grid>-->
+            </div>
+        </div>
+    </div>
+    <createOrEditDomainModal #createOrEditDomainModal (modalSave)="getDomains()"></createOrEditDomainModal>
+  </div>
+</div>

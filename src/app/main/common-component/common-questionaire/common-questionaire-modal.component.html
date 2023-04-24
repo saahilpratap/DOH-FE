@@ -1,0 +1,192 @@
+<div appBsModal
+     #commonQuestionaireModal="bs-modal"
+     id="idCommonQuestionries"
+     class="modal right"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="commonQuestionaireModal"
+     aria-hidden="true"
+     [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-full-height modal-right">
+        <div class="modal-content">
+            <form #commonQuestionaireForm="ngForm">
+                <div class="modal-header">
+                    <!--<h5>{{reviewData.controlRequirementDomainName}} / {{reviewData.controlRequirementOriginalId}}</h5>--><br />
+                    <h5>
+                        Questionnaire Group Name
+                    </h5>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"
+                     [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '89vh', 'position': 'relative'}"
+                     style="padding: 0.25rem !important;">
+                    <table class="table kt-margin-t-5 table-bordered1">
+                        <thead>
+                            <tr class="tr-bg-color" style="background-color: ghostwhite;">
+                                <th class="kt-font-bold width-40 kt-font-md kt-font-bolder">
+                                    {{l('Question')}}
+                                </th>
+                                <th class="kt-font-bold kt-align-center width-20 kt-font-md kt-font-bolder" *ngIf="showResponseType">
+                                    {{l('Response')}}
+                                </th>
+                                <th class="kt-font-bold kt-align-center width-20 kt-font-md kt-font-bolder" *ngIf="showResponseType">
+                                    {{l('Comments')}}
+                                </th>
+                                <!--<th
+                                  class="kt-font-bold kt-align-center width-15 kt-font-md kt-font-bolder" *ngIf="showResponseType">
+                                  {{l('Flag')}}
+                                </th>-->
+                                <th class="kt-font-bold kt-align-center width-5 kt-font-md kt-font-bolder" *ngIf="showResponseType"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let q of reviewData.reviewQuestions;let i = index">
+                                <td class="kt-font-md kt-font-bold">
+                                    <div class="form-group kt-margin-b-0">
+                                        <label class="kt-font-bold">
+                                            {{i + 1}}. {{q.questionName}} ? {{q.answerType}}
+                                        </label>
+                                        <label style="color: #000; font-size: 11px;"
+                                               class="form-control-file kt-padding-l-15">{{q.questionDescription}}</label>
+                                    </div>
+                                </td>
+                                <td class="kt-font-md kt-font-bold" *ngIf="showResponseType">
+                                    <div *ngIf="q.answerType == 2"
+                                         class="form-check-inline ">
+                                        <label class="kt-radio kt-padding-r-10"
+                                               *ngFor="let ans of q.answerOptions">
+                                            <input type="radio"
+                                                   id="{{q.questionId}}"
+                                                   name="{{q.questionId}}"
+                                                   [checked]="ans.value==responseData[i].response"
+                                                   (click)="setResponse(i,ans.value)"
+                                                   [value]="ans.id" />{{ans.value}}
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div *ngIf="q.answerType == 3">
+                                        <input type="text" class="form-control"
+                                               name="{{q.questionId}}"
+                                               [(ngModel)]="responseData[i].response" />
+                                    </div>
+                                    <div *ngIf="q.answerType == 4">
+                                        <select class="form-control"
+                                                multiple
+                                                name="{{q.questionId}}"
+                                                [(ngModel)]="q.selectedAnswerOptionId">
+                                            <option *ngFor="let ans of q.answerOptions"
+                                                    [ngValue]="ans.id">
+                                                {{ans.value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div *ngIf="q.answerType == 1">
+                                        <select class="form-control"
+                                                name="{{q.questionId}}"
+                                                (ngModelChange)="setResponse(i,$event)"
+                                                [(ngModel)]="responseData[i].response">
+                                            <option value="0"> Select </option>
+                                            <option *ngFor="let ans of q.answerOptions"
+                                                    [ngValue]="ans.value">
+                                                {{ans.value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="kt-font-md kt-font-bold" *ngIf="showResponseType">
+                                    <textarea rows="2" class="w-100" name="comment{{i}}" [(ngModel)]="responseData[i].comments"></textarea>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div *ngIf="responseData[i].attachment" class="kt-align-center">
+                                            <a (click)="downloadAttachment(responseData[i].attachment)">
+                                                <i class="fa fa-download kt-font-skype kt-padding-r-15"></i>
+                                            </a>
+                                            <a (click)="deleteAttachment(responseData[i].attachment)">
+                                                <i class="fa fa-trash kt-font-danger"></i>
+                                            </a>
+                                        </div>
+                                        <div *ngIf="!responseData[i].attachment">
+                                            <div style="text-align: center;">
+                                                <img src="assets/common/images/attachment.svg"
+                                                     style="cursor: pointer;"
+                                                     (click)="inputFile.click()" />
+                                                <input name="file"
+                                                       id="file"
+                                                       (change)=" uploadAttachment( $event, q.questionId )"
+                                                       type="file"
+                                                       #inputFile
+                                                       [(ngModel)]="q.a"
+                                                       hidden />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <!--<td class="kt-font-md kt-font-bold kt-align-right" *ngIf="showResponseType">
+                                    <i #actualTarget
+                                       class="fa fa-paperclip kt-font-youtube kt-font-xl"
+                                       style="cursor: pointer;"
+                                       (click)="op.toggle($event,actualTarget)"></i>
+                                </td>-->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <div class="kt-align-right" *ngIf="options">
+                        <button class="btn btn-default btn-icon-sm btn-sm btn-sm kt-font-light"
+                                (click)="close()">
+                            Close
+                        </button>
+                        <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                (click)="save()">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<p-overlayPanel #op [showCloseIcon]="false" [dismissable]="true" [styleClass]="'custom-overlay'" [autoZIndex]="false" appendTo="body">
+    <ng-template pTemplate>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="form-group">
+                <label>
+                    Attachments
+                    &nbsp;<span class="fa fa-exclamation-circle light-red float-right pt-1"
+                                containerClass="pop-container"
+                                popover=" Allowed File Type:[docx,doc,txt,pdf,jpg,jpeg,bmp,gif,png]"
+                                triggers="mouseenter:mouseleave"></span>
+                </label>
+                <div class="custom-file">
+                    <input #myfiles
+                           id="myfiles"
+                           type="file"
+                           class="custom-file-input"
+                           name="Upload Document"
+                           multiple="multiple"
+                           (change)="uploadAttachment($event)"
+                           placeholder="Upload Document"
+                           accept=".docx, .doc, .txt, .pdf, .jpg, .jpeg, .bmp, .gif, .png" />
+                    <label class="custom-file-label rounded-0" for=""></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12"
+             *ngIf="questionnairDocuments.length !== 0">
+            <div class="form-group">
+                <p *ngFor="let item of questionnairDocuments; let i=index" class="kt-font-bolder kt-font-md kt-padding-b-10">
+                    <i class="fa fa-file-image mr-2" aria-hidden="true"></i>
+                    {{item.fileName}}&nbsp;&nbsp;
+                    <a (click)="removeFile(i)" class="pull-right">
+                        <i class="far fa-trash-alt icon-font-size-1 kt-font-danger kt-font-bolder kt-font-md" title="Remove attachment"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>

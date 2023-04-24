@@ -1,0 +1,68 @@
+<div appBsModal #viewIncidentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewIncidentModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form #viewIncidentForm="ngForm">
+                <div class="modal-body" *ngIf="incident">
+                    <div class="border kt-padding-20 kt-margin-20" style="min-height:350px">
+                        <div class="row">
+                            <div class="col-6">
+                                <span class="kt-font-lg kt-font-bolder">{{"Incident" | localize}}</span>
+                            </div>
+                            <div class="col-3 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Priority" | localize}}</label>
+                                    <div class="btn btn-label-danger btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.priority =='1'">{{'Low' |localize}}</div>
+                                    <div class="btn btn-label-info btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.priority =='2'">{{'Medium' |localize}}</div>
+                                    <div class="btn btn-label-skype btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.priority =='3'">{{'High' |localize}}</div>
+                                    <div class="btn btn-label-success btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.priority =='4'">{{'Very High' |localize}}</div>
+                                </div>
+                            </div>
+                            <div class="col-3 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Severity" | localize}}</label>
+                                    <div class="btn btn-label-danger btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.severity =='1'">{{'Low' |localize}}</div>
+                                    <div class="btn btn-label-info btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.severity =='2'">{{'Medium' |localize}}</div>
+                                    <div class="btn btn-label-skype btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.severity =='3'">{{'High' |localize}}</div>
+                                    <div class="btn btn-label-success btn-sm form-control kt-font-boldest kt-font-md" *ngIf="incident.severity =='4'">{{'Very High' |localize}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
+                            <span class="text-muted mt-3 font-weight-bold font-size-sm">{{incident.code}}</span>
+                            <br />
+                            <span class="card-label font-weight-bolder text-dark">{{incident.title}}</span>
+                        </div>
+                        <div class="kt-padding-t-20">
+                            <p>{{incident.description}}</p>
+                        </div>
+                        <div class="kt-padding-t-20 kt-padding-b-70">
+                            <div class="form-group">
+                                <label class="kt-font-boldest">{{"Detected" | localize}}</label>
+                                <br />
+                                <span>{{incident.detectionDateTime | momentFormat:'L'}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Impact" | localize}}</label>
+                                    <div class="btn btn-label-warning btn-sm form-control kt-font-bold kt-font-sm">Revenue Loss</div>
+                                </div>
+                            </div>
+                            <div class="col-4"></div>
+                            <div class="col-4 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Type" | localize}}</label>
+                                    <div class="btn btn-label-danger btn-sm form-control kt-font-bold kt-font-sm">DDos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

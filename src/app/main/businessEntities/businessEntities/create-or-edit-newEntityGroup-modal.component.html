@@ -1,0 +1,234 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #entityGroupForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="entityGroup.id">
+                            {{l("EditEntityGroup")}}
+                        </span>
+                        <span *ngIf="!entityGroup.id">
+                            {{l("CreateNewEntityGroup")}}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <h5>
+                            New Group Information
+                        </h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="EntityGroup_Name">
+                                        {{l(" Group Name *")}}
+                                    </label>
+                                    <input type="text"
+                                           id="EntityGroup_Name"
+                                           class="form-control" [disabled]="isReadOnly"
+                                           [(ngModel)]="entityGroup.name"
+                                           name="Name" required />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="EntityGroup_Code">
+                                        {{l(" Group ID")}}
+                                    </label>
+                                    <input type="text" placeholder="System Generated"
+                                           id="EntityGroup_Code"
+                                           class="form-control"
+                                           name="Code"
+                                           [(ngModel)]="entityGroup.code"
+                                           disabled />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="businessEntity_Type">
+                                        {{l("Type")}}
+                                    </label>
+                                    <select class="form-control" required name="beType" id="businessEntity_Type"
+                                            [(ngModel)]="entityGroup.entityType" (change)="initializeBusinessEntitiesLookUp(entityGroup.entityType)"
+                                            [disabled]="entityGroup.id || checktype">
+                                        <option value="0">
+                                            {{ l("Healthcare Entity") }}
+                                        </option>
+                                        <option value="1">
+                                            {{ l("External Auditor") }}
+                                        </option>
+                                        <option value="2">
+                                            {{ l("Insurance Facilities") }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <label class="required">Primary Entity </label>
+                                    <select class="form-control" name="PrimaryEntity" [disabled]="isReadOnly" [(ngModel)]="entityGroup.primaryEntityId" required (change)="checkprimaryEntity(entityGroup.primaryEntityId)">
+                                        <option value="" disabled selected>Select your option</option>
+                                        <option *ngFor="let item of groupedEntities" [ngValue]="item.businessEntity.id">
+                                            {{ item.businessEntity.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required">Group Admin </label>
+                                    <ng-select [items]="user" [searchable]="true" bindLabel="name" [required]="true"
+                                               bindValue="id" placeholder="Select Primary Entity (Group Admin)" (change)="changeuserprimaryEntity(entityGroup.userId)"
+                                               [(ngModel)]="entityGroup.userId" class="kt-align-left"
+                                               name="ExternalAudit">
+                                    </ng-select>
+                                  
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" *ngIf="showquestionRadiobutton">
+                            <div>
+                                <p-inputSwitch [disabled]="isReadOnly" name="isPreAssessmentQuestionaire" [(ngModel)]="entityGroup.preAssessmentQuestionnaireAnsweredByGroupAdminOnly"></p-inputSwitch>
+                            </div>
+                            <div class="col-10 text-color">
+                                {{'Pre-Assessment Questionnaire Answered by Group Admin Only' | localize}}
+                            </div>
+                        </div>
+                        <br />
+                        <h5>
+                            Personnel Details
+                        </h5>
+                        <hr />
+                        <div class="row padding-top-10">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="EntityGroup_Name" class="required">
+                                        {{l(" Total Number Personnel")}}
+                                    </label>
+                                    <input type="text" placeholder="Total Number Personnel"
+                                           id="EntityGroup_totalPersonnel"
+                                           class="form-control" [disabled]="isReadOnly"
+                                           [(ngModel)]="entityGroup.totalPersonnel" (keypress)="numberOnly($event)"
+                                           name="totalPersonnel" required />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="EntityGroup_Code" class="required">
+                                        {{l("Number of Employees/Workers")}}
+                                    </label>
+                                    <input type="text" placeholder="Number of Employees/Workers"
+                                           id="EntityGroup_numberEmpWork"
+                                           class="form-control" [disabled]="isReadOnly"
+                                           name="numberEmpWork" (keypress)="numberOnly($event)"
+                                           [(ngModel)]="entityGroup.numberEmpWork" required />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row padding-top-10">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="EntityGroup_Name" class="required">
+                                        {{l(" Total Number Personnel Number of personal in IT and in information & cyber security department/function ")}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" placeholder="Number of ITSecurityStaff"
+                                           id="EntityGroup_itSecurityStaff"
+                                           class="form-control" [disabled]="isReadOnly"
+                                           name="itSecurityStaff" (keypress)="numberOnly($event)"
+                                           [(ngModel)]="entityGroup.itSecurityStaff" required />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row padding-top-10">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="EntityGroup_Name" class="required">
+                                        {{l(" Number of Contractor Personnel:(Collaborator,SubContractors,Temporary workers...) ")}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" placeholder="Contract_Personnel"
+                                           id="EntityGroup_contractPersonnel"
+                                           class="form-control" [disabled]="isReadOnly"
+                                           name="contractPersonnel" (keypress)="numberOnly($event)"
+                                           [(ngModel)]="entityGroup.contractPersonnel" required />
+
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <h5>Assign Business Entities</h5>
+                        <hr />
+                        <div class="row">
+                            <p-pickList [disabled]="isReadOnly" [source]="businessEntitiesLookUp" [target]="groupedEntities" class="w-100" sourceHeader="AllEntities" targetHeader="GroupEntities"
+                                        [responsive]="true" filterBy="businessEntity.name" [showSourceControls]="false" [showTargetControls]="false">
+                                <ng-template let-be pTemplate="item">
+                                    <div class="ui-helper-clearfix">
+                                        <div>{{be.businessEntity.name}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-pickList>
+                        </div>
+                        <br />
+                    </div>
+                    </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                        <button type="submit"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                [disabled]="setFlag(!entityGroupForm.form.valid)"
+                                [buttonBusy]="saving"
+                                [busyText]="l('SavingWithThreeDot')">
+                            <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                        </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

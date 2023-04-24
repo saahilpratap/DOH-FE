@@ -1,0 +1,13 @@
+.bg-Color {
+    background-color: #f3f6f9 !important
+}
+.selectEntity {
+    width: 100%;
+    height: 30px;
+    border-radius: 0px;
+    border: solid 0.5px gainsboro;
+}
+    
+.focus-outline:focus{
+    outline:none !important
+}

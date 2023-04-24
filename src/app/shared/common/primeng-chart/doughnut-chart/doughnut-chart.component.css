@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {   
+    height: 100%;
+    position: absolute;
+    display: block;
+    background-color: #fff;
+}
+
+.progress-wrapper {
+    width: 25px;
+    height: 300px;
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    transform: translate(-50%, -50%);
+}
+
+.progressbar {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(-167deg) rotateY(-24deg);
+}
+
+.side {
+    width: 100%;
+    height: 100%;
+    background-color: lightblue;
+    /*background-color: rgba(254, 254, 254, 0.3);*/
+    position: absolute;
+}
+
+/* .bottom {
+  transform: rotateX(90deg);
+  transform-origin: bottom;
+} */
+
+.back {
+    transform: translateZ(-25px);
+}
+
+.left {
+    transform: rotateY(90deg);
+    transform-origin: left;
+}
+
+.right {
+    background-color: rgba(250, 250, 250, 1.1);
+    transform: rotateY(-90deg);
+    transform-origin: right;
+}
+
+.bar {
+   /* height: 50%;   */
+    background-color: rgba(239, 55, 169, 0.6);
+   /* box-shadow: 5px 5px 50px 5px rgba(225, 0, 120, 0.3);*/
+    width: 25px;
+}
+
+#chartDoughnut {
+    width: 1160px;
+    height: 400px;
+    border: dotted 1px #ddd;
+    margin: auto;
+}
+.text-vertical {
+    position: absolute !important;
+    transform: rotate( -90deg) scaleX(1) !important;
+    transform-origin: top left !important;
+    width: 200px !important
+}
+
+.bar-q1 {
+    background-color: #4FA6B0 !important;
+    width: 100% !important;
+}
+.bar-q2 {
+    background-color: #8EB8E5 !important;
+    width: 100% !important;
+}
+.bar-q3 {
+    background-color: #50C5B7 !important;
+    width: 100% !important;
+}
+.bar-q4 {
+    background-color: #AE76A6 !important;
+    width: 100% !important;
+}
+
+.absolute1 {
+    position: absolute;
+    width: 2.9% !important;
+}
+.c-border-bottom {
+    border-bottom: solid 0.5px #eee5ff !important;
+}
+.c-border-left {
+    border-left: solid 0.5px #eee5ff !important;
+}
+.c-border-right {
+    border-right: solid 0.5px #eee5ff !important;
+}

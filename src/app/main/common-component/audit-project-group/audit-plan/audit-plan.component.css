@@ -1,0 +1,31 @@
+.background-color-test {
+    background-color: #f7f8fa
+}
+
+.btn-widget {
+    background-color: #9c227d !important;
+    color: #fff !important;
+}
+
+.kt-widget4 .kt-widget4__item {
+    border: none !important;
+}
+.selected {
+    background-color: #f3f6f9 !important;
+}
+.width-10{
+    width:10% !important;
+}
+.width-20 {
+    width: 10% !important;
+}
+.width-25 {
+    width: 25% !important;
+}
+.tr-bg-color {
+    background-color: beige;
+}
+.table thead th, .table thead td {  
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}

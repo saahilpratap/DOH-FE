@@ -1,0 +1,252 @@
+<div [@routerTransition]>
+  <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+        <div class="kt-subheader__main">
+            <h3 class="kt-subheader__title">
+                <span>{{l("Contacts")}}</span>
+            </h3>
+            <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+            <span class="kt-subheader__desc">
+                {{l("ContactsHeaderInfo")}}
+            </span>
+        </div>
+        <div class="kt-subheader__toolbar">
+            <div class="kt-subheader__wrapper">
+                <div class="btn-group" dropdown>
+                    <button dropdownToggle
+                            type="button"
+                            class="btn btn-outline-success dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        <i class="far fa-file-excel"></i> {{"Import Contact" |localize}}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                         *dropdownMenu>
+                        <a class="dropdown-item" *ngIf="exceptionPermission && exportButtonHide"
+                           id="ExportUsersToExcelButton"
+                           (click)="exportToExcel()"
+                           href="javascript:;">
+                            <i class="fa fa-download" style="font-size: 1rem;"></i>
+                            {{'ExportToExcel' | localize}}
+                        </a>
+                        <a href="javascript:;" *ngIf="isGranted('Pages.Contacts.Import')" 
+                           class="no-padding">
+                            <span class="fileinput-button">
+                                <p-fileUpload customUpload="true"
+                                              name="ExcelFileUpload"
+                                              #ExcelFileUpload
+                                              maxFileSize="10000000"
+                                              auto="auto"
+                                              accept=".csv,.xls,.xlsx"
+                                              (uploadHandler)="uploadExcel($event)"
+                                              (onError)="onUploadExcelError()"
+                                              chooseLabel="{{'ImportFromExcel' | localize}}">
+                                </p-fileUpload>
+                            </span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item-text text-muted pl-3" href="#">
+                            <small [innerHTML]="l('ImportToExcelSampleFileDownloadInfo', '<a href=/assets/sampleFiles/ImportContacts.xlsx>' + l('ClickHere') + '</a>')"></small>
+                        </span>
+                    </div>
+                </div>
+                <button *ngIf="isGranted('Pages.Contacts.Create')" (click)="createContact()"
+                        class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                    <i class="fa fa-plus"></i> {{l("CreateNewContact")}}
+                </button>              
+            </div>
+        </div>
+      </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{l("Contact")}}
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar kt-margin-b-0">                 
+                    <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                        <div class="input-group">
+                            <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                            <span class="input-group-btn margin-left--5">
+                                <button (click)="getContacts()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kt-portlet__body">
+                <form class="kt-form" autocomplete="off">
+                    <div>
+                        <div class="row" [hidden]="!advancedFiltersAreShown">  
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="FirstNameFilter">{{l("FirstName")}}</label>
+                                    <input type="text" class="form-control" id="FirstNameFilter" name="firstNameFilter" [(ngModel)]="firstNameFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="LastNameFilter">{{l("LastName")}}</label>
+                                    <input type="text" class="form-control" id="LastNameFilter" name="lastNameFilter" [(ngModel)]="lastNameFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="JobTitleFilter">{{l("JobTitle")}}</label>
+                                    <input type="text" class="form-control" id="JobTitleFilter" name="jobTitleFilter" [(ngModel)]="jobTitleFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="MobileFilter">{{l("Mobile")}}</label>
+                                    <input type="text" class="form-control" id="MobileFilter" name="mobileFilter" [(ngModel)]="mobileFilter">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="DirectPhoneFilter">{{l("DirectPhone")}}</label>
+                                    <input type="text" class="form-control" id="DirectPhoneFilter" name="directPhoneFilter" [(ngModel)]="directPhoneFilter">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <div>
+                            <p-table #dataTable
+                                 (onLazyLoad)="getContacts($event)"
+                                 [value]="primengTableHelper.records"
+                                 rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                 [paginator]="false"
+                                 [lazy]="true"
+                                 [scrollable]="true"
+                                 ScrollWidth="100%"
+                                 [responsive]="primengTableHelper.isResponsive"
+                                 [resizableColumns]="primengTableHelper.resizableColumns"
+                                 [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 30px !important">
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                    <th style="width: 130px" [hidden]="!isGrantedAny('Pages.Contacts.Edit', 'Pages.Contacts.Delete','Pages.Contacts.View')">{{l('Actions')}}</th>
+                                    <th style="width: 80px">
+                                        {{l('ContactID')}}
+                                        <!--<p-sortIcon field="contact.code"></p-sortIcon>-->
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="firstName">
+                                        {{l('FirstName')}}
+                                        <p-sortIcon field="contact.firstName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="lastName">
+                                        {{l('LastName')}}
+                                        <p-sortIcon field="contact.lastName"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="jobTitle">
+                                        {{l('JobTitle')}}
+                                        <p-sortIcon field="contact.jobTitle"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="mobile">
+                                        {{l('Mobile')}}
+                                        <p-sortIcon field="contact.mobile"></p-sortIcon>
+                                    </th>
+                                    <th style="width: 150px" pSortableColumn="directPhone">
+                                        {{l('DirectPhone')}}
+                                        <p-sortIcon field="contact.directPhone"></p-sortIcon>
+                                    </th>
+
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                <tr [pSelectableRow]="rowData">
+                                    <td style="width: 30px !important">
+                                        <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                    </td>
+                                    <td style="width: 130px" [hidden]="!isGrantedAny('Pages.Contacts.Edit', 'Pages.Contacts.Delete','Pages.Contacts.View')">
+                                        <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.Contacts.View')" (click)="viewContactModal.show(record)">
+                                            <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                        </a>
+                                        <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.Contacts.Edit')"
+                                           (click)="createOrEditContactModal.show(record.contact.id)">
+                                            <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                        </a>
+                                        <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.Contacts.Delete')"
+                                           (click)="deleteContact(record.contact)">
+                                            <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                        </a>
+                                    </td>
+                                    <td style="width:80px">
+                                        <span class="ui-column-title"> {{l('Code')}}</span>
+                                        {{record.contact.code}}
+                                    </td>
+                                    <td style="width:150px">
+                                        <span class="ui-column-title"> {{l('FirstName')}}</span>
+                                        {{record.contact.firstName}}
+                                    </td>
+                                    <td style="width:150px">
+                                        <span class="ui-column-title"> {{l('LastName')}}</span>
+                                        {{record.contact.lastName}}
+                                    </td>
+                                    <td style="width:150px">
+                                        <span class="ui-column-title"> {{l('JobTitle')}}</span>
+                                        {{record.contact.jobTitle}}
+                                    </td>
+                                    <td style="width:150px">
+                                        <span class="ui-column-title"> {{l('Mobile')}}</span>
+                                        {{record.contact.mobile}}
+                                    </td>
+                                    <td style="width:150px">
+                                        <span class="ui-column-title"> {{l('DirectPhone')}}</span>
+                                        {{record.contact.directPhone}}
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        </div>
+                        <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container mt-2">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getContacts($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                            </p-paginator>
+                            <span class="total-records-count">
+                                {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                            </span>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <createOrEditContactModal #createOrEditContactModal (modalSave)="getContacts()"></createOrEditContactModal>
+    <viewContactModal #viewContactModal></viewContactModal>
+
+  </div>
+</div>
+<!--<div>
+    <common-dev-express-grid [columHeader]="columHeader"
+                             [Customer1]="Customer1" [searchBox]="true"
+                             (buttonClick)="onButtonClick($event)"></common-dev-express-grid>
+</div>-->

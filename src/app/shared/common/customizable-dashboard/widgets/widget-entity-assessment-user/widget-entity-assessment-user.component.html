@@ -1,0 +1,134 @@
+<div class="kt-portlet kt-portlet--height-fluid">
+    <div class="kt-portlet__body kt-portlet__body--fit" [perfectScrollbar]>
+        <div class="row row-no-padding row-col-separator-xl">
+            <div class="col-md-12 col-lg-6 col-xl-3">
+                <div class="kt-widget24">
+                    <div class="kt-widget24__details">
+                        <div class="kt-widget24__info">
+                            <h4 class="kt-widget24__title">
+                                Active Entities
+                            </h4>
+                            <span class="kt-widget24__desc">
+                                All Active Entities
+                            </span>
+                        </div>
+                        <span class="kt-widget24__stats kt--font-brand">
+                            <span counto [step]="30" [duration]="1" [countFrom]="0" style="cursor:pointer" (click)="redirectToActiveEntites('/app/main/businessEntities/healthcare')"
+                                  [countTo]="dashboardTopEntityAssessmentUserStats.totalActiveEntities"
+                                  (countoChange)="dashboardTopEntityAssessmentUserStats.totalActiveEntitiesCounter = $event">
+                                <span style="color:#5578eb!important;"> {{dashboardTopEntityAssessmentUserStats.totalActiveEntities.toFixed(0)}}</span>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="progress progress--sm">
+                        <div class="progress-bar kt-bg-info" role="progressbar" style="width: {{dashboardTopEntityAssessmentUserStats.activityEntityPercentage}}%;"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="kt-widget24__action">
+                        <span class="kt-widget24__change">
+                            Suspended Entities <span style="color:#FD397A!important;"> {{(dashboardTopEntityAssessmentUserStats.totalActiveEntitiesChange)}}</span>
+                        </span>
+                        <span class="kt-widget24__number">
+                            <span class="counterup"><span style="color:#FD397A!important;">{{dashboardTopEntityAssessmentUserStats.activityEntityPercentage.toFixed(0)}}%</span></span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-12 col-lg-6 col-xl-3">
+                <div class="kt-widget24">
+                    <div class="kt-widget24__details">
+                        <div class="kt-widget24__info">
+                            <h4 class="kt-widget24__title">
+                               Self Assessment Submission
+                            </h4>
+                            <span class="kt-widget24__desc">
+                                Current Assessment
+                            </span>
+                        </div>
+                        <span class="kt-widget24__stats kt--font-info" counto [step]="30" [duration]="1" style="cursor:pointer" (click)="redirectTo('/app/main/assessments/assessments')"
+                              [countFrom]="0" [countTo]="dashboardTopEntityAssessmentUserStats.newAssessmentsSubmitted"
+                              (countoChange)="dashboardTopEntityAssessmentUserStats.newAssessmentsSubmittedCounter = $event">
+                            <span style="color:#5578eb!important;">{{(dashboardTopEntityAssessmentUserStats.newAssessmentsSubmittedChange)}}</span>
+                            
+                        </span>
+                    </div>
+                    <div class="progress progress--sm">
+                        <div class="progress-bar kt-bg-info" role="progressbar" style="width: {{dashboardTopEntityAssessmentUserStats.assessmentPercentage}}%;"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="kt-widget24__action">
+                        <span class="kt-widget24__change">
+                            Total Open Assessment <span style="color:#FD397A!important;">{{dashboardTopEntityAssessmentUserStats.newAssessmentsSubmitted.toFixed(0)}}</span>
+                        </span>
+                        <span class="kt-widget24__number">
+                            <span class="counterup"> <span style="color:#FD397A!important;">{{dashboardTopEntityAssessmentUserStats.assessmentPercentage.toFixed(0) == 'NaN' ? 0 :dashboardTopEntityAssessmentUserStats.assessmentPercentage.toFixed(0)}}%</span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 col-xl-3">
+                <div class="kt-widget24">
+                    <div class="kt-widget24__details">
+                        <div class="kt-widget24__info">
+                            <h4 class="kt-widget24__title">
+                               Audit Projects
+                            </h4>
+                            <span class="kt-widget24__desc">
+                                All External Assessment
+                            </span>
+                        </div>
+                        <span class="kt-widget24__stats kt--font-info" counto [step]="30" [duration]="1" style="cursor:pointer" (click)="redirectTo('/app/main/externalAssessments/externalAssessments')"
+                              [countFrom]="0" [countTo]="dashboardTopEntityAssessmentUserStats.newExternalAssessments"
+                              (countoChange)="dashboardTopEntityAssessmentUserStats.newExternalAssessmentsCounter = $event">
+                            <span style="color:#5578eb!important;">{{dashboardTopEntityAssessmentUserStats.newExternalAssessments.toFixed(0)}}</span>
+                        </span>
+                    </div>
+                    <div class="progress progress--sm">
+                        <div class="progress-bar kt-bg-info" role="progressbar" style="width: {{dashboardTopEntityAssessmentUserStats.externalAssessmentPercentage}}%;"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="kt-widget24__action">
+                        <span class="kt-widget24__change">
+                            Total Open External Assessment <span style="color:#FD397A!important;">{{(dashboardTopEntityAssessmentUserStats.newExternalAssessmentsChange)}}</span>
+                        </span>
+                        <span class="kt-widget24__number">
+                            <span class="counterup"> <span style="color:#FD397A!important;">{{dashboardTopEntityAssessmentUserStats.externalAssessmentPercentage.toFixed(0) == 'NaN' ? 0 : dashboardTopEntityAssessmentUserStats.externalAssessmentPercentage.toFixed(0)}}%</span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 col-xl-3">
+                <div class="kt-widget24">
+                    <div class="kt-widget24__details">
+                        <div class="kt-widget24__info">
+                            <h4 class="kt-widget24__title">
+                                New Users
+                            </h4>
+                            <span class="kt-widget24__desc">
+                                Joined New User
+                            </span>
+                        </div>
+                        <span class="kt-widget24__stats kt--font-info" counto [step]="30" [duration]="1"  style="cursor:pointer" (click)="redirectTo('/app/admin/users')"
+                              [countFrom]="0" [countTo]="dashboardTopEntityAssessmentUserStats.newUsers"
+                              (countoChange)="dashboardTopEntityAssessmentUserStats.newUsersCounter = $event">
+                            <span style="color:#5578eb!important;">{{dashboardTopEntityAssessmentUserStats.newUsersCounter.toFixed(0)}}</span>
+                        </span>
+                    </div>
+                    <div class="progress progress--sm">
+                        <div class="progress-bar kt-bg-info" role="progressbar" style="width: {{dashboardTopEntityAssessmentUserStats.userPercentage}}%;"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="kt-widget24__action">
+                        <span class="kt-widget24__change">
+                            Inactive Users <span style="color:#FD397A!important;">{{(dashboardTopEntityAssessmentUserStats.newUsersChange)}}</span>
+                        </span>
+                        <span class="kt-widget24__number">
+                            <span class="counterup"><span style="color:#FD397A!important;">{{dashboardTopEntityAssessmentUserStats.userPercentage.toFixed(0)}}%</span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

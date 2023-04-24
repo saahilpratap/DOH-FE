@@ -1,0 +1,52 @@
+<div bsModal
+     #healthCareEntityModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="healthCareEntityModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #healthCareEntityModalForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{l("Health Care Entity")}}</span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">{{"  " | localize}}</label>
+                        <p-multiSelect name="belookup" [options]="businessentity" placeholder="Select Business Entities" optionLabel="companyName" [(ngModel)]="selectedBusinessEntity" [required]="true" (onChange)="businessentitiyChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!healthCareEntityModalForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

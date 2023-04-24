@@ -1,0 +1,185 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{l("BusinessRisks")}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{l("Create New Business Risk")}}
+                </span>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Risk Status" | localize}}
+                </span>
+                <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5" style="min-width: 100px">
+                    {{'New' |localize}}
+                </span> 
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-wizard-v4__content bg-white" data-ktwizard-type="step-content" data-ktwizard-state="current"
+             id="Tab1data">
+            <form *ngIf="active" #businessRiskForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+
+                <div class="kt-portlet kt-portlet--mobile">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                <span *ngIf="businessRisk.id">{{ l("EditBusinessRisk") }}</span>
+                                <span *ngIf="!businessRisk.id">{{ l("CreateNewBusinessRisk") }}</span>
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <div class="d-inline-flex float-right">
+                                <button type="button" (click)="close()" class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm">
+                                    <i class="fa fa-arrow-left"></i>Back
+                                </button>
+                                <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                        [disabled]="!businessRiskForm.form.valid" [buttonBusy]="saving"
+                                        [busyText]="l('SavingWithThreeDot')">
+                                    <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-wizard-v4__form">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="kt-section__body">
+                                    <div class="modal-body">
+                                        <div class="container1">
+                                            <div class="row">
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="BusinessRisk_Code" class="required">{{ l("BusinessRisk ID") }} </label>
+                                                        <input type="text" id="BusinessRisk_Code" class="form-control" placeholder="System Generated"
+                                                               [(ngModel)]="businessRisk.code" name="code" disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>{{"Created On" | localize}}</label>
+                                                        <div id="creationTime" class="kt-input-icon">
+                                                            <input id="creationTime"
+                                                                   type="text" disabled
+                                                                   #creationTimePicker
+                                                                   name="creationTimePicker"
+                                                                   class="form-control"
+                                                                   placeholder="System Generated"
+                                                                   bsDatepicker
+                                                                   datePickerMomentModifier
+                                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                                   [(date)]="businessRisk.creationTime"
+                                                                   autocomplete="off"/>
+                                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                                <span><i class="flaticon-calendar-1"></i></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="businessEntLookUp" class="required">HealthCare Entity </label>
+                                                        <ng-select [items]="BusinessEntity" [searchable]="true" bindLabel="name" [disabled]="businessRisk.id" [required]="true"
+                                                                   bindValue="id" placeholder="Select Business Entity " (change)="initializeBeLookUpFields(businessRisk.businessEntityId)"
+                                                                   [(ngModel)]="businessRisk.businessEntityId" class="kt-align-left"
+                                                                   name="BusinessEntityIds"  #businessEntLookUp="ngModel">
+                                                        </ng-select>
+                                                        <validation-messages [formCtrl]="businessEntLookUp"></validation-messages>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <div class="form-group">
+                                                        <label for="BusinessRisk_Title" class="required">{{ l("Risk Title") }} </label>
+                                                        <input type="text" id="BusinessRisk_Title" class="form-control"
+                                                               [(ngModel)]="businessRisk.title" name="Title" required  #BusinessRisk_Title="ngModel" />
+                                                        <validation-messages [formCtrl]="BusinessRisk_Title"></validation-messages>
+                                                    </div>
+                                                </div>                                            
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="BusinessRisk_Code" class="required">{{ l("Risk Cause / Vulnerability Detail") }} </label>
+                                                        <textarea type="text" required class="form-control" placeholder="Risk Details" #BusinessRisk_Code="ngModel" name="riskDetail" [(ngModel)]="businessRisk.riskDetail" style="height:80px !important"></textarea>
+                                                        <validation-messages [formCtrl]="BusinessRisk_Code"></validation-messages>
+                                                    </div>
+                                                </div>
+                                            </div>                                           
+                                            <div class="kt-padding-t-20 kt-padding-b-5 border-bottom">
+                                                <h5 class="kt-portlet__head-title">
+                                                    <span>
+                                                        Risk Treatment
+                                                    </span>
+                                                </h5>
+                                            </div>
+                                            <div class="row kt-padding-t-10">
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="BusinessRisk_IdentificationDate">{{ l("Risk Treatment Selected") }}</label>
+                                                        <ng-select [items]="riskTreatments" [searchable]="true" bindLabel="name"
+                                                                   bindValue="id" placeholder="Select Risk Treatment"
+                                                                   [(ngModel)]="businessRisk.riskTreatmentId" class="kt-align-left"
+                                                                   name="riskTreatments">
+                                                        </ng-select>
+                                                       
+                                                    </div>
+                                                </div>                                           
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="BusinessRisk_ExpectedClosureDate">{{ l("ExpectedClosureDate") }}</label>
+                                                        <div id="expectedClosureDate" class="kt-input-icon">
+                                                            <input id="expectedClosureDatePicker" required
+                                                                   type="datetime"
+                                                                   #expectedClosureDatePicker
+                                                                   name="expectedClosureDatePicker"
+                                                                   class="form-control"
+                                                                   bsDatepicker
+                                                                   datePickerMomentModifier
+                                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                                   [(date)]="businessRisk.expectedClosureDate"
+                                                                   autocomplete="off"/>
+                                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                                <span><i class="flaticon-calendar-1"></i></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="BusinessRisk_RemediationPlan">{{ l("Mitigation / Remediation Plan") }}</label>
+                                                        <textarea id="BusinessRisk_RemediationPlan" class="form-control" rows="3"
+                                                                  [(ngModel)]="businessRisk.remediationPlan"
+                                                                  name="RemediationPlan"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>                                       
+                                            <p-accordion>                                               
+                                                <p-accordionTab header="Attachments">
+                                                    <div class="w-100">
+                                                        <file-upload [name]="'Business Risks'"
+                                                                     [attachedFile]="attachedFileCodes"
+                                                                     [multiple]="true"
+                                                                     [attachedfileSize]="2097150"
+                                                                     [noFileUpload]="100"
+                                                                     (attachmentData)="getAttachment($event)"
+                                                                     (attachmentDelete)="deleteAttachmentInput($event)"></file-upload>
+                                                    </div>
+                                                </p-accordionTab>                                                
+                                            </p-accordion>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

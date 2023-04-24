@@ -1,0 +1,11 @@
+.textDataLabel {
+    font-size: 10px !important;
+    transform: rotate(360deg);
+}
+.legend-label-text {
+    color: black !important;
+}
+
+[ngx-charts-legend-entry] {
+    color: black !important;
+}

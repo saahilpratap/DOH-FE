@@ -1,0 +1,38 @@
+.background-color-test {
+    background-color: #f7f8fa
+}
+
+.btn-widget {
+    background-color: #9c227d !important;
+    color: #fff !important;
+}
+
+.kt-widget4 .kt-widget4__item {
+    border: none !important;
+}
+.selected {
+    background-color: #f3f6f9 !important;
+}
+.tr-bg-color {
+    background-color: #00aff0 !important;
+}
+.width-10{
+    width:10% !important;
+}
+.width-25 {
+    width: 25% !important;
+}
+.width-12 {
+    width: 12% !important;
+}
+.width-50 {
+    width: 50% !important;
+}
+.table thead th, .table thead td {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+#table tbody tr {
+    height: 50px !important;
+}
+

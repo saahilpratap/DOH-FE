@@ -1,0 +1,32 @@
+<div class="kt-portlet kt-portlet--height-fluid recent-tenants p-0">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">
+
+        Entity Assesment
+        <small>
+         {{subName}}
+        </small>
+      </h3>
+    </div>
+  </div>
+  <div class="kt-portlet__body" [perfectScrollbar]>
+    <div class="kt-widget14">
+      <div class="row kt-widget14__content">
+        <div class="col-lg-6">
+          <ngx-charts-pie-chart
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="result"
+          [gradient]="gradient"
+          [legend]="showLegend"
+          [legendPosition]="legendPosition"
+          [labels]="showLabels"
+          [doughnut]="isDoughnut"
+        >
+        </ngx-charts-pie-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

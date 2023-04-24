@@ -1,0 +1,98 @@
+<div class="row align-items-center no-margin w-100">
+  <div
+    class="primeng-datatable-container"
+    [busyIf]="primengTableHelper.isLoading"
+  >
+    <div>
+      <p-table
+        #dataTable
+        (onLazyLoad)="getAllTemplatecheck($event)"
+        [value]="primengTableHelper.records"
+        [lazy]="true"
+        [scrollable]="true"
+        ScrollWidth="100%"        
+        [responsive]="primengTableHelper.isResponsive"
+        [resizableColumns]="primengTableHelper.resizableColumns" 
+               
+      >        
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 100px;" class="kt-align-center">
+                    {{'Action' |localize}}
+                </th>
+                <th style="width: 100px;">
+                    {{'ID' |localize}}
+                </th>
+                <th style="width: 150px;">
+                    {{'Title' |localize}}                   
+                </th>
+                <th style="width: 120px;">
+                    {{'Type' |localize}}                    
+                </th>
+                <th style="width: 170px;">
+                    {{'Audit Vendor' |localize}}                    
+                </th>
+                <th style="width: 250px;">
+                    {{'Description' |localize}}                   
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-record="$implicit">
+            <tr [pSelectableRow]="rowData">
+                <td style="width: 100px;" class="kt-align-center">
+                    <a class="kt-padding-r-20" (click)="createEditTemplateTypeModals.show(record.id,1)"
+                       *ngIf="'Pages.TemplatesAndCheckLists.View' | permission">
+                        <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                    </a>
+                    <a class="kt-padding-r-20"
+                       (click)="createEditTemplateTypeModals.show(record.id)" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                       *ngIf="'Pages.TemplatesAndCheckLists.Edit' | permission">
+                        <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                    </a>
+                    <a class="kt-padding-r-20" (click)="removereTemplate(record.id)" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                       *ngIf="'Pages.TemplatesAndCheckLists.Delete' | permission">
+                        <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                    </a>
+                </td>
+                <td style="width: 100px;">
+                    {{record.code}}
+                </td>
+                <td style="width: 150px;">
+                    {{record.title}}
+                </td>
+                <td style="width: 120px;">
+                    <span *ngIf="record.templateType">{{record.templateType.value}}</span>
+                </td>
+                <td style="width: 170px;">
+                    <span *ngIf="record.vendor">{{record.vendor.companyName}}</span>
+                </td>
+                <td style="width: 250px;" id="templateAditor">
+                    <span>{{record.description}}</span>
+                    <!--<angular-editor id="editor1" [config]="editorConfig" name="textMessage" [(ngModel)]="record.description"></angular-editor>-->
+                </td>
+            </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div  class="primeng-no-data"  *ngIf="primengTableHelper.totalRecordsCount == 0">     
+      {{ l("NoData") }}
+    </div>
+    <div class="primeng-paging-container mt-2">
+      <p-paginator
+        [rows]="primengTableHelper.defaultRecordsCountPerPage"
+        #paginator
+        (onPageChange)="getAllTemplatecheck($event)"
+        [totalRecords]="primengTableHelper.totalRecordsCount"
+        [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage ">
+      </p-paginator>
+      <span class="total-records-count">
+        {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount ) }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<createEditTemplateTypeModals
+  #createEditTemplateTypeModals
+  (closeModal)="getAllTemplatecheck()"
+></createEditTemplateTypeModals>

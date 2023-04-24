@@ -1,0 +1,176 @@
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{ l("Feedback-Questions") }}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                       
+                    </span>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button *ngIf="isGranted('Pages.FeedbackQuestion.Create')"
+                                (click)="createQuestion()"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            <i class="fa fa-plus"></i>
+                            {{ l("Create New Question") }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            All Questions
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <!--<button type="button" class="btn btn-danger btn-sm  kt-margin-r-20" (click)="deleteAllRecord()" *ngIf="allDelete">
+                            <i class="fas fa-trash-alt icon-font-size-1"></i>
+                            {{l('Delete All')}}
+                        </button>-->
+                        <form class="kt-form" autocomplete="off">
+                            <div>
+                                <div class="row align-items-center">
+                                    <div class="col-xl-12">
+                                        <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                                            <div class="input-group">
+                                                <input [(ngModel)]="filterText"
+                                                       name="filterText"
+                                                       autoFocus
+                                                       class="form-control m-input"
+                                                       [placeholder]="
+                                                    l('SearchWithThreeDot')
+                                                "
+                                                       type="text" />
+                                                <span class="input-group-btn margin-left--5">
+                                                    <button (click)="getQuestions()"
+                                                            class="btn btn-primary"
+                                                            type="submit">
+                                                        <i class="flaticon-search-1"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="kt-portlet__body">
+                    <div class="row align-items-center">
+                        <div class="primeng-datatable-container col-12"
+                             [busyIf]="primengTableHelper.isLoading">
+                            <p-table #dataTable
+                                     (onLazyLoad)="getQuestions($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns"
+                                     [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <!--<th style="width: 20px !important">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>-->
+                                        <th style="width: 80px" [hidden]="!isGrantedAny(
+                                                    'Pages.FeedbackQuestion.View',
+                                                    'Pages.FeedbackQuestion.Edit',
+                                                    'Pages.FeedbackQuestion.Delete'
+                                                )">
+                                            {{ l("Actions") }}
+                                        </th>
+                                        <th style="width: 80px" pSortableColumn="id">
+                                            {{ l("Question ID") }}
+                                            <p-sortIcon field="question.id"></p-sortIcon>
+                                        </th>
+                                        <th style="width: 200px"
+                                            pSortableColumn="name">
+                                            {{ l("Name") }}
+                                            <p-sortIcon field="question.name"></p-sortIcon>
+                                        </th>
+                                        <th style="width: 300px"
+                                            pSortableColumn="description">
+                                            {{ l("Description") }}
+                                            <p-sortIcon field="question.description"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                    <tr [pSelectableRow]="rowData">
+                                        <!--<td style="width: 20px !important">
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>-->
+                                        <td class="kt-align-center" style="width: 80px"[hidden]="!isGrantedAny(
+                                                    'Pages.FeedbackQuestion.View',
+                                                    'Pages.FeedbackQuestion.Edit',
+                                                    'Pages.FeedbackQuestion.Delete'
+                                                )">
+
+                                            <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.FeedbackQuestion.View')"
+                                               (click)="createOrEditFeedbackQuestionModal.show(record.id,1)">
+                                                <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                            </a>
+                                            <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.FeedbackQuestion.Edit')"
+                                               (click)="createOrEditFeedbackQuestionModal.show(record.id)">
+                                                <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                            </a>
+                                            <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.FeedbackQuestion.Delete')"
+                                               (click)="deleteQuestion(record)">
+                                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                            </a>
+                                        </td>
+                                        <td style="width:80px">
+                                            {{ record.code }}
+                                        </td>
+                                        <td style="width:200px">
+                                            {{ record.name }}
+                                        </td>
+                                        <td style="width:300px">
+                                            {{ record.description }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <div class="primeng-no-data"
+                                 *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                {{ l("NoData") }}
+                            </div>
+                            <div class="primeng-paging-container">
+                                <p-paginator [rows]="
+                                        primengTableHelper.defaultRecordsCountPerPage
+                                    "
+                                             #paginator
+                                             (onPageChange)="getQuestions($event)"
+                                             [totalRecords]="
+                                        primengTableHelper.totalRecordsCount
+                                    "
+                                             [rowsPerPageOptions]="
+                                        primengTableHelper.predefinedRecordsCountPerPage
+                                    ">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{l("TotalRecordsCount",primengTableHelper.totalRecordsCount)}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <createOrEditFeedbackQuestionModals #createOrEditFeedbackQuestionModal
+                                            (modalSave)="getQuestions()"></createOrEditFeedbackQuestionModals>
+    </div>
+</div>

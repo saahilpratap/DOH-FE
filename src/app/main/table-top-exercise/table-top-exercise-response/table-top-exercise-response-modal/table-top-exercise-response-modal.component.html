@@ -1,0 +1,144 @@
+<div appBsModal #tableTopExerciseResponseModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="tableTopExerciseResponseModal" aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" #ttxEndUserForm="ngForm" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l(tteEntitlyResponse.groupName)}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div>
+                        <div *ngIf="sectionShow == -1">
+                            <div class="pb-5" [innerHTML]="tteEntitlyResponse.groupDescription"></div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-light">
+                                        <th style="width:100%">{{"Attachments" | localize}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngIf="tableTopExerciseEntityAttachments.length==0">
+                                        <td class="kt-align-center">{{"No Attachment" | localize}}</td>
+                                    </tr>
+                                    <tr *ngFor="let file of tableTopExerciseEntityAttachments; let k = index">
+                                        <td>
+                                            <span id="fileName{{file.code}}" name="fileName{{file.code}}">{{file.fileName}}</span>
+                                            <a (click)="downloadTTEENtityAttachment(file.code)" class="float-right">
+                                                <i class="fa fa-download kt-font-skype kt-padding-r-30"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div *ngIf="sectionShow != -1">
+                            <ng-containe *ngFor="let item of data; let i = index">
+                                <ng-containe *ngIf="i == sectionShow">
+                                    <div *ngFor="let file of item.tableTopExerciseSectionAttachements; let i = index">
+                                        <img class="mb-3 p-1 border" [src]="file.fullPath" style=" width: 75%; height: 40vh;" />
+                                    </div>
+                                </ng-containe>
+                            </ng-containe>
+                            <div class="wizard wizard-6 d-flex flex-column flex-lg-row flex-column-fluid" id="kt_wizard">
+                                <div class="wizard-content d-flex flex-column mx-auto py-10 py-lg-20 w-100 w-md-700px">
+                                    <div class="d-flex flex-column-auto flex-column px-10 pb-2">
+                                        <div class="wizard-nav pb-lg-10 pb-3 d-flex flex-column align-items-center align-items-md-start">
+                                            <div class="wizard-steps d-flex flex-column flex-md-row">
+                                                <div class="wizard-step flex-grow-1 flex-basis-0" *ngFor="let item of data; let i = index">
+                                                    <div class="wizard-wrapper pr-lg-7" *ngIf="i == sectionShow">
+                                                        <div class="wizard-icon" [ngClass]="sectionShow== i ? 'section-selected' : ''">
+                                                            <i class="wizard-check ki ki-check"></i>
+                                                            <span class="wizard-number" style="color:#fff" *ngIf="i == sectionShow">{{i+1}}</span>
+                                                        </div>
+                                                        <div class="wizard-label mr-3" *ngIf="i == sectionShow">
+                                                            <div [innerHTML]="item.sectionName"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-containe *ngFor="let item of data; let i = index" class="">
+                                <ng-containe class="pt-2" *ngFor="let res of item.tableTopExerciseEntityResponses; let j = index">
+                                    <div class="border-bottom mb-3" *ngIf="i == sectionShow">
+                                        <div class="font-15 text-body pt-1 pb-1 margin-top-5" *ngIf="res.questionName != null">
+                                            <lable for="question{{j}}" class="font-weight-bolder" [ngClass]="res.questionMandatory == true ? 'required' : ''">
+                                                {{j+1}}.<span> {{res.questionName}}</span>
+                                            </lable>
+                                        </div>
+                                        <div class="pb-2">
+                                            <div *ngIf="res.questionName != null">
+                                                <div class="p-1" *ngIf="res.answerType == 1">
+                                                    <div class="row">                                                      
+                                                        <div class="kt-radio col-lg-2 col-xl-2 col-md-2 col-sm-4" *ngFor="let item of res.responseOptions; let radio = index">
+                                                            <label class="kt-radio kt-radio--success">
+                                                                <input type="radio" id="radio_{{radio}}" [checked]="item.name == res.response" value="{{res.response}}" disabled/>
+                                                                {{item.name}} <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="p-1" *ngIf="res.answerType == 2">
+                                                    <div class="kt-radio">
+                                                        <label class="kt-radio kt-radio--success pr-5">
+                                                            <input type="radio" id="radio_{{radio}}" [checked]="res.response == 1" value="1" disabled />
+                                                            {{l('Yes')}} <span></span>
+                                                        </label>
+                                                        <label class="kt-radio kt-radio--danger">
+                                                            <input type="radio" id="radio_{{radio}}" [checked]="res.response == 2" value="2" disabled />
+                                                            {{l('No')}} <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="p-1" *ngIf="res.answerType == 3">
+                                                    <div [innerHTML]="res.response"></div>    
+                                                </div>
+                                                <div class="p-1" *ngIf="res.answerType == 4">
+                                                    <div class="kt-checkbox-list row pr-3 pl-3">
+                                                        <ng-container *ngFor="let item of res.responseOptions;">
+                                                            <label for="" class="kt-checkbox kt-checkbox--success col-lg-2 col-xl-2 col-md-2 col-sm-4">
+                                                                <input id="" type="checkbox" [checked]="item.selected" [value]="item.name" [disabled]="true" name="SetRandomPassword">
+                                                                {{item.name}}
+                                                                <span></span>
+                                                            </label>
+                                                        </ng-container>                                                        
+                                                    </div>  
+                                                </div>
+                                                <div *ngIf="res.commentRequired" class="pt-2">
+                                                    <label for="Comment" class="font-italic font-weight-bold mb-0" [ngClass]="res.commentMandatory == true ? 'required' : ''">{{'Comment' | localize}}</label>
+                                                    <div class="font-12" [innerHTML]="res.questionComment"></div>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-containe>
+                            </ng-containe>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="button" class="btn btn-brand mr-2 btn-sm"
+                            [disabled]="sectionShow == -1"
+                            (click)="previousStep(sectionShow)">
+                        <i class="la la-angle-double-left"></i>
+                        {{'Previous'}}
+                    </button>
+                    <button type="button" class="btn btn-brand float-right mr-2 btn-sm"
+                            [disabled]="sectionShow + 1 == totalRecord"
+                            (click)="nextStep(sectionShow)">
+                        {{'Next'}}
+                        <i class="la la-angle-double-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

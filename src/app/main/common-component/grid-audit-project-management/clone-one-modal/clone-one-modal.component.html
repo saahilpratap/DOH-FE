@@ -1,0 +1,38 @@
+<div appBsModal #CloneOneModal="bs-modal" id="popup_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CloneOneModal" aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}" style="z-index: auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form *ngIf="active" #CloneOneForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h6 class="modal-title">
+                        {{l('Warning!')}}
+                    </h6>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label class="modal-title" *ngIf="data.restrictedEntitiesList.length!=0">
+                            {{l('The following facility(s) are no longer active / part of the same group therefore they will be excluded from the cloned audit project.')}}
+                            <br /><span>{{l(' Excluded Facility List ')}}</span>
+                        </label>
+                        <br />
+                        <br />
+                        <div *ngIf="data.restrictedEntitiesList.length!=0" style="max-height:150px !important;overflow-y:scroll;">
+                            <ul style="list-style-type:none;">
+                                <li *ngFor="let e of data.restrictedEntitiesList;">{{e.businessEntityName}}</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <label class="modal-title mt-2">
+                        <span>{{l('Do you want to proceed?')}}</span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"No" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="save()" [buttonBusy]="saving" [busyText]="l('CloningWithThreeDot')"><i class="fa fa-copy"></i> <span>{{"Yes" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<CloneSelectModals #CloneSelectModals (modalSave)="goBack()"></CloneSelectModals>

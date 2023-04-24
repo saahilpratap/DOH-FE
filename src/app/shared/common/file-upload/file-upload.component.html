@@ -1,0 +1,80 @@
+<div id="fileupload" class="w-100">
+    <div class="w-100" *ngIf="!showRollWise" >
+        <p-fileUpload multiple="multiple" #form
+                      [auto]="true"
+                      [customUpload]="true"
+                      (uploadHandler)="myUploader($event,form)"></p-fileUpload>
+    </div>
+    <div class="content">
+        <table class="table table-bordered" *ngIf="name != 'PAP'">
+            <thead>
+                <tr class="bg-light">
+                    <th style="width:30%">{{"File Name" | localize}}</th>
+                    <th style="width:7%" class="kt-align-center">{{"Action" | localize}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="value.length==0">
+                    <td colspan="4" class="kt-align-center">{{"No Attachment" | localize}}</td>
+                </tr>
+                <tr *ngFor="let file of value; let i = index">
+                    <td>
+                        <span *ngIf="file.name" id="name{{i}}" name="fileName{{i}}">{{file.name}}</span>
+                        <span *ngIf="file.name1 && file.name == null" id="name1{{i}}" name="fileName1{{i}}">{{file.name1}}</span>
+                    </td>
+                    <td class="kt-align-center " *ngIf="reportDownload">
+                        <a href="javascript:;" (click)="downloadAttachment(file.name1, false)">
+                            <i class="fa fa-download kt-font-skype"></i>
+                        </a>
+                    </td>
+                    <td class="kt-align-center " *ngIf="!reportDownload">
+                        <a href="javascript:;" class="mr-5" *ngIf="file.code" (click)="downloadAttachment(file.code, false)">
+                            <i class="fa fa-download kt-font-skype"></i>
+                        </a>
+                        <a href="javascript:;" *ngIf="file.code && showDelete" (click)="deleteAttachmentInput(file, i)" >
+                            <i class="fa fa-trash kt-font-danger"></i>
+                        </a>
+                        <a href="javascript:;" *ngIf="!file.code" (click)="deleteFun(i)" >
+                            <i class="fa fa-trash kt-font-danger" id="delete{{i}}"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered" *ngIf="name == 'PAP'">
+            <thead>
+                <tr class="bg-light">
+                    <th style="width:30%">{{"File Name" | localize}}</th>
+                    <th style="width:7%" class="kt-align-center">{{"Action" | localize}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="value.length==0">
+                    <td colspan="4" class="kt-align-center">{{"No Attachment" | localize}}</td>
+                </tr>
+                <tr *ngFor="let file of value; let i = index">
+                    <td>
+                        <span *ngIf="file.name" id="name{{i}}" name="fileName{{i}}">{{file.name}}</span>
+                        <span *ngIf="file.name1 && file.name == null" id="name1{{i}}" name="fileName1{{i}}">{{file.name1}} </span>
+                    </td>
+                    <td class="kt-align-center " *ngIf="reportDownload">
+                        <a href="javascript:;" (click)="downloadAttachment(file.name1, false)">
+                            <i class="fa fa-download kt-font-skype"></i>
+                        </a>
+                    </td>
+                    <td class="kt-align-center " *ngIf="!reportDownload">
+                        <a href="javascript:;" class="mr-5" *ngIf="file.code" (click)="downloadAttachment(file.code , file.static)">
+                            <i class="fa fa-download kt-font-skype"></i>
+                        </a>
+                        <a href="javascript:;" *ngIf="file.code && !file.static" (click)="deleteAttachmentInput(file, i)" >
+                            <i class="fa fa-trash kt-font-danger"></i>
+                        </a>
+                        <a href="javascript:;" *ngIf="!file.code" (click)="deleteFun(i)">
+                            <i class="fa fa-trash kt-font-danger" id="delete{{i}}"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,235 @@
+<div class="kt-padding-t-20 kt-margin-t-10">
+    <div class="border-bottom kt-padding-t-20 ">
+        {{l('Audit Team & Duration')}}
+    </div>
+    <div class="kt-padding-t-20">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Number of Auditors')}}</label>
+                    <input type="text" name="numberofAuditors" [(ngModel)]="auditReportInput.numberofAuditors" (keypress)="numberOnly($event)"  class="form-control" placeholder="" [disabled]="reauditPermission"/>
+                </div>
+            </div>           
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Lead Auditor')}}</label>
+                    <ng-select [items]="auditAgencyAdmins" [searchable]="true" bindLabel="name"
+                               bindValue="id" placeholder="Select" disabled
+                               [(ngModel)]="auditReportInput.leadAuditorId"
+                               name="Planned">
+                    </ng-select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="kt-padding-t-20">
+    <div class="border-bottom">
+        {{l('Audit Report Details')}}
+    </div>
+    <div class="kt-padding-t-20">
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Audit Outcomes')}}</label>
+                    <angular-editor id="Audit_Outcomes"
+                                    [config]="editorConfig"
+                                    [(ngModel)]="auditReportInput.auditConclusions"
+                                    placeholder="Please Enter Details...."
+                                    title="{{auditReportInput.auditConclusions}}"
+                                    type="text"
+                                    name="auditConclusions"
+                                    [disabled]="reauditPermission"></angular-editor>                   
+                </div>
+                <div class="form-group">
+                    <label>{{l('Closure of previous findings')}}</label>
+                    <angular-editor id="Closure_previous_findings"
+                                    [config]="editorConfig"
+                                    title="{{auditReportInput.closureFinding}}"
+                                    [(ngModel)]="auditReportInput.closureFinding"
+                                    placeholder="Please Enter Details...."
+                                    type="text"
+                                    name="closureFinding"
+                                    [disabled]="reauditPermission"></angular-editor>                    
+                </div>
+                <div class="form-group">
+                    <label>{{l('Areas for improvements & Recommendations')}}</label>
+                    <angular-editor id="Areas_improvements_Recommendations"
+                                    [config]="editorConfig"
+                                     title="{{auditReportInput.areaImprovement}}"
+                                     [(ngModel)]="auditReportInput.areaImprovement"
+                                     placeholder="Please Enter Details...."
+                                    type="text"
+                                    name="areaImprovement"
+                                    [disabled]="reauditPermission"></angular-editor>                    
+                </div>              
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12">
+                <div style="min-height:300px">
+                    <div class="kt-widget14">
+                        <div class="row kt-widget14__content">
+                            <div class="col-lg-6 col-sm-6">
+                                <ngx-charts-pie-chart [results]="data"
+                                                      [view]="[250,250]"
+                                                      [doughnut]="true" [legend]="false" [labels]="false"
+                                                      [scheme]="colorScheme" [animations]="false"
+                                                      [tooltipDisabled]="true">
+                                </ngx-charts-pie-chart>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 kt-widget14__legends">
+                                <div class="kt-widget14__legend" *ngFor="let item of data; index as i">
+                                    <span class="kt-widget14__bullet " [style.backgroundColor]="colorScheme.domain[i]"></span>
+                                    <span class="kt-widget14__stats kt-padding-l-10">
+                                        {{item?.label}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>           
+            </div>
+        </div>
+    </div>
+</div>
+<div class="kt-padding-t-10">
+    <div class="border-bottom kt-font-bolder">
+        {{l('Audit Team  Performance')}}
+    </div>
+    <div class="kt-padding-t-10">
+        <div class="w-100 kt-padding-t-5 form-check-inline">
+            <span class="w-50 kt-font-md">{{l('Does the Audit team confirm that the AUDIT objectives have been achieved?')}}</span>
+            <div class="checkbox-inline">
+                <label class=" kt-padding-l-10">
+                    <input type="radio" name="radiogroup" [checked]="auditReportInput.performance1=='Yes'" value="Yes" (change)="setPerformance1('Yes')" [disabled]="reauditPermission">
+                    <span></span><span class="kt-padding-l-5 lable-position">Yes</span>
+                </label>
+                <label class="checkbox kt-padding-l-15">
+                    <input type="radio" name="radiogroup" [checked]="auditReportInput.performance1=='No'" value="No" (change)="setPerformance1('No')" [disabled]="reauditPermission">
+                    <span></span><span class="kt-padding-l-5 lable-position">No</span>
+                </label>            
+            </div>
+        </div>
+        <div class="w-100 kt-padding-t-5 form-check-inline">
+            <span class="w-50 kt-font-md">{{l('In the Audit team’s judgement, is the certification scope adequate?')}}</span>
+            <div class="checkbox-inline">
+                <label class="checkbox kt-padding-l-10">
+                    <input type="radio" name="radiogroup1" [checked]="auditReportInput.performance2=='Yes'" value="Yes" (change)="setPerformance2('Yes')" [disabled]="reauditPermission">
+                    <span></span><span class="kt-padding-l-5 lable-position">Yes</span>
+                </label>
+                <label class="checkbox kt-padding-l-15">
+                    <input type="radio" name="radiogroup1" [checked]="auditReportInput.performance2=='No'" value="No" (change)="setPerformance2('No')" [disabled]="reauditPermission">
+                    <span></span><span class="kt-padding-l-5 lable-position">No</span>
+                </label>
+            </div>
+        </div>
+        <p class="kt-font-md kt-padding-t-10">
+            {{l('On the basis of the documentation examined and the audits performed, we consider that the Management system is compliant with the reference standard.We therefore propose to issue/ confirm/restate/suspend/revoke the Certificate of Compliance as established by the Rules.Next audit will be performed within 12 months.')}}
+        </p>
+    </div>
+</div>
+<div class="kt-padding-t-10">  
+    <div class="kt-padding-t-10">
+        <div>
+            <div class="w-100 bg-primary kt-font-md kt-font-light kt-padding-l-10 kt-align-center kt-font-bold">
+                {{l('STAGE 2')}}
+            </div>
+            <div>
+                <div class="w-100 kt-font-md kt-padding-l-10 kt-align-center
+                             kt-font-bold kt-padding-20" style="background-color: aliceblue;">
+                    {{l('Summary of results')}}
+                </div>
+                <div class="kt-align-center">{{l('Compliance by Domains (check list 2)')}}</div>
+                <table class="table table-bordered" id="table">
+                    <thead>
+                        <tr class="kt-bg-light-dark">
+                            <th class="">{{l('Domain Name')}}</th>
+                            <th class="">{{l('Actual Score')}}</th>
+                            <th class="">{{l('CAPA After Rescoring')}}</th>
+                            <th class="">{{l('Description')}}</th>
+                            <th class="">{{l('Review Comment')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let info of complianceAuditSummary; let i = index">
+                            <td>
+                                {{ info.domainName }}
+                            </td>
+                            <td>{{info.score}} <label *ngIf='info.score != ""'>%</label> </td>
+                            <td>{{info.updatedScore}} <label *ngIf='info.updatedScore != ""'>%</label> </td>
+                            <td>                                
+                                <textarea class="form-control" [(ngModel)]="info.description" name="name" rows="2" [disabled]="reauditPermission"></textarea>
+                            </td>
+                            <td>
+                                <textarea class="form-control" [(ngModel)]="info.reviewComment" name="reviewComment" rows="2" [disabled]="reauditPermission"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="kt-padding-t-5" id="auditPlanAccordionTab">
+        <p-accordion>
+            <p-accordionTab header="Approach of the assessment">
+                <div class="kt-padding-b-20">
+                    <div class="kt-font-sm">{{'Before the Audit:' | localize}}</div>
+                    <div class="kt-font-sm">{{'Request updates of General and Technical Information' | localize}}</div>
+                    <div class="kt-font-sm">{{'Sending the audit plan' | localize}}</div>
+                    <div class="kt-font-sm">{{'During the Audit:' | localize}}</div>
+                    <ul style="list-style-type:square;">
+                        <li>{{'Audit by desktop site visit or remote access' | localize}}</li>
+                        <li>{{'Obtaining information on your processes' | localize}}</li>
+                        <li>{{'Obtaining implemented procedures and evaluatin records' | localize}}</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="kt-font-sm">{{'After the Audit:' | localize}}</div>
+                    <ul style="list-style-type:square;">
+                        <li>{{'Reporting compliance and non-compliance' | localize}}</li>
+                        <li>{{'Finalizing audit reports for stage 1 and stage 2' | localize}}</li>
+                        <li>{{'Receiving corrective and action plan from the Auditee' | localize}}</li>
+                    </ul>
+                </div>
+            </p-accordionTab>
+            <p-accordionTab header="Action Plan For Corrective Actions">
+                <div class="kt-font-sm">
+                    {{'It is important to understand the non-compliance and the Facility/Provider act to aliminate the acuses and to prevent any recurrence. CCorrective actions shall be appropriate to the effects of the noncompliance encountered' | localize
+                    }}
+                </div>
+                <div class="kt-font-sm">{{'An action plan must be developed as explained below' | localize}}</div>
+                <ol style="list-style-type:square;">
+                    <li>{{'Reviewing of non-compliance' | localize}}</li>
+                    <li>{{'Determining the causes of non-compliance' | localize}}</li>
+                    <li>{{'Evaluating the need for action to ensure that non-compliance dose not recurrence' | localize}}</li>
+                    <li>{{'Determining and implementing action needed' | localize}}</li>
+                    <li>{{'Records of the results of action taken and' | localize}}</li>
+                </ol>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+    <div class="kt-padding-t-5">
+        <div >
+            <div class="border-bottom kt-padding-b-10">{{l('ACKNOWLEDGEMENT OF THE REPORT')}}</div>
+
+            <div class="row kt-margin-b-10">
+                <div class="col-3" *ngFor="let item of sinData;let i = index">
+                    <div style="min-height:50px">
+                        <div class="kt-align-center kt-font-bold" *ngIf="item.type== 2">{{'Propared by:' | localize}}</div>
+                        <div class="kt-align-center kt-font-bold" *ngIf="item.type== 1">{{'Reviewed by:' | localize}}</div>
+
+                        <div class="kt-align-center kt-font-bold" *ngIf="item.type== 4">{{'Acknowledged by:' | localize}}</div>
+                        <div class="kt-align-center kt-font-bold" *ngIf="item.type== 4">{{'Department of Health ' | localize}}</div>
+                    </div>
+                    <span class="kt-padding-r-10">{{'Name' | localize}}: </span>
+                    <span>{{item.name}}</span>
+                    <div *ngIf="abpUserId == item.userId" [style.pointer-events]="reauditPermission?'none':'auto'" >
+                        <common-signature-pad [signatureShow]="true" (signatureUrl)="signatureUrl3($event,i)" [imgUrl]="item.signature"></common-signature-pad>
+                    </div>
+                    <div *ngIf="abpUserId != item.userId" [style.pointer-events]="reauditPermission?'none':'auto'">
+                        <common-signature-pad [signatureShow]="false" (signatureUrl)="signatureUrl3($event,i)" [imgUrl]="item.signature"></common-signature-pad>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

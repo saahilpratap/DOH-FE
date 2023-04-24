@@ -1,0 +1,12 @@
+.pap-border-left {
+    border-left: solid 5px #147509 !important;
+    background-color: #efffed;
+    border-radius: 5px
+}
+.pointerNone {
+    pointer-events: none !important;
+}
+
+.pointerAuto {
+    pointer-events: auto !important;
+}

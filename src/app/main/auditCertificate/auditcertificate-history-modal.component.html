@@ -1,0 +1,46 @@
+<div appBsModal #auditcertificateHistoryModal="bs-modal" id="popup_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CopyToChildModal" aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}" style="z-index: auto">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form #auditcertificateHistoryForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Certificate History')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div style="height:60vh" [perfectScrollbar]="{wheelPropagation: false}"
+                             [ngStyle]="{'min-height': '200px !important', 'position': 'relative'}">
+                            <p-table [paginator]="true" [rows]="10"
+                                     [value]="data"
+                                     [rowsPerPageOptions]="[10,25,50,100,200,500]">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Certificate ID</th>
+                                        <th>Issue Date</th>
+                                        <th>Expire Date</th>
+                                        <th>File Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-product>
+                                    <tr>
+                                        <td>{{product.code}}</td>
+                                        <td>{{product.issueDate}}</td>
+                                        <td>{{product.expireDate}}</td>
+                                        <td>{{product.fileName}}</td>
+                                        <td>{{product.status}}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

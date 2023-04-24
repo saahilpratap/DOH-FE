@@ -1,0 +1,22 @@
+<div>
+    <div class="align-items-center no-margin">
+        <div class="primeng-datatable-container">
+            <p-table [value]="groupList" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th> {{'Question Group Name' |localize}}</th>                                             
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-record>
+                    <tr>
+                        <td>
+                            <a (click)="auditProject.show(auditProID,record)" class="nav-link">{{record.questionGroupName}}</a>
+                        </td>                                         
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+</div>
+<auditProjectManagementModals #auditProject [reauditPermission]="reauditPermission"> </auditProjectManagementModals>

@@ -1,0 +1,8 @@
+.legend-label-text {
+    color: black !important;
+}
+
+[ngx-charts-legend-entry] {
+
+    color: black !important;
+}

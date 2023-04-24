@@ -1,0 +1,83 @@
+<!--<div>
+    <div class="border" *ngIf="!imgUrl && !showSignaturePad" height="100" style="width:100%">
+        <div class="kt-align-center kt-padding-t-30 kt-padding-b-30">
+            <div>{{'No Signature Available' | localize}}</div>
+            <div class="kt-font-brand kt-font-bold mouse-hover" (click)="showSignature()">
+                {{'Click here' | localize}}
+                <i class="fa fa-pencil-alt kt-padding-l-10"></i>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="imgUrl && !showSignaturePad">
+        <div class="border">
+            <img [src]="imgUrl" height="100" style="width:auto" />
+        </div>
+        <button type="button"
+                class="btn btn-google btn-pill kt-margin-t-5 btn-sm pull-right"
+                (click)="showSignature()">
+            Signature Clear
+        </button>
+    </div>
+    <div class="border" *ngIf="showSignaturePad">
+        <signature-pad #riginsign
+                       [options]="signaturePadOptions"
+                       (onBeginEvent)="drawStart()"
+                       (onEndEvent)="drawComplete()"></signature-pad>
+        <br />
+        <button type="button"
+                class="btn btn-google btn-pill kt-margin-t-5 btn-sm pull-right"
+                (click)="clickSignature()">
+            Signature Clear
+        </button>
+    </div>
+
+</div>-->
+
+<div>
+    <div class="border" *ngIf="signatureShow" height="100" style="width:100%">
+        <div class="" *ngIf="!imgUrl && !showSignaturePad" height="100" style="width:100%">
+            <div class="kt-align-center kt-padding-t-30 kt-padding-b-30">
+                <div>{{'No Signature Available' | localize}}</div>
+                <div class="kt-font-brand kt-font-bold mouse-hover" (click)="showSignature()">
+                    {{'Click here' | localize}}
+                    <i class="fa fa-pencil-alt kt-padding-l-10"></i>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="imgUrl && !showSignaturePad">
+            <div class="">
+                <img [src]="imgUrl" height="100" style="width:auto" />
+            </div>
+            <button type="button"
+                    class="btn btn-google btn-pill kt-margin-t-5 btn-sm pull-right"
+                    (click)="showSignature()">
+                Signature Clear
+            </button>
+        </div>
+        <div class="" *ngIf="showSignaturePad">
+            <signature-pad #riginsign
+                           [options]="signaturePadOptions"
+                           (onBeginEvent)="drawStart()"
+                           (onEndEvent)="drawComplete()"></signature-pad>
+            <br />
+            <button type="button"
+                    class="btn btn-google btn-pill kt-margin-t-5 btn-sm pull-right"
+                    (click)="clickSignature()">
+                Signature Clear
+            </button>
+        </div>
+    </div>
+    <div class="border" *ngIf="!signatureShow" height="100" style="width:100%">
+        <div *ngIf="imgUrl">
+            <img [src]="imgUrl" height="100" style="width:auto" />
+        </div>
+        <div *ngIf="!imgUrl">
+            <div class="kt-align-center kt-padding-t-40 kt-padding-b-40">
+                <div>{{'No Signature Available' | localize}}</div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

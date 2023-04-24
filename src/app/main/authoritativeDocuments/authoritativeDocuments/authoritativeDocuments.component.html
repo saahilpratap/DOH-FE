@@ -1,0 +1,310 @@
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{ l("Authoritative Documents") }}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{ l("Manage Authoritative Documents") }}
+                    </span>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button *ngIf="'Pages.ComplianceManagement.AuthoritativeDocuments.Import' | permission"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                onclick="document.getElementById('importInput').click()">
+                            <i class="fa fa-file-excel"></i><i class="fa fa-plus"></i>
+                            <input id="importInput" #file type="file" multiple (change)="uploadFile($event)" hidden />
+                            Import
+                        </button>
+                        <button *ngIf="'Pages.ComplianceManagement.AuthoritativeDocuments.Export' | permission"
+                                (click)="exportToExcel()"
+                                class="btn btn-outline-success">
+                            <i class="fa fa-file-excel"></i>
+                            {{ l("ExportToExcel") }}
+                        </button>
+                        <button *ngIf="isGranted('Pages.ComplianceManagement.AuthoritativeDocuments.Create')"
+                                (click)="createAuthoritativeDocument()" class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            <i class="fa fa-plus"></i> {{ l("Create") }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{ l("Authoritative Documents") }}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <button type="button" class="btn btn-danger btn-sm kt-margin-r-20" (click)="deleteAllRecord()" *ngIf="allDelete">
+                            <i class="fas fa-trash-alt icon-font-size-1"></i>
+                            {{l('Delete All')}}
+                        </button>
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="filterText"
+                                               name="filterText"
+                                               autoFocus
+                                               class="form-control m-input border-radius-0"
+                                               [placeholder]="l('SearchWithThreeDot')"
+                                               type="text" />
+                                        <span class="input-group-btn margin-left--5">
+                                            <button (click)="
+                                                        getAuthoritativeDocuments()
+                                                    "
+                                                    class="btn btn-primary"
+                                                    type="submit">
+                                                <i class="flaticon-search-1"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<div class="btn-group dropdown kt-padding-l-10" dropdown container="body">
+                            <button dropdownToggle class="btn border shadow">
+                                <i class="fa fa-bars no-padding"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu" *dropdownMenu style="left: -10rem !important;">-->
+                                <!--<li>
+                                    <a (click)="showGrid()">{{'Grid' | localize}}</a>
+                                </li>-->
+                                <!--<li>
+                                    <a (click)="showList()">{{'List' | localize}}</a>
+                                </li>
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <form class="kt-form" autocomplete="off">
+                        <div class="row"
+                             [hidden]="!advancedFiltersAreShown">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="CodeFilter">AD ID</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="CodeFilter"
+                                           name="codeFilter"
+                                           [(ngModel)]="codeFilter" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="nameFilter2">AD NAME</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="nameFilter2"
+                                           name="nameFilter2"
+                                           [(ngModel)]="nameFilter2" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted"
+                                      *ngIf="!advancedFiltersAreShown"
+                                      (click)="
+                                            advancedFiltersAreShown = !advancedFiltersAreShown
+                                        ">
+                                    <i class="fa fa-angle-down"></i>
+                                    {{ l("ShowAdvancedFilters") }}
+                                </span>
+                                <span class="clickable-item text-muted"
+                                      *ngIf="advancedFiltersAreShown"
+                                      (click)="
+                                            advancedFiltersAreShown = !advancedFiltersAreShown
+                                        ">
+                                    <i class="fa fa-angle-up"></i>
+                                    {{ l("HideAdvancedFilters") }}
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row align-items-center" [hidden]="!list">
+                        <div class="primeng-datatable-container col-12"
+                             [busyIf]="primengTableHelper.isLoading">
+                            <div>
+                                <p-table #dataTable
+                                         (onLazyLoad)="getAuthoritativeDocuments($event)"
+                                         [value]="primengTableHelper.records"
+                                         rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                         [paginator]="false" [lazy]="true" [scrollable]="true" ScrollWidth="100%"
+                                         [responsive]="primengTableHelper.isResponsive"
+                                         [resizableColumns]="primengTableHelper.resizableColumns"
+                                         frozenWidth="150px"
+                                         [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                                    <ng-template pTemplate="frozenheader">
+                                        <tr>
+                                            <th style="width: 20px !important">
+                                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                            </th>
+                                            <th style="width: 100px"
+                                                [hidden]=" !isGrantedAny('Pages.ComplianceManagement.AuthoritativeDocuments.Edit',
+                                                    'Pages.ComplianceManagement.AuthoritativeDocuments.Delete')">
+                                                {{ l("Actions") }}
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="frozenbody" let-record let-rowData>
+                                        <tr [pSelectableRow]="rowData">
+                                            <td style="width: 20px !important">
+                                                <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.ComplianceManagement.AuthoritativeDocuments.View')"
+                                                   (click)="createOrEditAuthoritativeDocumentModal.show(record.authoritativeDocument.id, 1)">
+                                                    <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                                </a>
+                                                <a *ngIf="permission.isGranted('Pages.ComplianceManagement.AuthoritativeDocuments.Edit')"
+                                                   (click)="createOrEditAuthoritativeDocumentModal.show(record.authoritativeDocument.id)">
+                                                    <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                                </a>
+                                                <a class="kt-padding-l-20" *ngIf="permission.isGranted('Pages.ComplianceManagement.AuthoritativeDocuments.Delete')"
+                                                   (click)="deleteAuthoritativeDocument(record.authoritativeDocument)">
+                                                    <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width:30px">
+                                            </th>
+                                            <th style="width: 100px"
+                                                pSortableColumn="id">
+                                                ID
+                                                <p-sortIcon field="authoritativeDocument.id"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 300px"
+                                                pSortableColumn="name">
+                                                Name
+                                                <p-sortIcon field="authoritativeDocument.name"></p-sortIcon>
+                                            </th>
+
+                                            <th style="width: 300px"
+                                                pSortableColumn="AuthorityDepartment.Name">
+                                                Department
+                                                <p-sortIcon field="AuthorityDepartment.Name"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 300px"
+                                                pSortableColumn="Category.Value">
+                                                Category
+                                                <p-sortIcon field="Category.Value"></p-sortIcon>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                        <tr>
+                                            <td style="width:30px">
+                                                <span *ngIf="record.authoritativeDocument.authoratativeDocumentLogo">
+                                                    <img [src]="_DomSanitizationService.bypassSecurityTrustUrl(record.authoritativeDocument.authoratativeDocumentLogo)" width="15" height="15" alt="" />
+                                                </span>
+                                            </td>
+                                            <td style="width:100px">
+                                                {{record.authoritativeDocument.code}}
+                                            </td>
+                                            <td style="width:300px">
+                                                <div style=" overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                                        -webkit-box-orient: vertical;-webkit-line-clamp: 1;"
+                                                     [pTooltip]="record.authoritativeDocument.name" tooltipPosition="bottom">
+                                                    {{record.authoritativeDocument.name}}
+                                                </div>
+                                            </td>
+                                            <td style="width:300px">
+                                                <div style=" overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                                        -webkit-box-orient: vertical;-webkit-line-clamp: 1;"
+                                                     [pTooltip]="record.departmentName" tooltipPosition="bottom">
+                                                    {{record.departmentName}}
+                                                </div>
+                                            </td>
+                                            <td style="width:300px">
+                                                <div *ngIf="record.authoritativeDocument.category!=undefined" style=" overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                                        -webkit-box-orient: vertical;-webkit-line-clamp: 1;"
+                                                     [pTooltip]="record.authoritativeDocument.category.value" tooltipPosition="bottom">
+                                                    <span *ngIf="record.authoritativeDocument.category">{{record.authoritativeDocument.category.value}}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div class="primeng-no-data"
+                                 *ngIf="
+                                    primengTableHelper.totalRecordsCount == 0
+                                ">
+                                {{ l("NoData") }}
+                            </div>
+                            <div class="primeng-paging-container mt-2">
+                                <p-paginator [rows]="
+                                        primengTableHelper.defaultRecordsCountPerPage
+                                    "
+                                             #paginator
+                                             (onPageChange)="
+                                        getAuthoritativeDocuments($event)
+                                    "
+                                             [totalRecords]="
+                                        primengTableHelper.totalRecordsCount
+                                    "
+                                             [rowsPerPageOptions]="
+                                        primengTableHelper.predefinedRecordsCountPerPage
+                                    ">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{l("TotalRecordsCount",primengTableHelper.totalRecordsCount)}}
+                                </span>
+                            </div>
+                        </div>
+                        <!--<dev-express-grid [columnsName]="columns"
+                                          [dataSource]="primengTableHelper.records"
+                                          [url]="'createOrEditAuthoritativeDocumentModal.show'"
+                                          [checkBoxesMode]="true"></dev-express-grid>-->
+                    </div>
+                    <div [hidden]="!grid">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="kt-portlet border shadow">
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <img src="../../../../assets/common/images/awards.jpg" class="" height="100" width="100" />
+                                            </div>
+                                            <div class="col-8">
+                                                <div class="h5 kt-font-bold kt-padding-b-10">
+                                                    {{l("ADHICS")}}
+                                                </div>
+                                                <div class="kt-font-sm kt-font-bold kt-padding-b-10">
+                                                    {{l("Abu Dhabi Healthcare Information and Cyber Security Standard")}}
+                                                </div>
+                                                <div class="kt-align-center">
+                                                    <button type="submit" class="btn btn-label-danger-o2">
+                                                        {{l("International Standard")}}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <createOrEditAuthoritativeDocumentModal #createOrEditAuthoritativeDocumentModal
+                                                (modalSave)="getAuthoritativeDocuments()"></createOrEditAuthoritativeDocumentModal>
+        <viewAuthoritativeDocumentModal #viewAuthoritativeDocumentModal></viewAuthoritativeDocumentModal>
+    </div>
+</div>

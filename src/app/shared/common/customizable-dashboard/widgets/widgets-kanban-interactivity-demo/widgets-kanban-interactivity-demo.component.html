@@ -1,0 +1,180 @@
+<div [@routerTransition]>
+    <div class="kt-portlet kt-portlet--height-fluid ">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+                    {{"Staff Tasks Board" | localize}}
+                </h3>
+            </div>
+        </div>
+        <div class="kt-portlet__body" [perfectScrollbar]>
+            <div cdkDropListGroup class="kanban-container">
+                <div class="example-container kanban-board">
+                    <header class="kt-bg-brand kanban-board-header text-light">
+                        <div class="kanban-title-board">{{'Backlog' | localize}}</div>
+                    </header>
+                    <div cdkDropList
+                         [cdkDropListData]="todo"
+                         class="example-list"
+                         (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of todo; let i=index" cdkDrag style="position:relative;">
+                            <div [class]="item.color == '' ? 'card' : 'card kt-iconbox--animate1'" [style.background-color]="item.color" style="border:none">
+                                <!--<div class="container">
+                                    <img src="assets/images/logo/{{item.name}}-Logo.png" class="card-image" alt="Avatar">
+                                    <span class="card-name"><b>{{item.name}}</b></span>
+                                    <br />
+                                    <span class="card-add">{{item.add}}</span>
+                                </div>-->
+                                <div class="kanban-drag kt-padding-5">
+                                    <div class="kanban-item kt-padding-10 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-success mr-3">
+                                                <img height="35" width="35" [src]="item.img">
+                                            </div>
+                                            <div class="d-flex flex-column align-items-start">
+                                                <span class="text-dark-50 kt-font-sm">{{item.name}}</span>
+                                                <span class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill kt-font-sm">{{item.lable}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-container kanban-board">
+                    <header class="success kanban-board-header text-light">
+                        <div class="kanban-title-board"> {{'To Do' | localize}}</div>
+                    </header>
+                    <div cdkDropList
+                         [cdkDropListData]="done"
+                         class="example-list"
+                         (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of done; let i=index" cdkDrag style="position:relative;">
+                            <div [class]="item.color == '' ? 'card' : 'card kt-iconbox--animate1'" [style.background-color]="item.color" style="border:none">
+                                <!--<div class="container">
+                                    <img src="assets/images/logo/{{item.name}}-Logo.png" class="card-image" alt="Avatar">
+                                    <span class="card-name"><b>{{item.name}}</b></span>
+                                    <br />
+                                    <span class="card-add">{{item.add}}</span>
+                                </div>-->
+                                <div class="kanban-drag kt-padding-5">
+                                    <div class="kanban-item kt-padding-10 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-success mr-3">
+                                                <img height="35" width="35" [src]="item.img">
+                                            </div>
+                                            <div class="d-flex flex-column align-items-start">
+                                                <span class="text-dark-50 kt-font-sm">{{item.name}}</span>
+                                                <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-font-sm">{{item.lable}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-container kanban-board">
+                    <header class="warning kanban-board-header text-light">
+                        <div class="kanban-title-board">{{'Working' | localize}}</div>
+                    </header>
+                    <div cdkDropList
+                         [cdkDropListData]="WorkINProcess"
+                         class="example-list"
+                         (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of WorkINProcess; let i = index" cdkDrag style="position:relative;">
+                            <div [class]="item.color == '' ? 'card' : 'card kt-iconbox--animate1'" [style.background-color]="item.color" style="border:none">
+                                <!--<div class="container">
+                                    <img src="assets/images/logo/{{item.name}}-Logo.png" class="card-image" alt="Avatar">
+                                    <span class="card-name"><b>{{item.name}}</b></span>
+                                    <br />
+                                    <span class="card-add">{{item.add}}</span>
+                                </div>-->
+                                <div class="kanban-drag kt-padding-5">
+                                    <div class="kanban-item kt-padding-10 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-success mr-3">
+                                                <img height="35" width="35" [src]="item.img">
+                                            </div>
+                                            <div class="d-flex flex-column align-items-start">
+                                                <span class="text-dark-50 kt-font-sm">{{item.name}}</span>
+                                                <span class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill kt-font-sm">{{item.lable}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-container kanban-board">
+                    <header class="primary kanban-board-header text-light">
+                        <div class="kanban-title-board">{{'Deploy' | localize}}</div>
+                    </header>
+                    <div cdkDropList
+                         [cdkDropListData]="Earlymodern"
+                         class="example-list"
+                         (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of Earlymodern; let i = index;" cdkDrag style="position:relative;">
+                            <div [class]="item.color == '' ? 'card' : 'card kt-iconbox--animate1'" [style.background-color]="item.color" style="border:none">
+                                <!--<div class="container">
+                                    <img src="assets/images/logo/{{item.name}}-Logo.png" class="card-image" alt="Avatar">
+                                    <span class="card-name"><b>{{item.name}}</b></span>
+                                    <br />
+                                    <span class="card-add">{{item.add}}</span>
+                                </div>-->
+                                <div class="kanban-drag kt-padding-5">
+                                    <div class="kanban-item kt-padding-10 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-success mr-3">
+                                                <img height="35" width="35" [src]="item.img">
+                                            </div>
+                                            <div class="d-flex flex-column align-items-start">
+                                                <span class="text-dark-50 kt-font-sm">{{item.name}}</span>
+                                                <span class="kt-badge kt-badge--unified-dark kt-badge--inline kt-badge--pill kt-font-sm">{{item.lable}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example-container kanban-board">
+                    <header class="kanban-board-header bg-danger text-light">
+                        <div class="kanban-title-board">{{'New Board' | localize}}</div>
+                    </header>
+                    <div cdkDropList
+                         [cdkDropListData]="Longnineteenth"
+                         class="example-list"
+                         (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of Longnineteenth; let i = index;" cdkDrag style="position:relative;">
+                            <div [class]="item.color == '' ? 'card' : 'card kt-iconbox--animate1'" [style.background-color]="item.color" style="border:none">
+                                <!--<div class="container">
+                                    <img src="assets/images/logo/{{item.name}}-Logo.png" class="card-image" alt="Avatar">
+                                    <span class="card-name"><b>{{item.name}}</b></span>
+                                    <br />
+                                    <span class="card-add">{{item.add}}</span>
+                                </div>-->
+                                <div class="kanban-drag kt-padding-5 ">
+                                    <div class="kanban-item kt-padding-10 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-success mr-3">
+                                                <img height="35" width="35" [src]="item.img">
+                                            </div>
+                                            <div class="d-flex flex-column align-items-start">
+                                                <span class="text-dark-50 kt-font-sm">{{item.name}}</span>
+                                                <span class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill kt-font-sm">{{item.lable}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

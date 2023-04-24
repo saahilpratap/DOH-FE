@@ -1,0 +1,7 @@
+.border-radius {
+    border-top-right-radius: 0.5em !important;
+    border-top-left-radius: 0.5em !important;
+}
+.barChart {
+    width: 25px;
+}

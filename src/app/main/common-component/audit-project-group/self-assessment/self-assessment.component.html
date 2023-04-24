@@ -1,0 +1,38 @@
+<div class="kt-portlet shadow-none">
+  <div class="row mb-3">
+    <div class="offset-8 col-4">
+      <ng-select
+        [items]="externalAssessmentList"
+        [searchable]="false"
+        bindLabel="name"
+        bindValue="assessmentId"
+        placeholder="Select External Audit"
+        (change)="setAssessment(selectedInternalAssessmentId)"
+        [(ngModel)]="selectedInternalAssessmentId"
+        name="ExternalAudit"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <div class="row mb-3 div-read-only">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" *ngIf="assesmentDetailCount !=0 ">
+        <app-compliance-questionaire
+      *ngIf="selectedInternalAssessmentId!=0" [tabButton]="false"
+      [inputId]="selectedInternalAssessmentId"
+      (assementDetailReviewCount)="getReviewCount($event)"
+    ></app-compliance-questionaire>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 primeng-no-data text-center"
+    *ngIf="assesmentDetailCount === 0"
+  >
+    {{ l("NoData") }}
+  </div>
+  </div>
+  <!-- <div
+    class="kt-portlet__body kt-padding-0"
+    style="pointer-events: none; readonly: true;"
+
+  >
+
+  </div> -->
+</div>

@@ -1,0 +1,222 @@
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{ l("Exceptions") }}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{ l("ExceptionsHeaderInfo") }}
+                    </span>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                         <button *ngIf="isGranted('Pages.SystemSetUp.Exceptions.Export')" (click)="downloadPdf()" class="btn btn-outline-success"><i class="fa fa-file-excel"></i> {{l("ExportToPDF")}}</button> 
+                        <button *ngIf="isGranted('Pages.SystemSetUp.Exceptions.Create')"
+                                (click)="createException()"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            <i class="fa fa-plus"></i>
+                            {{ l("CreateNewException") }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{ l("Exceptions") }}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <!--<button type="button" class="btn btn-danger btn-sm kt-margin-r-20" (click)="deleteAllRecord()" *ngIf="allDelete">
+                            <i class="fas fa-trash-alt icon-font-size-1"></i>
+                            {{l('Delete All')}}
+                        </button>-->
+                        <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                            <div class="input-group">
+                                <input name="filterText" [(ngModel)]="filterText"
+                                       autoFocus
+                                       class="form-control m-input"
+                                       [placeholder]="
+                                                    l('SearchWithThreeDot')
+                                                "
+                                       type="text" />
+                                <span class="input-group-btn margin-left--5">
+                                    <button (click)="getExceptions()"
+                                            class="btn btn-primary"
+                                            type="submit">
+                                        <i class="flaticon-search-1"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <div class="row align-items-center">
+                        <!--<Primeng-Datatable-Start>-->
+                        <div class="primeng-datatable-container col-12"
+                             [busyIf]="primengTableHelper.isLoading">
+                            <div>
+                                <p-table #dataTable
+                                     (onLazyLoad)="getExceptions($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     frozenWidth="150px"
+                                     [resizableColumns]="primengTableHelper.resizableColumns"
+                                     [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                                <ng-template pTemplate="frozenheader">
+                                    <tr>
+                                        <th style="width: 30px !important">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <th style="width: 130px"
+                                            [hidden]="!isGrantedAny('Pages.SystemSetUp.Exceptions.Edit','Pages.SystemSetUp.Exceptions.Delete')">
+                                            {{ l("Actions") }}
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="frozenbody" let-rowData let-record>
+                                    <tr [pSelectableRow]="rowData">
+                                        <td style="width: 30px !important">
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>
+                                        <td style="width: 130px"
+                                            [hidden]="!isGrantedAny('Pages.SystemSetUp.Exceptions.Edit','Pages.SystemSetUp.Exceptions.Delete')">
+                                            <a *ngIf="permission.isGranted('Pages.SystemSetUp.Exceptions.View')" (click)="viewExceptionsModals.show(record.exception.id)">
+                                                <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                            </a>
+                                            <a class="kt-padding-l-20" *ngIf="permission.isGranted('Pages.SystemSetUp.Exceptions.Edit')"
+                                               (click)="editException(record.exception.id)">
+                                                <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                            </a>
+                                            <a class="kt-padding-l-20" *ngIf="permission.isGranted('Pages.SystemSetUp.Exceptions.Delete')"
+                                               (click)="deleteException(record.exception)">
+                                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                            </a>
+
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 150px"
+                                            pSortableColumn="title">
+                                            {{ l("Exception ID") }}
+                                            <p-sortIcon field="exception.title"></p-sortIcon>
+                                        </th>
+                                        <th style="width: 200px">
+                                            {{ l("Health Care Entity") }}
+                                        </th>
+                                        <th style="width: 200px"
+                                            pSortableColumn="requestor">
+                                            {{ l("Title") }}
+                                            <p-sortIcon field="exception.requestor"></p-sortIcon>
+                                        </th>
+                                        <th style="width: 150px">
+                                            {{ l("Type") }}
+                                        </th>
+                                        <th style="width: 150px"
+                                            pSortableColumn="requestDate">
+                                            {{ l("RequestDate") }}
+                                            <p-sortIcon field="exception.requestDate"></p-sortIcon>
+                                        </th>
+                                        <th style="width: 150px"
+                                            pSortableColumn="reviewStatus">
+                                            {{ l("Status") }}
+                                            <p-sortIcon field="exception.reviewStatus"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                    <tr>
+                                        <td style="width:150px">
+                                            {{ record.exception.code }}
+                                        </td>
+                                        <td style="width:200px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.exception.businessEntityName" tooltipPosition="bottom">
+                                                {{record.exception.businessEntityName}}
+                                            </div>
+                                        </td>
+                                        <td style="width:200px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.exception.title" tooltipPosition="bottom">
+                                                {{ record.exception.title }}
+                                            </div>
+                                        </td>
+                                        <td style="width:150px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.exception.typeName" tooltipPosition="bottom">
+                                                {{ record.exception.typeName }}
+                                            </div>
+                                        </td>
+                                        <td style="width:150px">
+                                            {{ record.exception.requestDate | momentFormat:'L'}}
+                                        </td>
+                                        <td style="width:150px">                                          
+                                            <span class="kt-badge kt-badge--unified-info kt-badge--inline kt-badge--pill w-100"
+                                                  *ngIf="reviewStatus[record.exception.reviewStatus] == 'NoStatus'">No Status</span>
+                                            <span class="kt-badge kt-badge--unified-dark kt-badge--inline kt-badge--pill w-100"
+                                                  *ngIf="reviewStatus[record.exception.reviewStatus] == 'Requested'">Requested</span>
+                                            <span class="kt-badge kt-badge--unified-brand kt-badge--inline kt-badge--pill w-100"
+                                                  *ngIf="reviewStatus[record.exception.reviewStatus] == 'Review'">Review</span>
+                                            <span class="kt-badge kt-badge--unified-primary kt-badge--inline kt-badge--pill w-100"
+                                                  *ngIf="reviewStatus[record.exception.reviewStatus] == 'Extension'">Extension</span>
+                                            <span class="kt-badge kt-badge--unified-warning kt-badge--inline kt-badge--pill w-100"
+                                                  *ngIf="reviewStatus[record.exception.reviewStatus] == 'Approved'">Approved</span>
+                                            <span class="kt-badge kt-badge--unified-success kt-badge--inline kt-badge--pill w-100"
+                                                  *ngIf="reviewStatus[record.exception.reviewStatus] == 'Closed'">Closed</span>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            </div>
+                            <div class="primeng-no-data"
+                                 *ngIf="
+                                    primengTableHelper.totalRecordsCount == 0
+                                ">
+                                {{ l("NoData") }}
+                            </div>
+                            <div class="primeng-paging-container mt-2">
+                                <p-paginator [rows]="
+                                        primengTableHelper.defaultRecordsCountPerPage
+                                    "
+                                             #paginator
+                                             (onPageChange)="getExceptions($event)"
+                                             [totalRecords]="
+                                        primengTableHelper.totalRecordsCount
+                                    "
+                                             [rowsPerPageOptions]="
+                                        primengTableHelper.predefinedRecordsCountPerPage
+                                    ">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{
+                                        l(
+                                            "TotalRecordsCount",
+                                            primengTableHelper.totalRecordsCount
+                                        )
+                                    }}
+                                </span>
+                            </div>
+                        </div>
+                        <!--<Primeng-Datatable-End>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<viewExceptionsModals #viewExceptionsModals></viewExceptionsModals>

@@ -1,0 +1,39 @@
+<div class="kt-portlet kt-portlet--height-fluid ">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+                {{"Compliance Score Summary" | localize}} 
+            </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar w-50">
+            <ng-select [items]="entityList" bindLabel="name"
+                       bindValue="id" placeholder="Select HealthCare Entity " (change)="onEntityChange(entityId)"
+                       [(ngModel)]="entityId" class="kt-align-left"
+                       name="BusinessEntityIds">
+            </ng-select>
+            <!--<select class="form-control" [(ngModel)]="entityId" (change)="onEntityChange(entityId)">
+                <option *ngFor="let item of entityList" [ngValue]="item.id">
+                    {{item.name}}
+                </option>
+            </select>-->
+        </div>
+    </div>
+    <div class="kt-portlet__body" [perfectScrollbar]>
+        <div class="form-group kt-margin-b-5" *ngFor="let item of domainList; let i = index">
+            <label class="kt-margin-b-0 kt-font-sm">
+                <span class="kt-font-bolder kt-padding-r-10">{{item.domainName}}</span>
+            </label>
+            <div class="row">
+                <div class="col-11">
+                    <div class="progress kt-progress--sm" style="height: 8px;">
+                        <div class="progress-bar kt-bg-danger" role="progressbar"
+                             [ngStyle]="{width: item.percentage + '%'}"></div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <span class="kt-font-sm kt-font-bolder">{{item.percentage >= 100 ? 100 : item.percentage }}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

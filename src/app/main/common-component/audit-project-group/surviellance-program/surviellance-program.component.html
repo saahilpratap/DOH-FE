@@ -1,0 +1,144 @@
+<div class="kt-portlet shadow-none div-read-only">
+    <div class="kt-portlet__body kt-padding-0" >
+        <div class="border-bottom">
+            {{l('Surviellance Audit')}}
+        </div>
+        <div class="kt-padding-t-10">
+            <div class="row">
+                <div class="col-1">
+                    <label class="kt-font-md">{{l('Surviellance Audit ID')}}</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" disabled class="form-control" name="code" [(ngModel)]="auditSurviellanceProject.code" placeholder="System Generated">
+                </div>
+                <div class="col-1">
+                    <label class="kt-font-md">{{l('Group Name')}}</label>
+                </div>
+                <div class="col-3">
+                    <ng-select [items]="entityGroup" [searchable]="true" bindLabel="name" [disabled]="entityGroupId > 0"
+                               bindValue="id" placeholder="Group Name"
+                               [(ngModel)]="entityGroupId"
+                               name="Group Name">
+                    </ng-select>
+                </div>
+                <div class="col-1">
+                    <label class="kt-font-md">{{l('Facilities')}}</label>
+                </div>
+                <div class="col-3"  readonly="readonly">
+                    <p-multiSelect name="belookup" [options]="businessentity" placeholder="Select Business Entities" optionLabel="companyName" [(ngModel)]="selectedBusinessEntity"  [style]="{'width': '100%'}"></p-multiSelect>
+
+                </div>
+            </div>
+            <div class="row kt-padding-t-10">
+                <div class="col-1">
+                    <label class="kt-font-md">{{l('Date')}}</label>
+                </div>
+                <div class="col-3">
+                    <div id="incident_closeDatetime" class="kt-input-icon">
+                        <input id="incident_closeDatetime" readonly 
+                               type="datetime"
+                               #incident_closeDatetime
+                               name="closeDate"
+                               class="form-control input-group date"
+                               bsDatepicker
+                               datePickerMomentModifier
+                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                               [(date)]="auditSurviellanceProject.date"
+                               autocomplete="off" />
+                        <span class="position-absolute"
+                              style="top: 25%; right: 20px; font-size: 18px;">
+                            <span><i class="flaticon-calendar-1"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <label class="kt-font-md">{{l('Planned By')}}</label>
+                </div>
+                <div class="col-3">
+                    <ng-select [items]="auditAgencyAdmins" [searchable]="true" bindLabel="name"  readonly="readonly"
+                               bindValue="id" placeholder="Select"
+                               [(ngModel)]="auditSurviellanceProject.plannedById"
+                               name="Planned">
+                    </ng-select>
+                </div>
+                
+            </div>
+        </div>
+        <div>
+            <table class="table kt-margin-t-10 table-bordered"  readonly="readonly" >
+                <thead>
+                    <tr class="tr-bg-color">
+                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-md">{{l('Audit Type')}}</th>
+                        <th class="kt-font-bold kt-align-center width-12 kt-font-light kt-font-md">{{l('Facility Name')}}</th>
+                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-md">{{l('Start Date')}}</th>
+                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-md">{{l('End Date')}}</th>
+                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-md">{{l('Man Day(s)')}}</th>
+                        <th class="kt-font-bold kt-align-center width-12 kt-font-light kt-font-md">{{l('N° Sampling site')}}</th>
+                        <th class="kt-font-bold kt-align-center width-25 kt-font-light kt-font-md">{{l('Processes/Aspects')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of auditSurviellanceProject.auditSurviellanceEntities;let i=index">
+                        <td>
+                            <ng-select [items]="auditType" [searchable]="true" bindLabel="name"
+                                       bindValue="id" placeholder="select"
+                                       [(ngModel)]="item.auditTypeId"
+                                       name="auditType{{i}}">
+                            </ng-select>
+                        </td>
+                        <td>
+                            <ng-select [items]="businessentity" [searchable]="true" bindLabel="companyName" disabled
+                                       bindValue="id" placeholder="select"
+                                       [(ngModel)]="item.businessEntityId"
+                                       name="businessEntity{{i}}">
+                            </ng-select>
+
+                        </td>
+                        <td>
+                            <div id="incident_closeDatetime" class="kt-input-icon">
+                                <input id="startDate" readonly
+                                       type="datetime"
+                                       #startDate
+                                       name="startdate{{i}}"
+                                       class="form-control input-group date"
+                                       bsDatepicker
+                                       datePickerMomentModifier
+                                       [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                       [(date)]="item.startDate"
+                                       autocomplete="off" />
+                                <span class="position-absolute"
+                                      style="top: 25%; right: 20px; font-size: 18px;">
+                                    <span><i class="flaticon-calendar-1"></i></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div id="incident_closeDatetime" class="kt-input-icon">
+                                <input id="incident_closeDatetime" readonly
+                                       type="datetime"
+                                       #incident_closeDatetime
+                                       name="endDate{{i}}"
+                                       class="form-control input-group date"
+                                       bsDatepicker
+                                       datePickerMomentModifier
+                                       [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                       [(date)]="item.endDate"
+                                       autocomplete="off"/>
+                                <span class="position-absolute"
+                                      style="top: 25%; right: 20px; font-size: 18px;">
+                                    <span><i class="flaticon-calendar-1"></i></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" name="manDays{{i}}" [(ngModel)]="item.manDays">
+                        </td>
+                        <td> <input type="text" class="form-control" name="samplingSite{{i}}" [(ngModel)]="item.samplingSite"></td>
+                        <td> <input type="text" class="form-control" name="process{{i}}" [(ngModel)]="item.process"></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+<div [@routerTransition] class="w-100">
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor w-100">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{"Dashboard" | localize}}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{"DashboardHeaderInfo" | localize}}
+                    </span>
+                    <div class="kt-pagination kt-pagination--brand d-none">
+                        <ul class="kt-pagination__links">
+                            <li class="kt-pagination__link--next">
+                                <a href="#"><i class="fa fa-angle-left kt-font-brand"></i></a>
+                            </li>
+                            <li class="kt-pagination__link--prev">
+                                <a href="#"><i class="fa fa-angle-right kt-font-brand"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="kt-subheader__toolbar">
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid kt-padding-t-0'">
+            <div class="kt-portlet kt-portlet--height-fluid">
+                <div class="kt-portlet__head1">
+                    <div>
+                        <ul id="tab-nav"
+                            class="w-100 nav nav-tabs nav-tabs-line nav-tabs-line-info nav-tabs-line-2x nav-tabs-line-left pl-3 pt-3"
+                            role="tablist">
+                            <li class="nav-item" [ngClass]="{ 'selectedTab': 1 == selectedItem }"
+                                (click)="selectTab(1)" *ngIf="'Pages.Tenant.Dashboard.Dashboard' | permission">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                    {{'Home' | localize}}
+                                </a>
+                            </li>
+                            <li class="nav-item" (click)="selectTab(2)"
+                                [ngClass]="{ 'selectedTab': 2 == selectedItem }" *ngIf="'Pages.Tenant.Dashboard.Assessment' | permission">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                    {{'Assessment' | localize}}
+                                </a>
+                            </li>
+                            <li class="nav-item" (click)="selectTab(3)"
+                                [ngClass]="{ 'selectedTab': 3 == selectedItem }" *ngIf="'Pages.Tenant.Dashboard.AuditProject' | permission">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                    {{'Audit Program' | localize}}
+                                </a>
+                            </li>
+                            <li class="nav-item" (click)="selectTab(4)"
+                                [ngClass]="{ 'selectedTab': 4 == selectedItem }" *ngIf="'Pages.Tenant.Dashboard.Assessment' | permission">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                    {{'Assessment Charts' | localize}}
+                                </a>
+                            </li>
+                            <li class="nav-item" (click)="selectTab(5)"
+                                [ngClass]="{ 'selectedTab': 5 == selectedItem }" *ngIf="'Pages.Tenant.Dashboard.Feedback1' | permission">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                    {{'Feedback' | localize}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-0 kt-padding-0" *ngIf="selectedItem == 1">
+                    <div class="w-100">
+                        <customizable-dashboard class="w-100" [dashboardName]="dashboardName"></customizable-dashboard>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-0 kt-padding-0" *ngIf="selectedItem == 2">
+                    <div class="kt-padding-25">
+                        <pivot-grid [data]="data"></pivot-grid>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-0 kt-padding-0" *ngIf="selectedItem == 3">
+                    <div class="kt-padding-25">
+                        <pivot-grid [data]="auditdata"></pivot-grid>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-0 kt-padding-0" *ngIf="selectedItem == 4">
+                    <div>
+                        <primeng-chart></primeng-chart>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-0 kt-padding-0" *ngIf="selectedItem == 5">
+                    <div>                     
+                      <feedback-dashboard></feedback-dashboard>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

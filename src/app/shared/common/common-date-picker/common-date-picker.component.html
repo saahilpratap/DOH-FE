@@ -1,0 +1,58 @@
+<h1>Hello</h1>
+<!--<div class="form-group">
+    <label class="">{{ l("Start Date") }} </label>
+    <input required
+           class="form-control m-input"
+           type="datetime"
+           bsDatepicker
+           [(ngModel)]="startDate"
+           id="start_Date"
+           name="startDate"
+           [bsConfig]="{ minDate: startDate }"/>
+</div>
+
+<div class="form-group">
+    <label class="">{{ l("End Date") }} </label>
+    <input required
+           class="form-control m-input"
+           type="datetime"
+           bsDatepicker
+           [(ngModel)]="endDate"
+           id="end_Date"
+           name="endDate"
+           [bsConfig]="{ minDate: startDate }"/>
+</div>
+
+
+<div>Start Date : {{startDate}}</div>
+<div>End Date : {{endDate}}</div>-->
+
+<h1>Hello</h1>
+<div class="form-group">
+    <label class="">{{ l("Start Date") }} </label>
+    <input required
+           class="form-control m-input"
+           type="datetime"
+           bsDatepicker
+           [(ngModel)]="startDate"
+           id="start_Date"
+           name="startDate"
+           [bsConfig]="{ minDate: startDate, dateInputFormat: 'DD-MMM-YYYY' }" />
+</div>
+
+<div class="form-group">
+    <label class="">{{ l("End Date") }} </label>
+    <input required
+           class="form-control m-input"
+           type="datetime"
+           bsDatepicker
+           [(ngModel)]="endDate"
+           id="end_Date"
+           name="endDate"
+           [bsConfig]="{ minDate: startDate, dateInputFormat: 'DD-MMM-YYYY' }" />
+</div>
+
+
+<div>Start Date : {{startDate }}</div>
+<div>End Date : {{endDate}}</div>
+

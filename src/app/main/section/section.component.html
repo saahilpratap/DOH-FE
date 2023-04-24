@@ -1,0 +1,119 @@
+<div id="form_business_management" class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Section" | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Section" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+                    <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="sectionModal.show()">
+                        <i class="fa fa-plus"></i> {{"Create Section" | localize}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{"Section" | localize}}
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">
+                    <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                        <div class="input-group">
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-padding-t-10">
+                <div class="row align-items-center">
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <div>
+                            <p-table #dataTable
+                                     (onLazyLoad)="getData($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     frozenWidth="150px"
+                                     [resizableColumns]="primengTableHelper.resizableColumns" >
+                                <ng-template pTemplate="frozenheader">
+                                    <tr>                                       
+                                        <th style="width: 130px"
+                                            [hidden]="!isGrantedAny('Pages.SystemSetUp.Exceptions.Edit','Pages.SystemSetUp.Exceptions.Delete')">
+                                            {{ l("Actions") }}
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="frozenbody" let-rowData let-record>
+                                    <tr [pSelectableRow]="rowData">                                      
+                                        <td class="kt-align-center" style="width: 80px" [hidden]="!isGrantedAny(
+                                                    'Pages.ComplianceManagement.ExternalAssessmentQuestions.Edit',
+                                                    'Pages.ComplianceManagement.ExternalAssessmentQuestions.Delete',
+                                                    'Pages.ComplianceManagement.ExternalAssessmentQuestions.View'
+                                                )">                                           
+                                            <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.ComplianceManagement.ExternalAssessmentQuestions.Edit')"
+                                               (click)="sectionModal.show(record.id)">
+                                                <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                            </a>
+                                            <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.ComplianceManagement.ExternalAssessmentQuestions.Delete')"
+                                               >
+                                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 150px"
+                                            pSortableColumn="title">
+                                            {{ l("Name") }}
+                                            <p-sortIcon field="record.name"></p-sortIcon>
+                                        </th>                                       
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                    <tr>
+                                        <td style="width:150px">
+                                            {{ record.name }}
+                                        </td>                                       
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                        <div class="primeng-no-data"
+                             *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{ l("NoData") }}
+                        </div>
+                        <div class="primeng-paging-container mt-2">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getData($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                            </p-paginator>
+                            <span class="total-records-count">
+                                {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount)}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<SectionModals #sectionModal (modalSave)="getData()"></SectionModals>

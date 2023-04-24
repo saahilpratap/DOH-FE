@@ -1,0 +1,58 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Compliance Status - Hospitals/Groups" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <ng-select [items]="dataGroup" [searchable]="true" bindLabel="name"
+                       bindValue="id" placeholder="Select" name="name" [(ngModel)]="selectedValue" (change)="getData()">
+            </ng-select>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="kt-align-center kt-pb-25">
+                    <span class="border-0 btn-primary h1 shadow btn font-weight-bold" style="width:200px">{{"Top" | localize}}</span>
+                </div>
+                <div class="form-group kt-margin-b-5" *ngFor="let item of topStatus; let i = index" style="padding-left: 10%; padding-right:10%">
+                    <label class="kt-margin-b-0 kt-font-sm">
+                        <span class="kt-font-bolder kt-padding-r-10">{{item.name}}</span>
+                    </label>
+                    <div class="row" >
+                        <div class="col-11 pt-2">
+                            <div class="progress kt-progress--sm " style="height: 8px; ">
+                                <div class="progress-bar" role="progressbar" style="background-color:#4fa6b0"
+                                     [ngStyle]="{width: item.value + '%'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span class="kt-font-bolder" style="color: #4fa6b0">{{item.value >= 100 ? 100 : item.value }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="kt-align-center kt-pb-25">
+                    <span class="bg-danger text-light border-0 h1 shadow btn font-weight-bold" style="width:200px">{{"Bottom" | localize}}</span>
+                </div>
+                <div class="form-group kt-margin-b-5" *ngFor="let item of bottomStatus; let i = index" style="padding-left: 10%; padding-right:10%">
+                    <label class="kt-margin-b-0 kt-font-sm">
+                        <span class="kt-font-bolder kt-padding-r-10">{{item.name}}</span>
+                    </label>
+                    <div class="row">
+                        <div class="col-11 pt-2">
+                            <div class="progress kt-progress--sm " style="height: 8px; ">
+                                <div class="progress-bar kt-bg-danger" role="progressbar" 
+                                     [ngStyle]="{width: item.value + '%'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span class="kt-font-bolder text-danger">{{item.value >= 100 ? 100 : item.value }}%</span>
+                        </div>
+                    </div>
+                </div>               
+            </div>
+        </div>    
+    </div>
+</div>

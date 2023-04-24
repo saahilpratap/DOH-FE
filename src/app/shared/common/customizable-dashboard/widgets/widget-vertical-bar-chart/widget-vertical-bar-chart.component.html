@@ -1,0 +1,39 @@
+<div class="kt-portlet kt-portlet--height-fluid recent-tenants">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+                Entity Assesment
+                <small>
+
+                    Implementation by control category
+                </small>
+            </h3>
+        </div>
+    </div>
+    <div class="kt-portlet__body"  [perfectScrollbar]>
+        <div class="kt-widget14">
+            <div class="row kt-widget14__content">
+                <div class="col-lg-7 col-md-7 col-sm-12">
+                    <ngx-charts-bar-vertical
+                    [view]="view"
+                    [scheme]="colorScheme"
+                    [results]="result"
+                    [gradient]="false"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="showLegend"
+                    [legendPosition]="legendPosition"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel"
+                    [barPadding]="120"
+                    [yScaleMax]="120.00"
+                    (select)="onSelect($event)">
+                  </ngx-charts-bar-vertical>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

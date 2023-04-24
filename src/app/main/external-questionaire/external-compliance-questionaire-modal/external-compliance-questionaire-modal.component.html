@@ -1,0 +1,46 @@
+<div appBsModal #externalComplianceQuestionaireModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="externalComplianceQuestionaireModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #complianceQuestionaireForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-body1">
+                    <div class=" shadow-none" *ngFor="let item of assessmentDetails.reviews;let i = index">
+                        <div class="kt-portlet__body">
+                            <div class="kt-section kt-section--first">
+                                <div class="kt-section__body">
+                                    <div class="kt-portlet kt-portlet--mobile shadow-none">
+                                        <div class="kt-portlet__head">
+                                            <div class="kt-portlet__head-label">
+                                                <h3 class="kt-portlet__head-title">
+                                                    {{item.controlRequirementDomainName}}
+                                                </h3>
+                                            </div>
+                                            <div class="kt-portlet__head-toolbar">                                                                                          
+                                                <button type="button" class="close kt-padding-l-10" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="kt-portlet__body kt-padding-t-5">
+                                            <div class="row" *ngFor="let q of item.reviewQuestions;let i = index">
+                                                <div class="col-lg-10 col-md-10 col-sm-10">
+                                                    <div class="form-group">
+                                                        <label><strong>{{i + 1}}. {{q.questionName}} ?</strong> </label>
+                                                        <label style="color:#000; font-size:11px" class="form-control-file kt-padding-l-15">{{q.questionDescription}}</label>                                                      
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-2">
+                                                    <button class="kt-align-right btn btn-sm btn-danger" (click)="close()">{{"No" | localize}}</button>
+                                                    <button class="kt-align-right btn btn-sm btn-success" (click)="close()">{{"Yes" | localize}}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+            </form>
+        </div>
+    </div>
+</div>

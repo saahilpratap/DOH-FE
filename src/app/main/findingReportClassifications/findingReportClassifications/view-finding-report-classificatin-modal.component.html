@@ -1,0 +1,54 @@
+<div bsModal #viewFindingReportClassificatinModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewFindingReportClassificatinModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">      
+            <div class="modal-body">
+                <div class="border kt-padding-20" style="min-height:350px">
+                    <div class="row">
+                        <div class="col-8">
+                            <span class="kt-font-lg kt-font-bolder">{{"Finding" | localize}}</span>
+                        </div>
+                        <div class="col-4 kt-align-center">
+                            <div class="form-group">
+                                <label>{{"Classification" | localize}}</label>
+                                <div class="btn btn-label-success btn-sm form-control kt-font-boldest kt-font-md">{{'Control Faliure' |localize}}</div>
+                            </div>
+                        </div>              
+                    </div>                   
+                    <div class="kt-padding-t-20">
+                        <div class="form-group">
+                            <p>CRM Application has an authentication weakness when a user closes the window without logging out. The next user logs in with previous user id without any credentials  </p>
+                        </div>
+                    </div>                    
+                    <div class="row kt-padding-t-20 kt-padding-b-50">
+                        <div class="col-12 kt-align-left">
+                            <div class="form-group">
+                                <label class="kt-font-bold">{{l("Control Requirement")}}</label><br />
+                                <span class="text-success">{{l("ADHICS - CM 2.7")}}</span>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div class="col-4 kt-align-center">
+                            <div class="form-group kt-margin-b-0">
+                                <label>{{"Action" | localize}}</label>
+                                <div class="btn btn-label-warning btn-sm form-control kt-font-bold kt-font-sm">Mitigate Loss</div>
+                            </div>
+                        </div>
+                        <div class="col-4"></div>
+                        <div class="col-4 kt-align-center">
+                            <div class="form-group kt-margin-b-0">
+                                <label>{{l("Owner")}}</label>
+                                <div class="btn btn-label-danger btn-sm form-control kt-font-bold kt-font-sm">
+                                    {{l("John Wayne")}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-sm btn btn-outline-danger" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+</div>

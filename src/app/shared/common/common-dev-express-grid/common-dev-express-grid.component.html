@@ -1,0 +1,71 @@
+<div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Title" | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Sub Title" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Page Title
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <button type="button" class="btn btn-primary" (click)="buttonClick.emit($event)">Crete New</button>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <dx-data-grid id="gridContainer"
+                                  [dataSource]="dataSource"
+                                  [columns]="columHeader"
+                                  [showBorders]="true"
+                                  [wordWrapEnabled]="false"
+                                  [showColumnLines]="true"
+                                  [showRowLines]="true"
+                                  [rowAlternationEnabled]="false"
+                                  [allowColumnReordering]="false">
+                        <dxo-paging [pageSize]="10" [pageIndex]="0"></dxo-paging>
+                        <dxo-pager [showPageSizeSelector]="true"
+                                   [allowedPageSizes]="[5, 10, 20, 50, 100, 250, 500]"
+                                   [showInfo]="true"
+                                   [showNavigationButtons]="true">
+                        </dxo-pager>
+                        <dxo-search-panel [visible]="searchBox"
+                                          [width]="240"
+                                          placeholder="Search...">
+                        </dxo-search-panel>
+                        <dxi-column dataField="ID" [fixed]="true" [width]="100" caption="Actions" alignment="left" cellTemplate="action">
+    </dxi-column>
+                        <div *dxTemplate="let a of 'action'">
+                            <a class="kt-padding-l-20" (click)="buttonClick.emit(a.value)">
+                                <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                            </a>
+                            <a class="kt-padding-l-20" (click)="buttonClick.emit(a.value)">
+                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                            </a>
+                        </div>
+                    </dx-data-grid>
+
+
+                  
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

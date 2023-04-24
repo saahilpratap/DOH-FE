@@ -1,0 +1,87 @@
+<div class="kt-portlet shadow-none kt-portlet shadow-none">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+                {{'Audit Project Workflow' | localize}}
+            </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <button type="button" class="btn btn-primary" (click)="auditProjectWorkFlow.show()">
+                {{'Create New' | localize}}
+            </button>
+        </div>
+    </div>
+    <div class="kt-portlet__body kt-padding-0">
+        <div class="row align-items-center no-margin">
+            <div class="primeng-datatable-container"
+                 [busyIf]="primengTableHelper.isLoading">
+                <p-table #dataTable
+                         (onLazyLoad)="getAuditProjectWorkFlow($event)"
+                         [value]="primengTableHelper.records"
+                         [lazy]="true"
+                         [scrollable]="true"
+                         [selection]="selectedRowData"
+                         ScrollWidth="100%">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 20px" *ngIf="!showPopupBtn">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th style="width: 150px">
+                                {{'Audit Projet ID' |localize}}                              
+                            </th>
+                            <th style="width: 200px">
+                                {{'Audit Projet By' |localize}}
+                            </th>
+                            <th style="width: 150px">
+                                {{'Audit Projet Title' |localize}}
+                            </th>
+                            <th style="width: 150px">
+                                {{'Audit Projet Type' |localize}}
+                            </th>
+                            <th style="width: 100px" class="kt-align-center">
+                                {{'Action' |localize}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                        <tr [pSelectableRow]="rowData">
+                            <td style="width: 20px" *ngIf="!showPopupBtn">
+                                <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                            </td>
+                            <td style="width: 150px">
+                                {{record.id}}
+                            </td>
+                            <td style="width: 200px">
+                                {{record.name}}
+                            </td>
+                            <td style="width: 150px">
+                                {{record.owner}}
+                            </td>
+                            <td style="width: 150px">
+                                {{record.comName}}
+                            </td>
+                            <td style="width: 100px" class="kt-align-center">
+                                <i *ngIf="!showPopupBtn" class="fas fa-pencil-alt kt-padding-5 mouse-hover kt-font-info" (click)="addEditPage()"></i>
+                                <i *ngIf="showPopupBtn" class="fas fa-pencil-alt kt-padding-5 mouse-hover kt-font-info" (click)="reviewsModals.show()"></i>
+                                <i class="far fa-trash-alt kt-padding-5 mouse-hover kt-font-google"></i>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div class="primeng-paging-container">
+                    <p-paginator [rows]="10" #paginator
+                                 [totalRecords]="10"
+                                 [rowsPerPageOptions]="[5,10,20,50]">
+
+                    </p-paginator>
+                    <span class="total-records-count">
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<auditProjectWorkFlowModals #auditProjectWorkFlow></auditProjectWorkFlowModals>

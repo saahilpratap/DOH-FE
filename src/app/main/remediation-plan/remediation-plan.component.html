@@ -1,0 +1,142 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Remediation Plan" | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"All Remediation Plans" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+                    <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="createRemediationPlan()"
+                             *ngIf="('Pages.HealthCareEntities.RemediationPlan.Create' | permission)">
+                        <i class="fa fa-plus"></i> {{"Create New Remediation Plan" | localize}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{"Remediation Plan" | localize}}
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-padding-t-10">
+                <div class="row align-items-center no-margin">
+                    <div class="primeng-datatable-container"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable
+                                 (onLazyLoad)="remediationPlans($event)"
+                                 [value]="primengTableHelper.records"
+                                 rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                 [paginator]="false" [lazy]="true" [scrollable]="true" ScrollWidth="100%"
+                                 [responsive]="primengTableHelper.isResponsive"
+                                 [resizableColumns]="primengTableHelper.resizableColumns"
+                                 frozenWidth="150px">
+                            <ng-template pTemplate="frozenheader">
+                                <tr>
+                                    <th style="width: 150px" class="kt-align-center">
+                                        {{'Action' |localize}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="frozenbody" let-record>
+                                <tr>
+                                    <td style="width: 100px">
+                                        <a class="kt-padding-r-20"  *ngIf="('Pages.HealthCareEntities.RemediationPlan.View' | permission)"
+                                           (click)="editremedition(record.id,1)">
+                                            <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                        </a>
+                                        <a class="kt-padding-r-20"  *ngIf="('Pages.HealthCareEntities.RemediationPlan.Edit' | permission)"
+                                           (click)="editremedition(record.id)">
+                                            <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                        </a>
+                                        <a class="kt-padding-r-20"  *ngIf="('Pages.HealthCareEntities.RemediationPlan.Delete' | permission)"
+                                           (click)="removeremediation(record.id)">
+                                            <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="header" let-rowData let-record="$implicit">
+                                <tr [pSelectableRow]="rowData">
+                                    <th style="width: 100px">
+                                        {{'RP ID' |localize}}
+                                    </th>
+                                    <th style="width: 200px">
+                                        {{'Title' |localize}}
+                                        
+                                    </th>
+                                    <th style="width: 200px">
+                                        {{'HealthCare Entity' |localize}}
+                                      
+                                    </th>
+                                    <th style="width: 200px">
+                                        {{'Expected Completed Date' |localize}}
+                                      
+                                    </th>
+                                    <th style="width: 300px">
+                                        {{'Remediation Plan Details' |localize}}
+                                       
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                <tr [pSelectableRow]="rowData">
+                                    <td style="width: 100px">
+                                        {{record.code}}
+                                    </td>
+                                    <td style="width: 200px">
+                                        <div class="table-text-wrap"  [pTooltip]="record.title"
+                                            tooltipPosition="bottom">
+                                            {{record.title}}
+                                        </div>
+                                    </td>
+                                    <td style="width: 200px">
+                                        <div class="table-text-wrap"  [pTooltip]="record.businessEntity.companyName"
+                                            tooltipPosition="bottom">
+                                            <span *ngIf="record.businessEntity"> {{record.businessEntity.companyName}}</span>
+                                        </div>
+                                    </td>
+                                    <td style="width: 200px">
+                                        {{record.endDate | momentFormat:'L' }}
+                                    </td>
+                                    <td style="width: 300px">
+                                        <div class="table-text-wrap"  [pTooltip]="record.remediationPlanDetail"
+                                            tooltipPosition="bottom">
+                                            {{record.remediationPlanDetail}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                            <div class="primeng-paging-container">
+                                <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                             #paginator
+                                             (onPageChange)="remediationPlans($event)"
+                                             [totalRecords]="primengTableHelper.totalRecordsCount"
+                                             [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                                </span>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,40 @@
+<div appBsModal #createEntitySignatureModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createEntitySignatureModal"
+     aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #entitySignatureForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Approver Signature
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    
+                        <div class="row align-items-center kt-padding-t-10" *ngFor="let item of iRMUserSignature;let i = index">
+                            <div class="col-6">
+                                <span class="kt-padding-r-10">{{'Name' | localize}}</span>
+                                <span class="kt-padding-l-10">{{item.name}}</span>
+                            </div>
+                            <div class="col-6">
+                                <common-signature-pad [signatureShow]="false" [imgUrl]="item.signature"></common-signature-pad>
+                                <div class="border">
+                                    <!--<img [src]="_sanitizer.bypassSecurityTrustUrl(item.signature)" height="100" style="width:100%" />-->
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

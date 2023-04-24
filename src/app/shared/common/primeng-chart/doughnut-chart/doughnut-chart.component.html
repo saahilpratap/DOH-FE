@@ -1,0 +1,76 @@
+<div class="kt-portlet" [busyIf]="primengTableHelper.isLoading">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Monitoring Status (Last Three Quaters)" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <ng-select [items]="dataGroup" [searchable]="true" bindLabel="name"
+                       bindValue="id" placeholder="Select" name="name" [(ngModel)]="selectedValue" (change)="getData()">
+            </ng-select>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        <div>
+            <div style="height:350px; padding-top: 0em;" class="position-absolute">
+                <div class="c-border-right" style="height:25%" *ngFor="let item of xData; let i = index">
+                    <span class="font-weight-bolder">{{item.name}}%</span>
+                </div>
+            </div>
+            <div class="pl-2 pb-1" style="margin-left:2em">
+                <div id="pChart" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-width': '99%', 'position': 'relative'}" class="">
+                    <div  style="height:370px; padding-top: 0em;" [ngStyle]="{ width: widthDynamic + 'em'}">
+                        <div *ngFor="let item of data; let i = index" style="height: 100%; width: 15em; float: left; margin-right: 5px;">
+                            <div class="bg-light-info absolute" style="height: 95%; width: 3em; float: left; margin-right: 4px;">
+                                <div [ngStyle]="{height: 100 - item.q1Value + '% '}"></div>
+                                <div class="bar-q1 " [ngStyle]="{height: item.q1Value + '% '}"
+                                     [pTooltip]="'Q1' + - +  item.q1Value + '%'" tooltipPosition="top"></div>
+                                <span class="text-vertical text-light kt-padding-5">Q1 - {{item.q1Year}}</span>
+                            </div>
+                            <div class="bg-light-info absolute border-bottom1" style="height: 95%; width: 3em; float: left; margin-right: 4px;">
+                                <div [ngStyle]="{height: 100 - item.q2Value + '% '}"></div>
+                                <div class="bar-q2 " [ngStyle]="{height: item.q2Value + '% '}"
+                                     [pTooltip]="'Q2' + - +  item.q2Value + '%'" tooltipPosition="top"></div>
+                                <span class="text-vertical text-light kt-padding-5">Q2 - {{item.q2Year}}</span>
+                            </div>
+                            <div class="bg-light-info absolute border-bottom1" style="height: 95%; width: 3em; float: left; margin-right: 4px;">
+                                <div [ngStyle]="{height: 100 - item.q3Value + '% '}"></div>
+                                <div class="bar-q3 " [ngStyle]="{height: item.q3Value + '% '}"
+                                     [pTooltip]="'Q3' + - +  item.q3Value + '%'" tooltipPosition="top"></div>
+                                <span class="text-vertical text-light kt-padding-5">Q3 - {{item.q3Year}}</span>
+                            </div>
+                            <div class="bg-light-info absolute border-bottom1" style="height: 95%; width: 3em; float: left; margin-right: 4px;">
+                                <div [ngStyle]="{height: 100 - item.q4Value + '% '}"></div>
+                                <div class="bar-q4 " [ngStyle]="{height: item.q4Value + '% '}" style="background-color:#A3C3D9"
+                                     [pTooltip]="'Q4' + - +  item.q4Value + '%'" tooltipPosition="top"></div>
+                                <span class="text-vertical text-light kt-padding-5">Q4 - {{item.q4Year}}</span>
+                            </div>
+                            <div class="kt-align-center">{{item.name}}</div>
+                        </div>
+                        <div class="border-bottom position-absolute" [ngStyle]="{ width: widthDynamic + 'em'}" style="bottom:17px"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="kt-align-center w-100 font-weight-bolder">{{"Group" | localize}}</div>
+            <div class="kt-align-center">
+                <span class="label label-lg label-light-primary label-inline"></span>
+                <span class="timeline-badge form-check-inline">
+                    <span class="mr-1" style="height: 13px; width: 13px; left: 0px; top: 0px; border-width: 0px; background-color: #4FA6B0"></span>
+                    <span class="mr-5">{{'Q1' | localize}}</span>
+                </span>
+                <span class="timeline-badge form-check-inline">
+                    <span class="mr-1" style="height: 13px; width: 13px; left: 0px; top: 0px; border-width: 0px; background-color: #8EB8E5"></span>
+                    <span class="mr-5">{{'Q2' | localize}}</span>
+                </span>
+                <span class="timeline-badge form-check-inline">
+                    <span class="mr-1" style="height: 13px; width: 13px; left: 0px; top: 0px; border-width: 0px; background-color: #50C5B7"></span>
+                    <span class="mr-5">{{'Q3' | localize}}</span>
+                </span>
+                <span class="timeline-badge form-check-inline">
+                    <span class="mr-1" style="height: 13px; width: 13px; left: 0px; top: 0px; border-width: 0px; background-color: #AE76A6"></span>
+                    <span class="mr-5">{{'Q4' | localize}}</span>
+                </span>               
+            </div>
+        </div>
+    </div>
+</div>

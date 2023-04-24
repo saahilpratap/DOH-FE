@@ -1,0 +1,20 @@
+#cylinderGauge {
+    width: 1160px;
+    height: 500px;
+    border: dotted 1px #ddd;
+    margin: auto;
+}
+.text-vertical {
+    position: absolute !important;
+    transform: rotate( -90deg) scaleX(1) !important;
+    transform-origin: top left !important;
+    width:200px !important
+}
+.bar {
+    background-color: #4FA6B0 !important;
+    width: 100% !important;
+}
+.absolute1 {
+    position: absolute;
+    width: 2.9% !important;
+}

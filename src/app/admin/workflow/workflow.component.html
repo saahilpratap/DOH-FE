@@ -1,0 +1,624 @@
+<div id="kt_aside_toggler" class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" (ngInit)="toggleLeftAside()">
+    <div class="kt-subheader kt-grid__item">
+        <div class="kt-container kt-container--fluid">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{'Application Settings' | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Configure Application Settings" | localize}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="kt-grid__item kt-grid__item--fluid kt-padding-l-20 kt-padding-r-20">
+        <div class="kt-portlet">
+            <div id="tabSystem" class="kt-portlet__body">
+                <tabset class="tab-container">
+                    <tab class="tab-color" heading="{{'Business Entity' | localize}}" [active]="true" *ngIf="'Pages.Administration.ApplicationSettings.BusinessEntity' | permission">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'New User Settings' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <p-inputSwitch [(ngModel)]="settings.enableNewUserApproval"></p-inputSwitch>
+                                            </div>
+                                            <div class="col-10 text-color">
+                                                {{'Enable User Account Administrator Approval Required (New Entities and Third Party  Accounts)' | localize}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <p-inputSwitch name="isPreAssessmentQuestionaire" [(ngModel)]="settings.isPreAssessmentQuestionaire"></p-inputSwitch>
+                                            </div>
+                                            <div class="col-10 text-color">
+                                                {{'Entities have to answer Pre assessment Questionnaire' | localize}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Workflow Settings' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <p-inputSwitch [(ngModel)]="settings.enablePreRegVerification"></p-inputSwitch>
+                                            </div>
+                                            <div class="col-10 text-color">
+                                                {{'Enable User Account Administrator Pre Registration Verification' | localize}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-2 text-color">
+                                                {{'Email' | localize}}
+                                            </div>
+                                            <div class="col-10">
+                                                <input type="email" class="w-100 form-control" name="preRegVerificationList" [(ngModel)]="settings.preRegVerificationList" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab class="tab-color" heading="{{'Facility Types Settings' | localize}}" *ngIf="'Pages.Administration.ApplicationSettings.FacilityType' | permission">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Set Facility Type Size' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <div class="row padding-bottom-5" *ngFor="let fst of facilities">
+                                            <div class="kt-checkbox-list col-6">
+                                                <label for="{{fst.name}}{{fst.facilityTypeId}}" class="kt-checkbox">
+                                                    <input id="{{fst.name}}{{fst.facilityTypeId}}" type="checkbox" name="{{fst.name}}" [(ngModel)]="fst.isSelected">
+                                                    {{fst.name}}
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="form-group col-3">
+                                                <label class="text-nowrap"> Minimum Size</label>
+                                                <input type="number" class="form-control kt-padding-r-20" name="minSize" [(ngModel)]="fst.minSize" />
+                                            </div>
+                                            <div class="form-group col-3">
+                                                <label class="text-nowrap"> Maximum Size</label>
+                                                <input type="number" class="form-control kt-padding-r-20" name="maxSize" [(ngModel)]="fst.maxSize" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab class="tab-color" heading="{{'Self Assessment Settings' | localize}}" *ngIf="'Pages.Administration.ApplicationSettings.SelfAssessment' | permission">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Assessment Settings' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <div class="row kt-padding-b-40">
+                                            <div class="col-2">
+                                                <p-inputSwitch [(ngModel)]="settings.skipReviewerApproval"></p-inputSwitch>
+                                            </div>
+                                            <div class="col-10 text-color">
+                                                {{'Skip Reviewer Approval' | localize}}
+                                            </div>
+                                        </div>
+                                        <div class="row kt-padding-b-40">
+                                            <div class="col-2">
+                                                <p-inputSwitch [(ngModel)]="settings.skipBEAdminApproval"></p-inputSwitch>
+                                            </div>
+                                            <div class="col-10 text-color">
+                                                {{'Skip Business Entity Admin Approval' | localize}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <p-inputSwitch [(ngModel)]="settings.enableEntityGroupAdminApproval"></p-inputSwitch>
+                                            </div>
+                                            <div class="col-10 text-color">
+                                                {{'All Group Entity Assessment(s) are forwarded to Entity Group Admin for Authority Submission' | localize}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Set Assessment Status Wise Content Settings' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <p-accordion>
+                                            <p-accordionTab [selected]="true">
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"Initialized" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="initializeSettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="initializeSettingIds" [(ngModel)]="settings.initialiazeSettingIds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+                                            <p-accordionTab>
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"InReview" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="inReviewSettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="inReviewSettingIds" [(ngModel)]="settings.inReviewSettingsIds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+                                            <p-accordionTab>
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"Request For Clarification" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="inRFCSettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="inRFCSettingIds" [(ngModel)]="settings.needsClarificationSettingsIds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+                                            <p-accordionTab>
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"BE Admin Review" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="beAdminSettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="beAdminSettingIds" [(ngModel)]="settings.beAdminReviewSettingsIds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+                                            <p-accordionTab>
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"Entity Group Admin Review" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="entityAdminSettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="entityAdminSettingIds" [(ngModel)]="settings.entityGroupAdminReviewSettingsds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+
+                                            <p-accordionTab>
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"Send To Authority" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="sentToAuthoritySettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="sentToAuthoritySettingIds" [(ngModel)]="settings.sentToAuthoritySettingsIds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+
+                                            <p-accordionTab>
+                                                <p-header>
+                                                    <div class="w-100">
+                                                        {{"Approved" | localize}}
+                                                    </div>
+                                                </p-header>
+                                                <div>
+                                                    <label for="approverSettingIds">
+                                                        Select To Disable/ Deselect To Enable Controls:
+                                                    </label>
+                                                    <select multiple
+                                                            class="form-control"
+                                                            name="approverSettingIds" [(ngModel)]="settings.approvedSettingsIds">
+                                                        <option *ngFor="let setting of contentSettings"
+                                                                [ngValue]="setting.id">
+                                                            {{ setting.title }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </p-accordionTab>
+                                        </p-accordion>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </tab>
+                    <tab class="tab-color" heading="{{'External Assessment Settings' | localize}}" *ngIf="'Pages.Administration.ApplicationSettings.ExternalAssessment || hiddenFlag' | permission">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Feature' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessAuditWorkPapers"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Audit WorkPaper' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessAuditFindings"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Audit Findings' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessPreAuditQuestionnaire"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Pre-Audit Questionnarie' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessIncidents"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Access Incidents' | localize}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessInternalAssessments"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Access Internal Assessments' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessInternalFindings"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Access Internal Findings' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessExceptions"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Access Exceptions' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.accessBusinessRisks"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Access Business Risks' | localize}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Workflow Settings' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.skipExtAssessReviewerApproval"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Skip Reviewer Approver' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.requireBusinessEntityAcceptanceForAuditFinding"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Report Business Entity Acceptance for audit findings' | localize}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.skipBEAdminApprovalInExtAssessment"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Skip BE Admin Approval in Entity Groups Approvals' | localize}}
+                                                    </div>
+                                                </div>
+                                                <div class="row kt-padding-b-40">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch [(ngModel)]="settings.requireBusinessEntityAcceptanceForExtAssessment"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Require Business Entity Acceptance for External Assessments' | localize}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </tab>
+                    <tab class="tab-color" heading="{{'System Messages' | localize}}" *ngIf="'Pages.Administration.ApplicationSettings.SystemMessages' | permission">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Login Screen - Disclaimer Message' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <angular-editor id="editor11" [config]="editorConfig" name="editorMessage" [(ngModel)]="settings.loginScreenDisclaimerMesg"></angular-editor>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab class="tab-color" heading="{{'Acceptance Agreement Text' | localize}}" *ngIf="'Pages.Administration.ApplicationSettings.AcceptanceAgreement' | permission">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Acceptance Agreement Text' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <angular-editor id="editor12" [config]="editorConfig" name="editorData" [(ngModel)]="settings.agreementAcceptanceMsg"></angular-editor>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab class="tab-color" heading="{{'Root Units' | localize}}" *ngIf="'Pages.Administration.ApplicationSettings.RootUnits' | permission">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="EmailAddress">{{"Owner" | localize}}</label>
+                                        <input type="text" class="form-control" placeholder="" name="rootUnit" [(ngModel)]="settings.rootUnit" />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="EmailAddress">{{"2nd Party" | localize}}</label>
+                                        <input type="text" class="form-control" placeholder="Business Associates" name="firstUnit" [(ngModel)]="settings.firstUnit" />
+                                    </div>
+                                </div>
+                                <!--<div class="col-12">
+                    <div class="form-group">
+                        <label for="EmailAddress">{{"Insurance Facilities" | localize}}</label>
+                        <input type="text" class="form-control" placeholder="Business Associates" name="thirdUnit" [(ngModel)]="settings.thirdUnit" />
+                    </div>
+                </div>-->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="EmailAddress">{{"Audit Agency" | localize}}</label>
+                                        <input type="text" class="form-control" placeholder="Audit Agency" name="secondUnit" [(ngModel)]="settings.secondUnit" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <!--<tab class="tab-color" heading="{{'Audit Project Workflow' | localize}}">
+
+        <grid-audit-project-work-flow></grid-audit-project-work-flow>
+    </tab>-->
+
+                    <tab class="tab-color" heading="{{'Document Path' | localize}}" [active]="true" *ngIf="'Pages.Administration.ApplicationSettings.DocumentPath' | permission">
+                        <div class="row">
+
+                            <div class="col-12">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Document Setting' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="text" class="w-100 form-control" placeholder="Document Path" name="documentpath" [(ngModel)]="settings.attachmentpath" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+
+                    <tab class="tab-color" heading="{{'Work Flow Setting' | localize}}" [active]="true" *ngIf="'Pages.Administration.ApplicationSettings.WorkFlow' | permission">
+                        <div class="row">
+
+                            <div class="col-12">
+                                <div class="kt-portlet shadow-none kt-portlet shadow-none kt-padding-l-50 kt-padding-r-50">
+                                    <div class="kt-portlet__head">
+                                        <div class="kt-portlet__head-label">
+                                            <h3 class="kt-portlet__head-title">
+                                                {{'Work Flow Setting' | localize}}
+                                            </h3>
+                                        </div>
+                                        <div class="kt-portlet__head-toolbar">
+                                        </div>
+                                    </div>
+                                    <div class="kt-portlet__body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <p-inputSwitch name="enableWorkFlowJob" [(ngModel)]="settings.enableWorkFlowJob"></p-inputSwitch>
+                                                    </div>
+                                                    <div class="col-10 text-color">
+                                                        {{'Enable Work Flow ' | localize}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab class="tab-color" heading="{{'Reminder' | localize}}">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="reminderDays">{{"Days" | localize}}</label>
+                                        <input type="number" class="form-control" placeholder="" name="reminderDays" [(ngModel)]="settings.reminderDays" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+
+                </tabset>
+                <div class="kt-align-right">
+                    <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="addUpdateSettings()" *ngIf="saveHide">{{'Save' | localize}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

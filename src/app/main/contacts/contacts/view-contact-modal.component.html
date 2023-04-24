@@ -1,0 +1,47 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Details")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Code")}} :</h6>
+                        {{ item.contact.code }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("FirstName")}} :</h6>
+                        {{ item.contact.firstName }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("LastName")}} :</h6>
+                        {{ item.contact.lastName }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("JobTitle")}} :</h6>
+                        {{ item.contact.jobTitle }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("Mobile")}} :</h6>
+                        {{ item.contact.mobile }}
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h6>{{l("DirectPhone")}} :</h6>
+                        {{ item.contact.directPhone }}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

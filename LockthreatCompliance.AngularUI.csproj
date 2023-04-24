@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="dist\**" />
+    <Compile Remove="external_libs\**" />
+    <Compile Remove="node_modules\**" />
+    <Compile Remove="src\app\main\CertificateImport\**" />
+    <Compile Remove="src\assets\common\scripts\**" />
+    <EmbeddedResource Remove="dist\**" />
+    <EmbeddedResource Remove="external_libs\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <EmbeddedResource Remove="src\app\main\CertificateImport\**" />
+    <EmbeddedResource Remove="src\assets\common\scripts\**" />
+    <None Remove="dist\**" />
+    <None Remove="external_libs\**" />
+    <None Remove="node_modules\**" />
+    <None Remove="src\app\main\CertificateImport\**" />
+    <None Remove="src\assets\common\scripts\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="src\app\shared\common\dev-express-report\XtraReport1.cs" />
+    <Compile Remove="src\app\shared\common\dev-express-report\XtraReport1.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".editorconfig" />
+    <None Remove=".gitignore" />
+    <None Remove="npm-shrinkwrap.json" />
+    <None Remove="src\app\shared\common\dev-express-report\XtraReport1.vsrepx" />
+    <None Remove="yarn.lock" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\main\audit-project-management\tab-question-group\question-group-attachment-modal\" />
+    <Folder Include="src\app\main\external-questionaire\external-questionnaire-findings\" />
+    <Folder Include="src\app\shared\common\primeng-chart\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

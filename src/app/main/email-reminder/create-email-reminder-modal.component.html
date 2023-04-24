@@ -1,0 +1,192 @@
+<div appBsModal #createEmailReminderModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createEmailReminderModal"
+     aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #emailReminderForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="emailReminder.id">
+                            {{
+                            l("Edit Email Reminder")
+                            }}
+                        </span>
+                        <span *ngIf="!emailReminder.id">
+                            {{
+                            l("Create New Email Reminder")
+                            }}
+                        </span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label class="required">{{'Page Name' | localize}}</label>
+                        <ng-select [items]="workflow"
+                                   [searchable]="false"
+                                   bindLabel="pageName"
+                                   bindValue="id"
+                                   (change)="onpageChange()"
+                                   [(ngModel)]="emailReminder.workFlowPageId"
+                                   placeholder="Page Name" required
+                                   name="name">
+                        </ng-select>
+                    </div>
+                    <br />
+                    <div class="form-group" *ngIf="checkauditproject">
+                        <label>{{'Audit Status' | localize}}</label>
+                        <ng-select [items]="auditStatus"
+                                   [searchable]="false"
+                                   bindLabel="name"
+                                   bindValue="id"
+                                   [(ngModel)]="emailReminder.auditStatusId"
+                                   placeholder="Audit Status" required
+                                   name="auditstatus">
+                        </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="checkAssessmentFlag">
+                        <label>{{'Self Assessment Status' | localize}}</label>
+                        <ng-select [items]="selfAssessmentStatus"
+                                   [searchable]="false"
+                                   bindLabel="name"
+                                   bindValue="id"
+                                   [(ngModel)]="emailReminder.auditStatusId"
+                                   placeholder="Self Assessment Status" required
+                                   name="selfAssessmentStatus">
+                        </ng-select>
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label class="required">{{'Days' | localize}}</label>                       
+                    </div>
+                    <div class="form-group">
+                        <input type="number" name="days" [(ngModel)]="emailReminder.days" class="form-control" required />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label class="required">{{'Email Subject' | localize}}</label>
+                        <ng-select [items]="propertiesName"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   (change)="onSubjectPropertyChange($event)"
+                                   [(ngModel)]="txtTo"
+                                   name="titleto">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="subjects" [(ngModel)]="emailReminder.subject" class="form-control" required />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label class="required">{{'TO' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   (change)="onToPropertyChange($event)"
+                                   [(ngModel)]="txtTo"
+                                   name="titleto">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="to" [(ngModel)]="emailReminder.to" class="form-control" required />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label>{{'CC' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   (change)="onCcPropertyChange($event)"
+                                   [(ngModel)]="txtCc"
+                                   name="titlecc">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="cc" [(ngModel)]="emailReminder.cc" class="form-control" />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label>{{'BCC' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   (change)="onBccPropertyChange($event)"
+                                   [(ngModel)]="txtBcc"
+                                   name="titleBcc">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="bcc" [(ngModel)]="emailReminder.bcc" class="form-control" />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop" *ngIf="checkauditproject">
+                        <label>{{'Report Type' | localize}}</label>
+                        <ng-select [items]="reportType"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   (change)="onReportTypeChange($event)"
+                                   [(ngModel)]="auditreportType"
+                                   name="reporttypes">
+                        </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="checkauditproject">
+                        <input type="text" name="reportType" [(ngModel)]="emailReminder.reportType" class="form-control" />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="props">
+                        <label>{{'Email Body' | localize}}</label>
+                        <ng-select [items]="propertiesName"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   bindValue="id"
+                                   (change)="onemailBodyPropertyChange($event)"
+                                   [(ngModel)]="txtBody"
+                                   name="EmailBody">
+                        </ng-select>
+                    </div>
+                    <div class="form-group mt-4">
+                        <summernote-text-editor [name]="'Edit SummerNote'"
+                                                (setSummerNoteData)="setSummerNoteData($event)"
+                                                [getSummerNoteData]="getSummerNoteData"></summernote-text-editor>
+                    </div>
+                    <br />
+                    <div class="form-group1 w-100" id="prop">
+                        <label class="required">{{'Attachment' | localize}}</label>
+                        <file-upload [name]="'EmailReminder'"
+                                     [multiple]="true"
+                                     [attachedFile]="attachedFileCodes"
+                                     [emialReminderId]="templateId"
+                                     [attachedfileSize]="2097150"
+                                     [noFileUpload]="100"
+                                     (attachmentData)="getAttachment($event)"
+                                     (deleteCode)="getDeleteCode($event)"></file-upload>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!emailReminderForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

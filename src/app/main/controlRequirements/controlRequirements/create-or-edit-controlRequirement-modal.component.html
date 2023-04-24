@@ -1,0 +1,161 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #controlRequirementForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="controlRequirement.id &&  hideButton != 1">
+                            {{l("EditControlRequirement")}}
+                        </span>
+                        <span *ngIf="controlRequirement.id &&  hideButton == 1">
+                            {{l("View Control Requirement")}}
+                        </span>
+                        <span *ngIf="!controlRequirement.id">
+                            {{l("CreateNewControlRequirement")}}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="container" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'">
+                        <h5>General Information</h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_Code" class="required">
+                                        {{l("Control Requirement ID")}}
+                                    </label>
+                                    <input type="text"
+                                           id="ControlRequirement_Code"
+                                           class="form-control"
+                                           placeholder="System Generated"
+                                           [(ngModel)]="controlRequirement.code"
+                                           name="Code"
+                                           disabled />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_OriginalId" class="required">{{ l("CR Original ID") }}</label>
+                                    <input type="text" id="ControlRequirement_OriginalId" class="form-control"
+                                           [(ngModel)]="controlRequirement.originalId" name="OriginalId" required/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group m-form__group">
+                                    <label for="ControlStandardName" class="required">
+                                        {{l("Control Standard")}}
+                                    </label>
+                                    <div>                                       
+                                        <ng-select [items]="controlStandards" [searchable]="true" bindLabel="controlStandard.name"
+                                                   bindValue="controlStandard.id" placeholder="Select Control Standard"
+                                                   [(ngModel)]="controlRequirement.controlStandardId"
+                                                   name="ControlStandardName" required>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_ControlType" class="required">{{ l("ControlType") }}</label>
+                                    <select class="form-control" required
+                                            name="ControlType"
+                                            id="ControlRequirement_ControlType"
+                                            [(ngModel)]="controlRequirement.controlType">
+                                        <option value="0">
+                                            {{l("Basic")}}
+                                        </option>
+                                        <option value="1">
+                                            {{l("Transitional")}}
+                                        </option>
+                                        <option value="2">
+                                            {{l("Advanced")}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="kt-checkbox">
+                                        <input class="form-control" [(ngModel)]="controlRequirement.industryMandated" [checked]="controlRequirement.industryMandated" (click)="changeindustryMandatedState()"  type="checkbox" name="industryMandated" />{{"Industry Mandated" | localize}}
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <p-inputSwitch name="isScored" [(ngModel)]="controlRequirement.iscored" [required]="true"></p-inputSwitch>
+                                    </div>
+                                    <div class="col-10 text-color">
+                                        {{"Scored" | localize}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_ControlRequirement">{{ l("ControlRequirement") }}</label>
+                                    <textarea id="ControlRequirement_ControlRequirement"
+                                              rows="9"
+                                              placeholder="Type..." class="form-control" [(ngModel)]="controlRequirement.controlRequirement"
+                                              name="ControlRequirement"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <h5>Questions</h5>
+                        <hr />
+                        <p-pickList [source]="allQuestions" [target]="attachedQuestions" class="w-100" sourceHeader="All Questions" targetHeader="Selected Questions"
+                                    [responsive]="true" filterBy="description" [showSourceControls]="false" [showTargetControls]="false">
+                            <ng-template let-qu pTemplate="item">
+                                <div class="ui-helper-clearfix">
+                                    <div class="kt-padding-t-5 kt-padding-b-5">{{qu.questionDescription}}</div>
+                                </div>
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit" *ngIf="hideButton != 1"
+                            [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!controlRequirementForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

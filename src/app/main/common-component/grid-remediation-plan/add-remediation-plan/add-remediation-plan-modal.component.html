@@ -1,0 +1,126 @@
+<div
+  appBsModal
+  #addRemediationPlanModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addRemediationPlanModal"
+  aria-hidden="true"
+  [config]="{backdrop: 'static'}"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form #addRemediationPlanForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+          <div class="row align-items-center no-margin">
+            <div
+              class="primeng-datatable-container"
+              [busyIf]="primengTableHelper.isLoading"
+            >
+              <div>
+                <p-table
+                  #dataTable
+                  (onLazyLoad)="remediationPlans($event)"
+                  [value]="primengTableHelper.records"
+                  rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                  [paginator]="false"
+                  [lazy]="true"
+                  [scrollable]="true"
+                  ScrollWidth="100%"
+                  [responsive]="primengTableHelper.isResponsive"
+                  [selection]="selectedRowData"
+                  (selectionChange)="onSelectionChange($event)"
+                  [resizableColumns]="primengTableHelper.resizableColumns"
+                >
+                  <ng-template
+                    pTemplate="header"
+                    let-rowData
+                    let-record="$implicit"
+                  >
+                    <tr [pSelectableRow]="rowData">
+                      <th style="width: 30px !important;">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                      </th>
+                      <th style="width: 80px;">
+                        {{'RP ID' |localize}}
+                      </th>
+                      <th style="width: 150px;">
+                        {{'Title' |localize}}
+                      </th>
+                      <th style="width: 150px;">
+                        {{'HealthCare Entity' |localize}}
+                      </th>
+                      <th style="width: 200px;">
+                        {{'Expected Completed Date' |localize}}
+                      </th>
+                      <th style="width: 200px;">
+                        {{'Remediation Plan Details' |localize}}
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template
+                    pTemplate="body"
+                    let-rowData
+                    let-record="$implicit"
+                  >
+                    <tr [pSelectableRow]="rowData">
+                      <td style="width: 30px !important;">
+                        <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                      </td>
+                      <td style="width: 80px;">
+                        {{record.code}}
+                      </td>
+                      <td style="width: 150px;">
+                        {{record.title}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span *ngIf="record.businessEntity">
+                          {{record.businessEntity.companyName}}</span
+                        >
+                      </td>
+                      <td style="width: 200px;">
+                        {{record.actualClosureDate | momentFormat:'L' }}
+                      </td>
+                      <td style="width: 200px;">
+                        {{record.remediationPlanDetail}}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="primeng-paging-container mt-2">
+                <p-paginator
+                  [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                  #paginator
+                  (onPageChange)="remediationPlans($event)"
+                  [totalRecords]="primengTableHelper.totalRecordsCount"
+                  [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                >
+                </p-paginator>
+                <span class="total-records-count">
+                  {{l('TotalRecordsCount',
+                  primengTableHelper.totalRecordsCount)}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+            (click)="close()"
+          >
+            {{"Cancel" | localize}}
+          </button>
+          <button type="submit" class="btn btn-sm btn-success">
+            <i class="fa fa-save"></i> <span>{{"Save" | localize}}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

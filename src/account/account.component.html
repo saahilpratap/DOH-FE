@@ -1,0 +1,66 @@
+<div [ngClass]="{
+        'kt-grid kt-grid--ver kt-grid--root': !useFullWidthLayout(),
+        'kt-content': useFullWidthLayout()
+    }" [style.text-align]="useFullWidthLayout() ? 'center' : 'left'">
+    <div [ngClass]="{
+            'kt-grid kt-grid--hor kt-grid--root  kt-login kt-login--v1': !useFullWidthLayout(),
+            row: useFullWidthLayout()
+        }" id="kt_login">
+        <div [ngClass]="{
+                'kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile': !useFullWidthLayout(),
+                'col-md-12': useFullWidthLayout()
+            }">
+            <div class="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside"
+                 *ngIf="!useFullWidthLayout()"
+                 style="background-image: url('/assets/metronic/common/images/bg/bg-4.jpg');">
+                <div class="kt-grid__item">
+                    <div (click)="goToHome()" class="kt-align-center">
+                        <img class="logo-img1" *ngIf="
+            !appSession.tenant || !appSession.tenant.logoId
+        " [src]="appRootUrl() +'assets/common/images/AAMENDoHlogin.svg'" alt="logo" height="130" width="320" />
+                        <img class="logo-img1" *ngIf="appSession.tenant && appSession.tenant.logoId"
+                             [src]="remoteServiceBaseUrl +'/TenantCustomization/GetTenantLogo?skin=light&tenantId=' +appSession.tenant.id +
+            '&id=' +
+            appSession.tenant.logoId
+        " alt="logo" height="100" width="250" />
+
+                    </div>
+                </div>
+                <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver">
+                    <div class="kt-grid__item kt-grid__item--middle">
+                        <h2 class="kt-login__title">AAMEN Programme Portal</h2>
+                        <div class="h5 kt-login__subtitle">
+                            <span class="" style=" line-height: initial; font-size: 16px !important">
+                                AAMEN programme is a major initiative by Department of Health, Abu Dhabi to
+                                ensure that health care information in the Emirate of Abu Dhabi is secured in-line with
+                                Government objectives, and as per the requirements of applicable Laws & Regulations.
+                                The programme includes development and enforcement of security and privacy standards,
+                                periodic monitoring of their compliance, and carrying out audit & certification assessments.....
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding-top: 0px;"
+                 class="kt-grid__item kt-grid__item--fluid  kt-grid__item--order-tablet-and-mobile-1  kt-login__wrapper d-block">
+                <!-- <div class="kt-login__head d-block mt-3 mr-auto ml-auto text-right">
+                    <language-switch></language-switch>
+                </div> -->
+
+                <div class="kt-login__body d-block mt-3 mr-auto ml-auto">
+                    <div *ngIf="_router.url.indexOf('/account/app-entity-register') == -1 && _router.url.indexOf('/account/app-external-audit-register') == -1">
+                        <div class="kt-align-center">
+                            <!--<img *ngIf="!appSession.tenant || !appSession.tenant.logoId"
+                                 [src]="appRootUrl() +'assets/common/images/AAMENDoHlogin.svg'" alt="logo" height="55" />-->
+                        </div>
+                        <div *ngIf="showTenantChange()" class="kt-login__signup-label tenant-change-box text-center">
+                            <tenant-change></tenant-change>
+                        </div>
+                    </div>
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

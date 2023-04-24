@@ -1,0 +1,122 @@
+<div class="row align-items-center w-100">
+    <div class="primeng-datatable-container col-12" [busyIf]="primengTableHelper.isLoading">
+        <p-table #dataTable (onLazyLoad)="getAssessments($event)"
+                 [value]="primengTableHelper.records"
+                 rows="{{ primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false"
+                 [lazy]="true" [scrollable]="true" ScrollWidth="100%"
+                 (selectionChange)="onSelectionChange($event)"
+                 [responsive]="primengTableHelper.isResponsive"
+                 [resizableColumns]=" primengTableHelper.resizableColumns ">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 150px;" pSortableColumn="id" class="text-nowrap">
+                        {{ l("Assessment ID") }}
+                        <p-sortIcon field="assessment.id"></p-sortIcon>
+                    </th>
+                    <th style="width: 150px;">
+                        {{ l("License Number") }}
+                    </th>
+                    <th style="width: 150px;">
+                        {{ l("HealthCare Entities") }}
+                    </th>
+                    <th style="width: 150px;">
+                        {{ l("Type") }}
+                    </th>
+                    <th style="width: 130px;" pSortableColumn="reportingDate">
+                        {{ l("Reporting Date") }}
+                        <p-sortIcon field="assessment.reportingDate"></p-sortIcon>
+                    </th>
+                    <th style="width: 100px;" pSortableColumn="status">
+                        {{ l("Status") }}
+                        <p-sortIcon field="assessment.status"></p-sortIcon>
+                    </th>
+                    <th style="width: 50px;" aligh="center" class="kt-align-center">
+                        {{ l("Actions") }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-records="$implicit">
+                <tr class="ui-widget-header">
+                    <th colspan="6" style="background-color: #f4f4f4;">
+                        <span class="kt-font-skype"> {{records.name}}</span>
+                    </th>
+                </tr>
+                <tr *ngFor="let recordsgroup of records.asessments"
+                    style="width: 100% !important;">
+                    <td colspan="6">
+                        <table style="width: 100% !important;">
+                            <tr *ngFor="let record of recordsgroup.asessmentlist">
+                                <td style="width: 150px;">
+                                    <span *ngIf="record.code">
+                                        {{ record.code }}
+                                    </span>
+                                    <span *ngIf="record.isPrimaryEntity"
+                                          style="border-radius: 15px !important;"
+                                          class="badge badge-primary kt-margin-l-5">P</span>
+                                </td>
+                                <td style="width: 150px;">
+                                    <span *ngIf="record.businessEntityName ">
+                                        {{ record.licenseNumber}}
+                                    </span>
+                                </td>
+
+                                <td style="width: 150px;">
+                                    <span *ngIf="record.businessEntityName ">
+                                        {{ record.businessEntityName }}
+                                    </span>
+                                </td>
+                                <td style="width: 150px;">
+                                    {{ record.assessmentType.name }}
+                                </td>
+                                <td style="width: 130px;">
+                                    {{ record.reportingDate| momentFormat: "L"}}
+                                </td>
+                                <td style="width: 100px;">
+                                    <span *ngIf="assessmentStatus[record.status]=='Initialized'"
+                                          class="kt-badge kt-badge--unified-dark kt-badge--inline kt-badge--pill w-100">{{assessmentStatus[record.status]}}</span>
+                                    <span *ngIf="assessmentStatus[record.status]=='InReview'"
+                                          class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill w-100">{{assessmentStatus[record.status]}}</span>
+                                    <span *ngIf="assessmentStatus[record.status]=='BEAdminReview'"
+                                          class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill w-100">{{assessmentStatus[record.status]}}</span>
+                                    <span *ngIf="assessmentStatus[record.status]=='EntityGroupAdminReview'"
+                                          class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill w-100"
+                                          title="Entity Group Admin Review">EGAReview</span>
+                                    <span *ngIf="assessmentStatus[record.status]=='NeedsClarification'"
+                                          class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill w-100">{{assessmentStatus[record.status]}}</span>
+                                    <span *ngIf="assessmentStatus[record.status]=='SentToAuthority'"
+                                          class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill w-100">{{assessmentStatus[record.status]}}</span>
+                                    <span *ngIf="assessmentStatus[record.status]=='Approved'"
+                                          class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill w-100">{{assessmentStatus[record.status] }}</span>
+                                </td>
+                                <td style="width: 50px;" class="kt-align-center">
+                                    <a (click)="assessmentDetail.show(record.id, 'internalQuestionaire')">
+                                        <img src="../../../assets/common/images/Assessment.svg" width="24" height="24" />
+                                    </a>
+                                    <a *ngIf="permission.isGranted()"
+                                       (click)="assessmentModal.show(record.id)">
+                                        <i class="la la-eye icon-font-size"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="primeng-no-data" *ngIf="  primengTableHelper.totalRecordsCount == 0 ">
+            {{ l("NoData") }}
+        </div>
+        <div class="primeng-paging-container">
+            <p-paginator [rows]="  primengTableHelper.defaultRecordsCountPerPage" #paginator
+                         (onPageChange)="getAssessments($event)"
+                         [totalRecords]=" primengTableHelper.totalRecordsCount"
+                         [rowsPerPageOptions]=" primengTableHelper.predefinedRecordsCountPerPage ">
+            </p-paginator>
+            <span class="total-records-count">
+                {{ l("TotalRecordsCount", primengTableHelper.totalRecordsCount )}}
+            </span>
+        </div>
+    </div>
+</div>
+
+<assessmentDetailModals #assessmentDetail></assessmentDetailModals>

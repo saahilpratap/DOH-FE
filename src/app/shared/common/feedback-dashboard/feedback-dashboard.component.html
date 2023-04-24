@@ -1,0 +1,58 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__body">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col bg-light-success px-6 py-8 rounded-xl mr-7 m-2 p-3 border-radius-5">
+                        <span class="svg-icon svg-icon-3x svg-icon-danger d-block my-2 h3 text-success">
+                            {{resultdata.receiveResponse}}
+                        </span>
+                        <a href="#" class="text-success font-15 mt-2">{{"Total Feedback Recieved" | localize}}</a>
+                    </div>
+                    <div class="col bg-light-warning px-6 py-8 rounded-xl m-2 p-3 border-radius-5">
+                        <span class="svg-icon svg-icon-3x svg-icon-danger d-block my-2 h3 text-warning">
+                            {{resultdata.pendingResponse}}
+                        </span>
+                        <a href="#" class="text-warning font-15 mt-2">{{"Feedback Pending" | localize}}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100">
+                <div class="kt-portlet sh">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{"Feedback Question" | localize}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <button type="button" class="btn btn-brand mr-2" *ngIf="feedbackId!=undefined" (click)="exportFun()">
+                                {{"Export" | localize}}
+                            </button>
+                            <ng-select [items]="resultdata.feedBankDetailsInfo" [searchable]="true" bindLabel="title"
+                                       bindValue="id" placeholder="Select" name="title" (change)="getData($event)">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div  *ngFor="let item of questionListInfo; let i = index">
+                            <div class="font-15 pb-3">
+                                <span class="pr-2">Q{{i +1}}.</span>
+                                {{item.questionName}}
+                            </div>
+                            <div class="border pl-3 mb-4" style="min-height:250px">
+                                <feedback-chart [chartData]="item.questionResponses"
+                                                [feedbackId]="feedbackId"
+                                                [xaxisData]="''" [data]="item"
+                                                [titleText]="item.questionName"></feedback-chart>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

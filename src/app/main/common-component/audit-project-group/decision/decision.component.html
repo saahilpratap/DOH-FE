@@ -1,0 +1,141 @@
+<div class="kt-portlet shadow-none div-read-only">
+    <div class="kt-portlet__body kt-padding-0">
+        <div class="kt-padding-t-10">
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('TECHNICAL COMMITTEE - DECISION')}}</span>
+            </div>
+            <div class="row kt-padding-t-10">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Decision ID')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{auditDecision.code}}</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Group Name')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype" *ngIf="auditDecision.entityGroup">{{auditDecision.entityGroup.name}}</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Facility Name')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{entityPrimary.name}}</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('License No')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{entityPrimary.licenseNumber}}</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Facility Type')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{entityPrimary.facilityType}}</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Decision - Date')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{auditDecision.decisionDate | date}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="kt-padding-t-10">
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('Input Documents Checked - Evidences & Artifacts')}}</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12" >
+                    <div class="form-group">
+                        <label>{{l('Documents')}}</label>
+                        <div class="checkbox-list row">
+                            <label class="checkbox col-6" *ngFor="let item of selectedDocument;let i = index">
+                                <input type="checkbox" [disabled]="flag" name="Checkboxes{{i}}" [checked]="item.checked" style="position: relative; top: 3px;">
+                                <span></span><span class="kt-padding-l-5 lable-position kt-font-skype kt-font-md kt-font-bold">{{item.name}}</span>
+                            </label>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <label class="kt-padding-r-10">{{l('Others applicable')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{auditDecision.otherApplicable}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="kt-padding-t-10">
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('Output Conclusion')}}</span>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group kt-margin-b-5">
+                        <div class="checkbox-list row">
+                            <label class="checkbox col-6">
+                                <input type="radio" class="kt-margin-5" name="radio" style="position: relative; top: 3px;" readonly>
+                                <span></span><span class="kt-font-md kt-font-bold kt-font-skype">{{l('Group is Certifiable except the following facilities')}}</span>
+                            </label>
+                            <label class="checkbox col-6">
+                                <input type="radio" class="kt-margin-5" name="radio" style="position: relative; top: 3px;" readonly>
+                                <span></span><span class="kt-font-md kt-font-bold kt-font-skype">{{l('Group is certifiable')}}</span>
+                            </label>
+                            <label class="checkbox col-6">
+                                <input type="radio" class="kt-margin-5" name="radio" style="position: relative; top: 3px;" readonly>
+                                <span></span><span class="kt-font-md kt-font-bold kt-font-skype">{{l(' Individual is certifiable')}}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="row kt-padding-t-10">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>{{l('Synthetic Judgement')}}</label>
+                        <p class="kt-font-md kt-font-bold kt-font-skype">{{auditDecision.judgement}}</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>{{l('Decision')}}</label>
+                        <p class="kt-font-md kt-font-bold kt-font-skype">{{auditDecision.decision}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10 ">
+                <span class="h6 kt-font-bolder">{{l('Approval')}}</span>
+            </div>
+            <div class="row kt-padding-t-10">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>{{"Signature" | localize}} </label>
+                        <div class="border" *ngIf="auditDecision.doHSign">
+                            <img [src]="_sanitizer.bypassSecurityTrustUrl(auditDecision.doHSign)"
+                                 class="signature" height="100" width="455" />
+                        </div>
+                        <div class="border" *ngIf="!auditDecision.doHSign">
+                            <div class="kt-align-center kt-padding-t-25 kt-padding-b-25">
+                                <div>{{'No Signature' | localize}}</div>
+                                <div>{{'Available' | localize}}</div>
+                            </div>
+                        </div>
+                        <div class="kt-padding-t-10">
+                            <input type="text" class="w-100" disabled placeholder="" />
+                        </div>
+                    </div>
+                    </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>{{"Signature" | localize}} </label>
+                        <div class="border" *ngIf="auditDecision.auditVensign">
+                            <img [src]="_sanitizer.bypassSecurityTrustUrl(auditDecision.auditVensign)"
+                                 class="signature" height="100" width="455" />
+                        </div>
+                        <div class="border" *ngIf="!auditDecision.auditVensign">
+                            <div class="kt-align-center kt-padding-t-25 kt-padding-b-25">
+                                <div>{{'No Signature' | localize}}</div>
+                                <div>{{'Available' | localize}}</div>
+                            </div>
+                        </div>
+                        <div class="kt-padding-t-10">
+                            <input type="text" class="w-100" disabled placeholder="" />
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>     
+    </div>
+</div>
+

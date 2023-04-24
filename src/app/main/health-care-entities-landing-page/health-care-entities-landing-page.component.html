@@ -1,0 +1,322 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" style="background-color:#fff">
+    <div class="kt-subheader kt-grid__item border-bottom">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Health Care Entities Landing Page" | localize}}</span>
+                </h3>
+                <span class="label label-lg  kt-align-center kt-align-left" style="width:300px ; margin-left: 10px !important;">
+                    <ng-select [items]="healthcare" [searchable]="true" bindLabel="companyName" style="margin-left: 10px !important;"
+                               bindValue="id" placeholder="Select HealthCare Entity" (change)="onhelthcareChange(businessEntityId)"
+                               [(ngModel)]="businessEntityId" 
+                               name="healthcare" class="kt-align-left">
+                    </ng-select>
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="row">
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Internal Assessments')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.internalAssessmentCount }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('External Assessments')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.externalAssessmentCount }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Findings')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.findingCount }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('External Audit Findings')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.externalAuditFindingCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('IRM Status Summary')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <ngx-charts-pie-grid [view]="view"
+                                             [scheme]="colorScheme"
+                                             [results]="IncidentExceptionFinding">
+                        </ngx-charts-pie-grid>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('External Assessment By Type')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <div class="kt-widget14">
+                            <div class="row kt-widget14__content">
+                                <div class="col-lg-6 col-sm-6">
+                                    <ngx-charts-pie-chart [results]="assessmentType"
+                                                          [view]="[250,250]"
+                                                          [doughnut]="true" [legend]="false" [labels]="false"
+                                                          [scheme]="colorScheme" [animations]="false"
+                                                          [tooltipDisabled]="true">
+                                    </ngx-charts-pie-chart>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 kt-widget14__legends"
+                                     *ngIf="assessmentType.length">
+                                    <div class="kt-widget14__legend" *ngFor="let item of assessmentType; index as i">
+                                        <span class="kt-widget14__bullet " [style.backgroundColor]="colorScheme.domain[i]"></span>
+
+                                        <span class="kt-widget14__stats">
+                                            {{item?.label}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('IRM Status Yearwise')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <ngx-charts-bar-vertical-2d [view]="[550,300]"
+                                                    [scheme]="colorScheme"
+                                                    [results]="IncidentExceptionBusinessRiskCount"
+                                                    [gradient]="gradient"
+                                                    [xAxis]="showXAxis"
+                                                    [yAxis]="showYAxis"
+                                                    [legend]="false"
+                                                    [maxXAxisTickLength]="9"
+                                                    [maxYAxisTickLength]="5"
+                                                    [showXAxisLabel]="showXAxisLabel"
+                                                    [showYAxisLabel]="showYAxisLabel"
+                                                    [xAxisLabel]="xAxisLabel"
+                                                    [yAxisLabel]="yAxisLabel"
+                                                    [legendTitle]="false">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('IRM Status Typewise')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <ngx-charts-pie-chart [view]="[550,300]"
+                                              [scheme]="colorScheme"
+                                              [results]="IncidentExceptionFinding"
+                                              [gradient]="gradient"
+                                              [legendPosition]="legendPosition"
+                                              [labels]="showLabels"
+                                              [doughnut]="isDoughnut">
+                        </ngx-charts-pie-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                Compliance Score Summary
+                            </h3>
+                        </div>
+
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <ng-select [items]="entityList" [searchable]="true" bindLabel="name" style="width: 100% !important;"
+                                       bindValue="id" placeholder="Select HealthCare Entity" (change)="onEntityChange(entityId)"
+                                       [(ngModel)]="entityId"
+                                       name="healthcare" class="kt-align-left">
+                            </ng-select>
+
+                            <!--<select class="form-control" [(ngModel)]="entityId" (change)="onEntityChange(entityId)">
+                                <option *ngFor="let item of entityList" [ngValue]="item.id">
+                                    {{item.name}}
+                                </option>
+                            </select>-->
+
+                        </div>
+
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10"
+                         [perfectScrollbar]="{wheelPropagation: false}"
+                         [ngStyle]="{'max-height': '60vh', 'position': 'relative'}">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group kt-margin-b-5" *ngFor="let item of domainList; let i = index">
+                                    <label class="kt-margin-b-0 kt-font-sm">
+                                        <span class="kt-font-bolder kt-padding-r-10">{{item.domainName}}</span>
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <div class="progress kt-progress--sm" style="height: 8px;">
+                                                <div class="progress-bar kt-bg-danger" role="ProgressBarscore"
+                                                     [ngStyle]="{width: item.percentage + '%'}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            <span class="kt-font-sm kt-font-bolder">{{item.percentage}}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="row">
+        <div class="col-12">
+            <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Compliance Score Summary
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <select class="form-control"
+                                name="Type">
+                            <option value="1" selected>{{l("ISO 27001:2013")}}</option>
+                            <option value="2" selected>{{l("Abu Dhabi Healthcare Information and Cyber Security Standard")}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group kt-margin-b-5" *ngFor="let item of ProgressBar; let i = index">
+                                <label class="kt-margin-b-0 kt-font-sm">
+                                    <span class="kt-font-bolder kt-padding-r-10">{{"Domain" | localize}}{{i}}</span> {{item.name}}
+                                </label>
+                                <div class="row">
+                                    <div class="col-11">
+                                        <div class="progress kt-progress--sm" style="height: 8px;">
+                                            <div class="progress-bar kt-bg-danger" *ngIf="item.color =='danger'" role="progressbar" [ngStyle]="{width: item.persentage + '%'}"></div>
+                                            <div class="progress-bar kt-bg-info" *ngIf="item.color =='info'" role="progressbar" [ngStyle]="{width: item.persentage + '%'}"></div>
+                                            <div class="progress-bar kt-bg-success" *ngIf="item.color =='success'" role="progressbar" [ngStyle]="{width: item.persentage + '%'}"></div>
+                                            <div class="progress-bar kt-bg-warning" *ngIf="item.color =='warning'" role="progressbar" [ngStyle]="{width: item.persentage + '%'}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1">
+                                        <span class="kt-font-sm kt-font-bolder">{{item.persentage}}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <ngx-charts-pie-grid [view]="view11"
+                                                 [scheme]="colorScheme"
+                                                 [results]="single11">
+                            </ngx-charts-pie-grid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    </div>
+</div>

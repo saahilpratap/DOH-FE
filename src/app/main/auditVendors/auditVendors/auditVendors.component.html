@@ -1,0 +1,460 @@
+<div [@routerTransition]>
+  <div
+    class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
+  >
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+        <div class="kt-subheader__main">
+          <h3 class="kt-subheader__title">
+            <span>{{l("AuditVendors")}}</span>
+          </h3>
+          <span
+            class="kt-subheader__separator kt-subheader__separator--v"
+          ></span>
+          <span class="kt-subheader__desc">
+            {{l("AuditVendorsHeaderInfo")}}
+          </span>
+        </div>
+        <div class="kt-subheader__toolbar">
+          <div class="kt-subheader__wrapper">
+            <button (click)="exportToExcel()" class="btn btn-outline-success">
+              <i class="fa fa-file-excel"></i> {{l("ExportToExcel")}}
+            </button>
+            <button
+              *ngIf="isGranted('Pages.AuditManagement.AuditVendors.Create')"
+              (click)="createAuditVendor()"
+              class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+            >
+              <i class="fa fa-plus"></i> {{l("CreateNewAuditVendor")}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+      <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__body">
+          <form class="kt-form" autocomplete="off">
+            <div>
+              <div class="row align-items-center">
+                <div class="col-xl-12">
+                  <div class="form-group m-form__group align-items-center">
+                    <div class="input-group">
+                      <input
+                        [(ngModel)]="filterText"
+                        name="filterText"
+                        autofocus
+                        class="form-control m-input"
+                        [placeholder]="l('SearchWithThreeDot')"
+                        type="text"
+                      />
+                      <span class="input-group-btn margin-left--5">
+                        <button
+                          (click)="getAuditVendors()"
+                          class="btn btn-primary"
+                          type="submit"
+                        >
+                          <i class="flaticon-search-1"></i>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" [hidden]="!advancedFiltersAreShown">
+                <div class="col-md-12">
+                  <div class="kt-separator kt-separator--border-dashed"></div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="NameFilter">{{l("Name")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="NameFilter"
+                      name="nameFilter"
+                      [(ngModel)]="nameFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="MinRegistrationDateFilter"
+                      >{{l("RegistrationDateRange")}}</label
+                    >
+                    <div class="input-group">
+                      <input
+                        class="form-control m-input"
+                        id="MinRegistrationDateFilter"
+                        name="MinRegistrationDateFilter"
+                        type="datetime"
+                        bsDatepicker
+                        placeholder="{{l('MinValue')}}"
+                        [(ngModel)]="minRegistrationDateFilter"
+                        [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                        autocomplete="off" />
+                      <span style="line-height: 40px; padding: 0 15px 0 15px;">
+                        &mdash;
+                      </span>
+                      <input
+                        class="form-control m-input"
+                        id="MaxRegistrationDateFilter"
+                        name="MaxRegistrationDateFilter"
+                        type="datetime"
+                        bsDatepicker
+                        placeholder="{{l('MaxValue')}}"
+                        [(ngModel)]="maxRegistrationDateFilter"
+                        [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                         autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="PhoneFilter">{{l("Phone")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="PhoneFilter"
+                      name="phoneFilter"
+                      [(ngModel)]="phoneFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="EmailFilter">{{l("Email")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="EmailFilter"
+                      name="emailFilter"
+                      [(ngModel)]="emailFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="WebsiteFilter">{{l("Website")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="WebsiteFilter"
+                      name="websiteFilter"
+                      [(ngModel)]="websiteFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="AddressFilter">{{l("Address")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AddressFilter"
+                      name="addressFilter"
+                      [(ngModel)]="addressFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="CityFilter">{{l("City")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="CityFilter"
+                      name="cityFilter"
+                      [(ngModel)]="cityFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="StateFilter">{{l("State")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="StateFilter"
+                      name="stateFilter"
+                      [(ngModel)]="stateFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="PostalCodeFilter">{{l("PostalCode")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="PostalCodeFilter"
+                      name="postalCodeFilter"
+                      [(ngModel)]="postalCodeFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="CountryFilter">{{l("Country")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="CountryFilter"
+                      name="countryFilter"
+                      [(ngModel)]="countryFilter"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="DescriptionFilter">{{l("Description")}}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="DescriptionFilter"
+                      name="descriptionFilter"
+                      [(ngModel)]="descriptionFilter"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-12">
+                  <span
+                    class="clickable-item text-muted"
+                    *ngIf="!advancedFiltersAreShown"
+                    (click)="advancedFiltersAreShown=!advancedFiltersAreShown"
+                    ><i class="fa fa-angle-down"></i>
+                    {{l("ShowAdvancedFilters")}}</span
+                  >
+                  <span
+                    class="clickable-item text-muted"
+                    *ngIf="advancedFiltersAreShown"
+                    (click)="advancedFiltersAreShown=!advancedFiltersAreShown"
+                    ><i class="fa fa-angle-up"></i>
+                    {{l("HideAdvancedFilters")}}</span
+                  >
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="row align-items-center">
+            <!--<Primeng-Datatable-Start>-->
+            <div
+              class="primeng-datatable-container col-12"
+              [busyIf]="primengTableHelper.isLoading"
+            >
+              <div>
+                <p-table
+                  #dataTable
+                  (onLazyLoad)="getAuditVendors($event)"
+                  [value]="primengTableHelper.records"
+                  rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                  [paginator]="false"
+                  [lazy]="true"
+                  [scrollable]="true"
+                  ScrollWidth="100%"
+                  [responsive]="primengTableHelper.isResponsive"
+                  [resizableColumns]="primengTableHelper.resizableColumns"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th
+                        style="width: 130px;"
+                        [hidden]="!isGrantedAny('Pages.AuditManagement.AuditVendors.Edit', 'Pages.AuditManagement.AuditVendors.Delete')"
+                      >
+                        {{l('Actions')}}
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="name">
+                        {{l('Name')}}
+                        <p-sortIcon field="auditVendor.name"></p-sortIcon>
+                      </th>
+                      <th
+                        style="width: 150px;"
+                        pSortableColumn="registrationDate"
+                      >
+                        {{l('RegistrationDate')}}
+                        <p-sortIcon field="auditVendor.registrationDate"
+                        ></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="phone">
+                        {{l('Phone')}}
+                        <p-sortIcon field="auditVendor.phone"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="email">
+                        {{l('Email')}}
+                        <p-sortIcon field="auditVendor.email"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="website">
+                        {{l('Website')}}
+                        <p-sortIcon field="auditVendor.website"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="address">
+                        {{l('Address')}}
+                        <p-sortIcon field="auditVendor.address"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="city">
+                        {{l('City')}}
+                        <p-sortIcon field="auditVendor.city"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="state">
+                        {{l('State')}}
+                        <p-sortIcon field="auditVendor.state"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="postalCode">
+                        {{l('PostalCode')}}
+                        <p-sortIcon field="auditVendor.postalCode"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="country">
+                        {{l('Country')}}
+                        <p-sortIcon field="auditVendor.country"></p-sortIcon>
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="description">
+                        {{l('Description')}}
+                        <p-sortIcon
+                          field="auditVendor.description"
+                        ></p-sortIcon>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-record="$implicit">
+                    <tr>
+                      <td
+                        style="width: 130px;"
+                        [hidden]="!isGrantedAny('Pages.AuditManagement.AuditVendors.Edit', 'Pages.AuditManagement.AuditVendors.Delete')"
+                      >
+                        <div
+                          class="btn-group dropdown"
+                          dropdown
+                          container="body"
+                        >
+                          <button
+                            class="dropdown-toggle btn btn-sm btn-primary"
+                            dropdownToggle
+                          >
+                            <i class="fa fa-cog"></i
+                            ><span class="caret"></span> {{l("Actions")}}
+                          </button>
+                          <ul class="dropdown-menu" *dropdownMenu>
+                            <li>
+                              <a
+                                href="javascript:;"
+                                (click)="viewAuditVendorModal.show(record)"
+                                >{{l('View')}}</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="javascript:;"
+                                *ngIf="permission.isGranted('Pages.AuditManagement.AuditVendors.Edit')"
+                                (click)="createOrEditAuditVendorModal.show(record.auditVendor.id)"
+                                >{{l('Edit')}}</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="javascript:;"
+                                *ngIf="permission.isGranted('Pages.AuditManagement.AuditVendors.Delete')"
+                                (click)="deleteAuditVendor(record.auditVendor)"
+                                >{{l('Delete')}}</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('Name')}}</span>
+                        {{record.auditVendor.name}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title">
+                          {{l('RegistrationDate')}}</span
+                        >
+                        <span *ngIf="record.auditVendor.registrationDate">
+                          {{record.auditVendor.registrationDate |
+                          momentFormat:'L'}}
+                        </span>
+                        <span *ngIf="!record.auditVendor.registrationDate"
+                          >-</span
+                        >
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('Phone')}}</span>
+                        {{record.auditVendor.phone}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('Email')}}</span>
+                        {{record.auditVendor.email}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('Website')}}</span>
+                        {{record.auditVendor.website}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('Address')}}</span>
+                        {{record.auditVendor.address}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('City')}}</span>
+                        {{record.auditVendor.city}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('State')}}</span>
+                        {{record.auditVendor.state}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title">
+                          {{l('PostalCode')}}</span
+                        >
+                        {{record.auditVendor.postalCode}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title"> {{l('Country')}}</span>
+                        {{record.auditVendor.country}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title">
+                          {{l('Description')}}</span
+                        >
+                        {{record.auditVendor.description}}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div
+                class="primeng-no-data"
+                *ngIf="primengTableHelper.totalRecordsCount == 0"
+              >
+                {{l('NoData')}}
+              </div>
+              <div class="primeng-paging-container mt-2">
+                <p-paginator
+                  [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                  #paginator
+                  (onPageChange)="getAuditVendors($event)"
+                  [totalRecords]="primengTableHelper.totalRecordsCount"
+                  [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                >
+                </p-paginator>
+                <span class="total-records-count">
+                  {{l('TotalRecordsCount',
+                  primengTableHelper.totalRecordsCount)}}
+                </span>
+              </div>
+            </div>
+            <!--<Primeng-Datatable-End>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <createOrEditAuditVendorModal
+      #createOrEditAuditVendorModal
+      (modalSave)="getAuditVendors()"
+    ></createOrEditAuditVendorModal>
+    <viewAuditVendorModal #viewAuditVendorModal></viewAuditVendorModal>
+  </div>
+</div>

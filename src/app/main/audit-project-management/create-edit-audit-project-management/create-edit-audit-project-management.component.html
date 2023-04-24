@@ -1,0 +1,179 @@
+<div appBsModal #createEditAuditProjectManagementModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createEditAuditProjectManagementModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl border-grey" id="fix_modal_body">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="kt-subheader__main form-check-inline">
+                    <h4 class="modal-title kt-margin-r-10" *ngIf="!auditProId">
+                        {{'Create Audit Project' | localize}}
+                    </h4>
+                    <h4 class="modal-title kt-margin-r-10" *ngIf="auditProId">
+                        {{'Edit Audit Project' | localize}}
+                    </h4>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc kt-margin-r-10" *ngIf="auditProject.auditStatusName">
+                        {{"Audit Status" | localize}}
+                    </span>
+                    <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5"
+                          *ngIf="auditProject.auditStatusName" style="min-width: 100px">
+                        {{auditProject.auditStatusName}}
+                    </span>
+                </div>
+            </div>
+            <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                 [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                <div>
+                    <ul id="tab-nav" class="w-100 nav nav-tabs nav-tabs-line nav-tabs-line-info nav-tabs-line-2x nav-tabs-line-left bg-ghostwhite" role="tablist">
+                        <li class="nav-item" [ngClass]="{ 'selectedTab': 1 == selectedItem }">
+                            <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(1)">
+                                {{'Audit Project' | localize}}
+                            </a>
+                        </li>
+                        <ng-container *ngIf="('Pages.AuditProject.AuditReports' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 2 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(2)">
+                                    {{'Audit Report' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.CorrectiveActionPlan' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 7 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(7)">
+                                    {{'Remediation Plan' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.SurviellanceProgram' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 3 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(3)">
+                                    {{'Surviellance Program' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.CertificateProposal' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 4 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(4)">
+                                    {{'Certification Proposal' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.Dicision' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 5 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(5)">
+                                    {{'Decision' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.Certificate' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 6 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(6)">
+                                    {{'Certificate' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.RelatedAttachments' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 8 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(8)">
+                                    {{'Related Attachments' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.ReportTab' | permission)">
+                            <li class="nav-item" *ngIf="auditProject.id"
+                                [ngClass]="{ 'selectedTab': 9 == selectedItem }">
+                                <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="selectTab(9)">
+                                    {{'Reports' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </div>
+                <div>
+                    <div *ngIf="selectedItem == 1" class="kt-padding-t-10">
+                        <tab-view-audit-project (closeModal)="close($event)" [auditProId]="auditProId"
+                                                (showsTab)="showsTab($event)" (showsAllTab)="showsAllTab($event)"></tab-view-audit-project>
+                    </div>
+                    <div *ngIf="selectedItem == 2" class="kt-padding-t-10">
+                        <tab-view-audit-report [entityGroupId]="auditProject.entityGroupId" [oldAuditProject]="auditProject" [businessentityId]="auditProject.businessEntityId"
+                                               (closeModal)="close($event)" [auditProjectId]="auditProId" [vendorId]="auditProject.vendorId">
+                        </tab-view-audit-report>
+                    </div>
+                    <div *ngIf="selectedItem == 3" class="kt-padding-t-10">
+                        <tab-view-surviellance-program [entityGroupId]="auditProject.entityGroupId" [businessentityId]="auditProject.businessEntityId"
+                                                       (closeModal)="close($event)" [vendorId]="auditProject.vendorId" [auditprojectId]="auditProject.id"></tab-view-surviellance-program>
+                    </div>
+                    <div *ngIf="selectedItem == 4" class="kt-padding-t-10">
+                        <tab-view-certification-proposal [entityGroupId]="auditProject.entityGroupId" [businessentityId]="auditProject.businessEntityId"
+                                                         (closeModal)="close($event)" [auditProjectId]="auditProject.id"></tab-view-certification-proposal>
+                    </div>
+                    <div *ngIf="selectedItem == 5" class="kt-padding-t-10">
+                        <tab-view-decision [entityGroupId]="auditProject.entityGroupId" [businessentityId]="auditProject.businessEntityId"
+                                           (closeModal)="close($event)" [auditprojectId]="auditProject.id"></tab-view-decision>
+                    </div>
+                    <div *ngIf="selectedItem == 6" class="kt-padding-t-10">
+                        <tab-view-certificate [auditProjectId]="auditProject.id"></tab-view-certificate>
+                    </div>
+                    <div *ngIf="selectedItem == 7" class="kt-padding-t-10">
+                        <grid-remediation-plan [auditprojectId]="auditProject.id"></grid-remediation-plan>
+                    </div>
+                    <div *ngIf="selectedItem == 8" class="kt-padding-t-10">
+                        <div>
+                            <file-upload [name]="'AuditProjectManagementRelatedAttachment'"
+                                         [attachedFile]="attachedFileCodes"
+                                         [multiple]="true"
+                                         [attachedfileSize]="2097150"
+                                         [noFileUpload]="100"                                        
+                                         (attachmentData)="getAttachment($event)"></file-upload>
+                        </div>
+                    </div>
+
+                    <div *ngIf="selectedItem == 9" class="kt-padding-t-10">
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="w-75" scope="col">File Name</th>
+                                        <th class="w-25" scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let file of getReportData; let i = index">
+                                        <td>
+                                            <span id="name{{i}}" name="fileName{{i}}">{{file.fileName}}</span>
+                                        </td>
+                                        <td class="kt-align-center">
+                                            <i class="fa fa-download kt-font-skype"
+                                               (click)="downloadAttachmentReport(file.fileName)"></i>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!getReportData">
+                                        <td colspan="2" class="kt-align-center">
+                                            <span>No Report</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedItem == 10" class="kt-padding-t-10">
+
+                    </div>
+                    <div *ngIf="selectedItem == 11" class="kt-padding-t-10">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm" (click)="close(1)">{{"Close" | localize}}</button>
+                <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close(selectedItem)">{{"Cancel" | localize}}</button>
+                <button type="submit" class="btn btn-info btn-sm btn-submit" (click)="save(selectedItem)"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+            </div>
+        </div>
+    </div>
+</div>

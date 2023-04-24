@@ -1,0 +1,174 @@
+<div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Surviellance Audit')}}</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('CP ID')}}</label>
+                    <input type="text" name="cpidCode" [(ngModel)]="certificationProposalInput.cpidCode" class="form-control" placeholder="System Generated" disabled>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Reference Standard')}}</label>
+                    <select class="form-control kt-padding-r-10" disabled [(ngModel)]="selectedADId">
+                        <option *ngFor="let item of authorityDocuments" [ngValue]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Release Number')}}</label>
+                    <input type="text" name="releaseNumber" [(ngModel)]="certificationProposalInput.releaseNumber" class="form-control" placeholder="System Generated" disabled>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="entityGroupId!=null">
+                <div class="form-group">
+                    <label>{{l('Group Name')}}</label>
+                    <select class="form-control kt-padding-r-10" disabled [(ngModel)]="certificationProposalInput.entityGroupId" (change)="SetPrimaryEntityName()">
+                        <option *ngFor="let item of EntityGroupList" [ngValue]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Facilities')}}</label>
+                    <select [disabled]="reauditPermission" class="form-control kt-padding-r-10" [(ngModel)]="selectedAssessmentId" (change)="changeCalcularion(selectedAssessmentId)">
+                        <option *ngFor="let item of BusinessEntityList" [ngValue]="item.assessmentId">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Proposal - Date')}}</label>
+                    <div id="incident_closeDatetime" class="kt-input-icon">
+                        <input id="incident_closeDatetime" required
+                               type="datetime"
+                               [disabled]="reauditPermission"
+                               #incident_closeDatetime
+                               name="closeDate"
+                               class="form-control input-group date"
+                               bsDatepicker
+                               datePickerMomentModifier
+                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                               [(date)]="certificationProposalInput.proposalDate"
+                               autocomplete="off" />
+                        <span class="position-absolute"
+                              style="top: 25%; right: 20px; font-size: 18px;">
+                            <span><i class="flaticon-calendar-1"></i></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Input Documents Checked - Evidences & Artifacts')}}</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Scope')}}</label>
+                    <textarea [disabled]="reauditPermission" class="form-control" name="scope" [(ngModel)]="certificationProposalInput.scope" rows="3" placeholder="Please enter scope details...."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Audit Information')}}</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Total Man Days')}}</label>
+                    <input type="text" name="totalManDays" [(ngModel)]="certificationProposalInput.totalManDays" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Number of Full Non-Compliance Identified')}}</label>
+                    <input type="text" name="fullyCompliantCount" [(ngModel)]="certificationProposalInput.fullyCompliantCount" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Exclusion / Non-Applicability')}}</label>
+                    <input type="text" name="notApplicableCount" [(ngModel)]="certificationProposalInput.notApplicableCount" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Number of Partial Non-Compliance Identified ')}}</label>
+                    <input type="text" name="partiallyCompliantCount" [(ngModel)]="certificationProposalInput.partiallyCompliantCount" class="form-control" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Domains Under Evaluation and Verification')}}</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('External Assessment ID')}}</label>
+                    <input type="text" name="externalAssessmentId" class="form-control" [(ngModel)]="externalAssessmentId" disabled>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>{{l(' ')}}</label>
+                    <select class="form-control kt-padding-r-10" [disabled]="reauditPermission">
+                        <option *ngFor="let item of certificationProposalCalculation; let i = index" [ngValue]="i">
+                            {{item.domainName}} ({{item.totalCount}})
+                        </option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        <table class="table kt-margin-t-10 table-bordered">
+            <thead>
+                <tr class="tr-bg-color" style="background-color: #00aff0 !important;">
+                    <th class="kt-font-bold kt-align-center width-40 kt-font-light kt-font-sm">{{l('Domains')}}</th>
+                    <th class="kt-font-bold kt-align-center width-20 kt-font-light kt-font-sm">{{l('Auditor(s)')}}</th>
+                    <th class="kt-font-bold kt-align-center width-20 kt-font-light kt-font-sm">{{l('Auditee(s)')}}</th>
+                    <th class="kt-font-bold kt-align-center width-20 kt-font-light kt-font-sm">{{l('Level of Compliance')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of domainDetails">
+                    <td>{{item.Name}}</td>
+                    <td>{{item.AuditorName}}</td>
+                    <td>{{item.AuditeeName}}</td>
+                    <td>{{item.Level}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-7"></div>
+            <div class="col-5">
+                <div class="row">
+                    <div class="col-4">
+                        <label class="kt-font-sm">{{l('Grade')}}</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" name="grade" [(ngModel)]="certificationProposalInput.grade" class="w-100 form-control" placeholder="System Generated" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+</div>

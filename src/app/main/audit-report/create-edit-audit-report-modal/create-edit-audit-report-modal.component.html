@@ -1,0 +1,40 @@
+<div appBsModal #createEditAuditReportModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createEditAuditReportModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form *ngIf="active" #auditReportForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Audit Reportl')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <tabset>
+                        <tab heading="{{'Audit Report' | localize}}">
+                            <div class="kt-padding-l-20 kt-padding-r-20">
+                                <tab-audit-report></tab-audit-report>
+                            </div>
+                        </tab>
+                        <tab heading="{{'Audit Detail' | localize}}">
+                            <div class="kt-padding-l-20 kt-padding-r-20">
+                                <tab-audit-detail></tab-audit-detail>
+                            </div>
+                        </tab>
+                        <tab heading="{{'Audit Team' | localize}}">
+                            <div class="kt-padding-l-20 kt-padding-r-20">
+                                <tab-audit-team></tab-audit-team>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

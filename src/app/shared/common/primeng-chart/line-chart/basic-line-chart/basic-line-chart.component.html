@@ -1,0 +1,37 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Compliance Score By Facility Type (Overall)" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <!--<ng-select [items]="dataGroup" [searchable]="true" bindLabel="name"
+                       bindValue="id" placeholder="Select" name="name" [(ngModel)]="selectedValue" (change)="getData()">
+            </ng-select>-->
+        </div>
+    </div>
+    <div class="kt-portlet__body" [perfectScrollbar]="{wheelPropagation: false}"
+         [ngStyle]="{'max-width': '99%', 'position': 'relative'}">
+        <div>
+            <!--<div id="cylinderIdGauge"></div>-->
+            <div style="height:350px; padding-top: 0em;" class="position-absolute">
+                <div style="height:25%" *ngFor="let item of xData; let i = index">
+                    <span class="font-weight-bolder">{{item.name}}%</span>
+                </div>
+            </div>
+            <div class="pl-2 pb-1" style="border-left: solid 0.5px #eee5ff; border-bottom: solid 0.5px #eee5ff; margin-left:2em">
+                <div [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-width': '99%', 'position': 'relative'}">
+                    <div style="height:350px; padding-top: 0em;" [ngStyle]="{ width: widthDynamic + 'em'}">
+                        <div class="bg-light-info absolute cursor-pointer" *ngFor="let item of data; let i = index" style="height: 100%; width: 2em; float: left; margin-right: 4px;">
+                            <div class="" [ngStyle]="{height: 100 - item.value + '% '}"></div>
+                            <div class="bar " [ngStyle]="{height: item.value + '% '}"
+                                 [pTooltip]="item.value + '%'" tooltipPosition="top"></div>
+                            <span class="text-vertical text-light kt-padding-5">{{item.name}}</span>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            <div class="pt-2 kt-align-center w-100 font-weight-bolder">{{"Group" | localize}}</div>
+        </div>
+        </div>
+    </div>

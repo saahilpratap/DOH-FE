@@ -1,0 +1,734 @@
+<!-- BEGIN: Topbar -->
+<!-- BEGIN: Topbar -->
+<div class="kt-header__topbar">
+  <div
+    class="kt-header__topbar-item dropdown d-none d-lg-block subscription-warning"
+    *ngIf="subscriptionStatusBarVisible()"
+  >
+    <a
+      href="javascript:;"
+      *ngIf="
+                appSession.tenant.isInTrialPeriod &&
+                !subscriptionIsExpiringSoon()
+            "
+      class="kt-nav__link m-dropdown__toggle"
+    >
+      <span class="kt-nav__link-text glowing">
+        <i class="fa fa-exclamation-triangle"></i>
+        <span
+          class="kt-menu__link-text ml-1"
+          [innerHTML]="getTrialSubscriptionNotification()"
+        ></span>
+      </span>
+    </a>
+    <a
+      *ngIf="subscriptionIsExpiringSoon()"
+      routerLink="/app/admin/subscription-management"
+      class="kt-nav__link"
+    >
+      <span
+        *ngIf="
+                    subscriptionIsExpiringSoon() &&
+                    appSession.tenant.isInTrialPeriod
+                "
+        class="kt-nav__link-text glowing"
+      >
+        <i class="fa fa-exclamation-triangle"></i>
+        <span class="kt-menu__link-text ml-1">
+          {{ getExpireNotification("TrialExpireNotification") }}
+        </span>
+      </span>
+      <span
+        *ngIf="
+                    subscriptionIsExpiringSoon() &&
+                    !appSession.tenant.isInTrialPeriod
+                "
+        class="kt-nav__link-text glowing"
+      >
+        <i class="fa fa-exclamation-triangle"></i>
+        <span class="kt-menu__link-text ml-1">
+          {{ getExpireNotification("SubscriptionExpireNotification") }}
+        </span>
+      </span>
+    </a>
+  </div>
+  <div
+    *ngIf="isQuickThemeSelectEnabled"
+    id="kt_theme_selection_panel_toggle"
+    class="kt-header__topbar-item dropdown"
+  >
+    <div class="kt-header__topbar-wrapper">
+      <span class="kt-header__topbar-icon kt-header__topbar-icon--brand">
+        <i class="flaticon-interface-7"></i>
+      </span>
+    </div>
+  </div>
+  <div style="position: relative; left: -5%;" class="kt-header__topbar-item">
+    <button
+      *ngIf="permission.isGranted('Pages.HealthCareEntities.Assessments')"
+      style="padding: 10px; background: none; border: none; color: white;"
+      routerLink="/app/main/assessments/assessments"
+    >
+      Assessments
+    </button>
+    <button
+      *ngIf="permission.isGranted('Pages.SystemSetUp.Incidents')"
+      style="padding: 10px; background: none; border: none; color: white;"
+      routerLink="/app/main/incidents/incidents"
+    >
+      Incidents
+    </button>
+    <button
+      *ngIf="permission.isGranted('Pages.SystemSetUp.Exceptions')"
+      style="padding: 10px; background: none; border: none; color: white;"
+      routerLink="/app/main/exceptions/exceptions"
+    >
+      Exceptions
+    </button>
+    <button
+      *ngIf="permission.isGranted('Pages.BusinessRisks')"
+      style="
+        padding: 10px;
+        min-width: 115px;
+        background: none;
+        border: none;
+        color: white;
+      "
+      routerLink="/app/main/businessRisks/businessRisks"
+    >
+      Business Risks
+    </button>
+  </div>
+  <!-- <div
+        dropdown
+        class="kt-header__topbar-item dropdown dropdown-language"
+        *ngIf="languages.length > 1"
+    >
+        <div
+            dropdownToggle
+            class="kt-header__topbar-wrapper dropdown-toggle"
+            data-toggle="dropdown"
+            data-offset="30px,0px"
+            aria-expanded="true"
+            aria-haspopup="true"
+        >
+            <span class="kt-header__topbar-icon kt-header__topbar-icon--brand">
+                <i [class]="currentLanguage.icon"></i>
+            </span>
+        </div>
+        <div
+            *dropdownMenu
+            class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-lg"
+            [attr.aria-label]="l('Languages')"
+        >
+            <ul class="kt-nav kt-margin-t-10 kt-margin-b-10">
+                <li class="kt-nav__item" *ngFor="let language of languages">
+                    <a
+                        class="kt-nav__link"
+                        (click)="changeLanguage(language.name)"
+                    >
+                        <span class="kt-nav__link-icon">
+                            <i [class]="language.icon"></i>
+                        </span>
+                        <span class="kt-nav__link-text">
+                            {{ language.displayName }}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div> -->
+  <!--<div
+    class="kt-header__topbar-item"
+    (click)="op.show($event, actualTarget)"
+  >
+    <div class="kt-header__topbar-icon kt-header__topbar-icon--primary">
+      <i
+        class="fa fa-tasks font-15 font-weight-bold text-white"
+        aria-hidden="true"
+      ></i>
+    </div>
+  </div>-->
+  <div class="p-0" #actualTarget></div>
+  <p-overlayPanel
+    #op
+    [showCloseIcon]="true"
+    [dismissable]="false"
+    [style]="{width: '450px'}"
+    class="p-0"
+    [appendTo]="actualTarget"
+    [autoZIndex]="true"
+  >
+    <ng-template pTemplate>
+      <div class="row">
+        <div class="col-md-12 col-12 col-xl-12">
+          <div class="card-hover-shadow-2x card">
+            <div class="card-header-tab card-header">
+              <div
+                class="card-header-title font-size-lg text-capitalize font-weight-normal"
+              >
+                <i class="fa fa-tasks"></i>&nbsp;Task Lists
+              </div>
+            </div>
+            <div class="scroll-area-sm">
+              <perfect-scrollbar class="ps-show-limits">
+                <div style="position: static;" class="ps ps--active-y">
+                  <div class="ps-content">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">
+                        <div class="todo-indicator bg-warning"></div>
+                        <div class="widget-content p-0">
+                          <div class="widget-content-wrapper">
+                            <div class="widget-content-left mr-2">
+                              <div class="custom-checkbox custom-control">
+                                <input
+                                  class="custom-control-input"
+                                  id="exampleCustomCheckbox12"
+                                  type="checkbox"
+                                /><label
+                                  class="custom-control-label"
+                                  for="exampleCustomCheckbox12"
+                                  >&nbsp;</label
+                                >
+                              </div>
+                            </div>
+                            <div class="widget-content-left">
+                              <div class="widget-heading">
+                                Call Sam For payments
+                                <div class="badge badge-danger ml-2">
+                                  Rejected
+                                </div>
+                              </div>
+                              <div class="widget-subheading">
+                                <i>By Bob</i>
+                              </div>
+                            </div>
+                            <div class="widget-content-right">
+                              <button
+                                class="border-0 btn-transition btn btn-outline-success"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              <button
+                                class="border-0 btn-transition btn btn-outline-danger"
+                              >
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="todo-indicator bg-focus"></div>
+                        <div class="widget-content p-0">
+                          <div class="widget-content-wrapper">
+                            <div class="widget-content-left mr-2">
+                              <div class="custom-checkbox custom-control">
+                                <input
+                                  class="custom-control-input"
+                                  id="exampleCustomCheckbox1"
+                                  type="checkbox"
+                                /><label
+                                  class="custom-control-label"
+                                  for="exampleCustomCheckbox1"
+                                  >&nbsp;</label
+                                >
+                              </div>
+                            </div>
+                            <div class="widget-content-left">
+                              <div class="widget-heading">
+                                Make payment to Bluedart
+                              </div>
+                              <div class="widget-subheading">
+                                <div>
+                                  By Johnny
+                                  <div class="badge badge-pill badge-info ml-2">
+                                    NEW
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="widget-content-right">
+                              <button
+                                class="border-0 btn-transition btn btn-outline-success"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              <button
+                                class="border-0 btn-transition btn btn-outline-danger"
+                              >
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="todo-indicator bg-primary"></div>
+                        <div class="widget-content p-0">
+                          <div class="widget-content-wrapper">
+                            <div class="widget-content-left mr-2">
+                              <div class="custom-checkbox custom-control">
+                                <input
+                                  class="custom-control-input"
+                                  id="exampleCustomCheckbox4"
+                                  type="checkbox"
+                                /><label
+                                  class="custom-control-label"
+                                  for="exampleCustomCheckbox4"
+                                  >&nbsp;</label
+                                >
+                              </div>
+                            </div>
+                            <div class="widget-content-left flex2">
+                              <div class="widget-heading">
+                                Office rent
+                              </div>
+                              <div class="widget-subheading">
+                                By Samino!
+                              </div>
+                            </div>
+                            <div class="widget-content-right">
+                              <button
+                                class="border-0 btn-transition btn btn-outline-success"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              <button
+                                class="border-0 btn-transition btn btn-outline-danger"
+                              >
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="todo-indicator bg-info"></div>
+                        <div class="widget-content p-0">
+                          <div class="widget-content-wrapper">
+                            <div class="widget-content-left mr-2">
+                              <div class="custom-checkbox custom-control">
+                                <input
+                                  class="custom-control-input"
+                                  id="exampleCustomCheckbox2"
+                                  type="checkbox"
+                                /><label
+                                  class="custom-control-label"
+                                  for="exampleCustomCheckbox2"
+                                  >&nbsp;</label
+                                >
+                              </div>
+                            </div>
+                            <div class="widget-content-left">
+                              <div class="widget-heading">
+                                Office grocery shopping
+                              </div>
+                              <div class="widget-subheading">
+                                By Tida
+                              </div>
+                            </div>
+                            <div class="widget-content-right">
+                              <button
+                                class="border-0 btn-transition btn btn-outline-success"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              <button
+                                class="border-0 btn-transition btn btn-outline-danger"
+                              >
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="todo-indicator bg-success"></div>
+                        <div class="widget-content p-0">
+                          <div class="widget-content-wrapper">
+                            <div class="widget-content-left mr-2">
+                              <div class="custom-checkbox custom-control">
+                                <input
+                                  class="custom-control-input"
+                                  id="exampleCustomCheckbox3"
+                                  type="checkbox"
+                                /><label
+                                  class="custom-control-label"
+                                  for="exampleCustomCheckbox3"
+                                  >&nbsp;</label
+                                >
+                              </div>
+                            </div>
+                            <div class="widget-content-left flex2">
+                              <div class="widget-heading">
+                                Ask for Lunch to Clients
+                              </div>
+                              <div class="widget-subheading">
+                                By Office Admin
+                              </div>
+                            </div>
+                            <div class="widget-content-right">
+                              <button
+                                class="border-0 btn-transition btn btn-outline-success"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              <button
+                                class="border-0 btn-transition btn btn-outline-danger"
+                              >
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                        <div class="todo-indicator bg-success"></div>
+                        <div class="widget-content p-0">
+                          <div class="widget-content-wrapper">
+                            <div class="widget-content-left mr-2">
+                              <div class="custom-checkbox custom-control">
+                                <input
+                                  class="custom-control-input"
+                                  id="exampleCustomCheckbox10"
+                                  type="checkbox"
+                                /><label
+                                  class="custom-control-label"
+                                  for="exampleCustomCheckbox10"
+                                  >&nbsp;</label
+                                >
+                              </div>
+                            </div>
+                            <div class="widget-content-left flex2">
+                              <div class="widget-heading">
+                                Client Meeting at 11 AM
+                              </div>
+                              <div class="widget-subheading">
+                                By CEO
+                              </div>
+                            </div>
+                            <div class="widget-content-right">
+                              <button
+                                class="border-0 btn-transition btn btn-outline-success"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              <button
+                                class="border-0 btn-transition btn btn-outline-danger"
+                              >
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </perfect-scrollbar>
+            </div>
+            <div class="d-block text-right card-footer">
+              <button class="mr-2 btn btn-outline-danger btn-icon-sm btn-sm" (click)="op.hide()">
+                Cancel</button
+              ><button class="btn btn-primary btn-sm">Add Task</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-overlayPanel>
+
+  <div
+    headerNotifications
+    class="kt-header__topbar-item dropdown"
+    dropdown
+    id="header_notification_bar"
+  ></div>
+  <div
+    class="kt-header__topbar-item kt-header__topbar-item--user ng-star-inserted dropdown"
+    dropdown
+    placement="bottom-right"
+  >
+    <div
+      class="kt-header__topbar-wrapper dropdown-toggle"
+      data-toggle="dropdown"
+      aria-expanded="false"
+      aria-haspopup="true"
+      dropdownToggle
+    >
+      <div class="kt-header__topbar-user">
+        <i
+          *ngIf="isImpersonatedLogin"
+          class="fa fa-reply kt-font-danger mr-2"
+        ></i>
+        <span class="kt-header__topbar-username kt-hidden-mobile">
+          <span *ngIf="isMultiTenancyEnabled" class="tenancy-name"
+            >{{ tenancyName }}\</span
+          >{{ userName }}
+        </span>
+        <img
+          *ngIf="profilePicture"
+          class="header-profile-picture m--img-rounded m--marginless m--img-centered"
+          alt="Pic"
+          [src]="profilePicture"
+        />
+      </div>
+    </div>
+    <div
+      *dropdownMenu
+      class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl"
+      x-placement="bottom-right"
+      style="
+        position: absolute;
+        will-change: transform;
+        top: 0px;
+        left: 0px;
+        transform: translate3d(1253px, 64px, 0px);
+      "
+    >
+      <div
+        class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x"
+        [ngStyle]="{
+                    background:
+                        'url(' +
+                        appRootUrl() +
+                        'assets/metronic/themes/' +
+                        currentTheme.baseSettings.theme +
+                        '/images/bg/bg-1.jpg)',
+                    'background-size': 'cover'
+                }"
+      >
+        <div class="kt-user-card__avatar">
+          <img class="" alt="Pic" [src]="profilePicture" />
+        </div>
+        <div class="kt-user-card__name">
+          <span *ngIf="isMultiTenancyEnabled" class="tenancy-name"
+            >{{ tenancyName }}\</span
+          >{{ userName }}
+        </div>
+      </div>
+      <div class="kt-notification user-profile-menu">
+        <a
+          *ngIf="isImpersonatedLogin"
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="backToMyAccount()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="fa fa-reply kt-font-danger"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "BackToMyAccount" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>
+        <!--<a
+          href="javascript:;"
+          class="kt-notification__item linked-accounts"
+          (click)="showLinkedAccounts()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-user-settings"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "ManageLinkedAccounts" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>-->
+        <div class="kt-notification__custom py-0 linked-accounts">
+          <ul
+            class="kt-nav linked-accounts"
+            *ngIf="recentlyLinkedUsers"
+            [attr.aria-label]="l('LinkedAccounts')"
+          >
+            <li
+              *ngFor="let linkedUser of recentlyLinkedUsers"
+              class="kt-nav__item py-2"
+            >
+              <a
+                href="javascript:;"
+                (click)="switchToLinkedUser(linkedUser)"
+                class="recently-linked-user"
+              >
+                <span class="kt-nav__link-bullet">
+                  <span></span>
+                </span>
+                <span class="kt-nav__link-text">
+                  {{ getShownUserName(linkedUser) }}
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <a
+          *ngIf="appSession.application.userDelegationIsEnabled && !isImpersonatedLogin"
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="showUserDelegations()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-users"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{"ManageUserDelegations" | localize}}
+              </span>
+            </div>
+          </div>
+        </a>
+        <a
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="changePassword()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-more-v6"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "ChangePassword" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>
+        <!--<a
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="showLoginAttempts()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-list"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "LoginAttempts" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>-->
+        <a
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="changeProfilePicture()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-profile-1"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "ChangeProfilePicture" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>
+        <a
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="changeMySettings()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-cogwheel"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "MySettings" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>
+        <!-- <a
+        *ngIf="
+            !('Pages.Administration.UiCustomization' | permission)
+        "
+        routerLink="admin/ui-customization"
+        class="kt-notification__item"
+    >
+        <div class="kt-notification__item-icon">
+            <i class="flaticon-medical"></i>
+        </div>
+        <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+                <span>
+                    {{ "VisualSettings" | localize }}
+                </span>
+            </div>
+        </div>
+    </a> -->
+        <!--<a
+          href="javascript:;"
+          class="kt-notification__item"
+          (click)="downloadCollectedData()"
+        >
+          <div class="kt-notification__item-icon">
+            <i class="flaticon-download"></i>
+          </div>
+          <div class="kt-notification__item-details">
+            <div class="kt-notification__item-title kt-font-bold">
+              <span>
+                {{ "DownloadCollectedData" | localize }}
+              </span>
+            </div>
+          </div>
+        </a>-->
+        <div class="kt-notification__custom">
+          <a (click)="logout()" class="btn btn-label-brand btn-sm btn-bold"
+            >{{ "Logout" | localize }}</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div
+        *ngIf="(isHost || ('App.ChatFeature' | checkFeature)) && !chatConnected"
+        class="kt-header__topbar-item dropdown"
+    >
+        <div class="kt-header__topbar-wrapper">
+            <span class="kt-header__topbar-icon kt-header__topbar-icon--brand">
+                <img
+                    *ngIf="!chatConnected"
+                    src="./assets/common/images/loading.gif"
+                    style="width: 23px;"
+                    tooltip="{{ 'ChatIsConnecting' | localize }}"
+                    placement="left"
+                />
+            </span>
+        </div>
+    </div> -->
+  <!-- <div
+        id="kt_quick_sidebar_toggle"
+        [hidden]="
+            !(isHost || ('App.ChatFeature' | checkFeature)) || !chatConnected
+        "
+        class="kt-header__topbar-item dropdown"
+    >
+        <div class="kt-header__topbar-wrapper">
+            <span class="kt-header__topbar-icon kt-header__topbar-icon--brand">
+                <div *ngIf="unreadChatMessageCount">
+                    <i class="flaticon-chat-2 unread-notification"></i>
+                    <span
+                        class="kt-badge kt-badge--primary unread-notification-count"
+                    >
+                        {{ unreadChatMessageCount }}
+                    </span>
+                </div>
+                <div *ngIf="!unreadChatMessageCount">
+                    <i class="flaticon-chat-2"></i>
+                </div>
+            </span>
+        </div>
+    </div> -->
+</div>
+<!-- END: Topbar -->
+<!-- END: Topbar -->

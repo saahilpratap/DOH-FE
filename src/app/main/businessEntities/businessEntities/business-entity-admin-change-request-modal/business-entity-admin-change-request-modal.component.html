@@ -1,0 +1,48 @@
+<div appBsModal #businessEntityAdminChangeRequestModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="businessEntityAdminChangeRequestModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #businessEntityAdminChangeRequestForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+               
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            Change Business Entity Admin Request
+                        </h4>
+                        <button type="button" class="close" (click)="close()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                         [ngStyle]="{'min-height': '60vh', 'position': 'relative'}">
+                        <div class="col-md-12">
+                            <ng-select [items]="userList"
+                                       [searchable]="false"
+                                       bindLabel="name"
+                                       bindValue="id"
+                                       [(ngModel)]="userId"
+                                       required
+                                       placeholder="Select Option"
+                                       style="min-width:170px;"
+                                       name="Name">
+                            </ng-select>
+                        </div>
+                      
+                      
+                    </div>
+                    <div class="modal-footer">
+                       
+                            <b style="color:red">Note:-</b><span>The selected user will become Entity Admin</span>
+                       
+                        <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                        <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [buttonBusy]="saving" [disabled]="!businessEntityAdminChangeRequestForm.form.valid"
+                                [busyText]="l('SavingWithThreeDot')">
+                            <span>{{"Save" | localize}}</span>
+                        </button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>

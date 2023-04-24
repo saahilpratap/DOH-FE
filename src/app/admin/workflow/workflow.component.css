@@ -1,0 +1,31 @@
+.kt-portlet__head-title {
+    color: #4fa6b0 !important;
+    font-weight: 600 !important;
+}
+
+.text-color {
+    color: #33333f !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+}
+
+.tab-color {
+    color: #33333f !important;
+    font-size: 12px !important;
+}
+
+a span {
+    color: #33333f !important;
+}
+
+.nav-tabs .nav-item .nav-link {
+    color: #33333f !important;
+}
+
+    .nav-tabs .nav-item .nav-link.active, .nav-tabs .nav-item .nav-link:active, .nav-tabs .nav-item .nav-link {
+        color: #33333f !important;
+    }
+
+.btn-border-radius {
+    border-radius: 5px;
+}

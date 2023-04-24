@@ -1,0 +1,203 @@
+
+<p-overlayPanel #rv   [styleClass]="'custom-overlay'" [style]="{'width': '300px'}" [dismissable]="true" [appendTo]="'body'">
+    <ng-template pTemplate>
+        <div style="min-height:100px">
+            <div *ngFor="let user of beUsers" class="kt-padding-5">
+                <span class="form-check-inline">
+                    <input type="radio" name="radiogroup" (change)="setPrimaryReviewerId(user.id)" [checked]="authorityDepartment.primaryReviewerId==user.id">
+                    <span class="kt-padding-l-5 kt-font-bold">{{ user.name }}</span>
+                </span>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel #av [styleClass]="'custom-overlay'" [style]="{'width': '300px'}" [dismissable]="true" [appendTo]="'body'">
+    <ng-template pTemplate>
+        <div style="min-height:100px">
+            <div *ngFor="let user of beUsers" class="kt-padding-5">
+                <span class="form-check-inline">
+                    <input type="radio" name="radiogroup" (change)="setPrimaryApproverId(user.id)" [checked]="authorityDepartment.primaryApproverId==user.id">
+                    <span class="kt-padding-l-5 kt-font-bold">{{ user.name }}</span>
+                </span>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #authorityDepartmentForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="authorityDepartment.id && hideButton != 1">
+                            {{l("EditAuthorityDepartment")}}
+                        </span>
+                        <span *ngIf="authorityDepartment.id && hideButton == 1">
+                            {{l("View Authority Department")}}
+                        </span>
+                        <span *ngIf="!authorityDepartment.id">
+                            {{l("CreateNewAuthorityDepartment")}}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'">
+                    <div class="form-group">
+                        <label class="required" for="AuthorityDepartment_Name">
+                            {{l("Name")}}
+                        </label>
+                        <input type="text" required
+                               id="AuthorityDepartment_Name"
+                               class="form-control"
+                               [(ngModel)]="authorityDepartment.name"
+                               name="Name" />
+                    </div>
+
+                    <div *ngIf="authorityDepartment.id">
+                        <h5>WorkFlow Fields</h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="Authoritys" class="required">
+                                    {{l("Work Flow Name ")}}
+                                </label>
+                                <select required
+                                        class="form-control"
+                                        name="workflow"
+                                        [(ngModel)]="authorityDepartment.workFlowNameId">
+                                    <option value="" disabled selected>Select your option</option>
+                                    <option *ngFor="let user of workflow"
+                                            [ngValue]="user.id" class="form-row">
+                                        {{ user.pageName}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="Authoritys" class="required">
+                                    {{l("Authorative Document")}}
+                                </label>
+                                <select required
+                                        class="form-control"
+                                        name="AuthorativeDocument"
+                                        [(ngModel)]="authorityDepartment.authoritativeDocumentId">
+                                    <option value="" disabled selected>Select your option</option>
+                                    <option *ngFor="let user of authoritavuieDocuments"
+                                            [ngValue]="user.id" class="form-row">
+                                        {{ user.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row pt-5">
+                            <div class="col-sm-4">
+                                <label for="reviewers">
+                                    {{l(" Reviewers")}}
+                                </label>
+                                <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5 btn-label-info" (click)="rv.toggle($event)"
+                                        style="border-radius: 7px;" for="setPrimaryKey">
+                                    {{ l(" Set Primary Key")}}
+                                </button>
+                                <select multiple
+                                        class="form-control"
+                                        name="reviewers"
+                                        [(ngModel)]="authorityDepartment.reviewerIds">
+                                    <option *ngFor="let user of beUsers"
+                                            [ngValue]="user.id" class="form-row">
+                                        {{ user.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="approvers">
+                                    {{l(" Approvers")}}
+                                </label>
+                                <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5 btn-success" (click)="av.toggle($event)"
+                                        style="border-radius: 7px;" for="setPrimaryKey">
+                                    {{ l(" Set Primary Key")}}
+                                </button>
+                                <select multiple
+                                        class="form-control"
+                                        name="approvers"
+                                        [(ngModel)]="authorityDepartment.approverIds">
+                                    <option *ngFor="let user of beUsers"
+                                            [ngValue]="user.id">
+                                        {{ user.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="Notifiers">
+                                    {{l(" Notifiers")}}
+                                </label>
+                                <select multiple
+                                        class="form-control"
+                                        name="Notifiers"
+                                        [(ngModel)]="authorityDepartment.notifierIds">
+                                    <option *ngFor="let user of notifiersEntitiesLookup"
+                                            [ngValue]="user.contact.id">
+                                        {{ user.contact.email }}
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="row pt-5">
+                            <div class="col-sm-4">
+                                <label for="Authoritys">
+                                    {{l("Technical Committee")}}
+                                </label>
+                                <select multiple
+                                        class="form-control"
+                                        name="approvers"
+                                        [(ngModel)]="authorityDepartment.authorityIds">
+                                    <option *ngFor="let user of beUsers"
+                                            [ngValue]="user.id">
+                                        {{ user.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            *ngIf="hideButton != 1"
+                           [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!authorityDepartmentForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

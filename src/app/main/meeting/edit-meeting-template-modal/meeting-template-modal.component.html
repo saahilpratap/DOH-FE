@@ -1,0 +1,44 @@
+<div appBsModal #MeetingTemplateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="MeetingTemplateModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" #MeetingTemplateForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Meeting Template')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'min-height': '60vh', 'position': 'relative'}">
+                    <div class="row">
+                        <div class="form-group w-100">
+                            <label>{{"Title*" | localize}}</label>
+                            <input type="text" class="form-control w-100" 
+                                   [(ngModel)]="meetingInput.templateTitle" name="templateTitle" required placeholder="Title" /> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group w-100">
+                            <label>{{"Body" | localize}}</label>                            
+                            <summernote-text-editor [name]="'New SummerNote'"
+                                                    (setSummerNoteData)="setSummerNoteData($event)"></summernote-text-editor>                           
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Close" | localize}}</button>
+                    <!--<button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="save()"><span>{{"Save" | localize}}</span></button>-->
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="save()"
+                            [disabled]="!MeetingTemplateForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

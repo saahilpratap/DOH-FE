@@ -1,0 +1,304 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{ l("Exceptions") }}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span *ngIf="exception.id" class="kt-subheader__desc">
+                    {{ l("Edit Exception")}}
+                </span>
+                <span *ngIf="!exception.id" class="kt-subheader__desc">
+                    {{l("Create new Exception")}}
+                </span>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{ l("Exception Status")}}
+                </span>
+                <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5" style="min-width: 100px">
+                    {{'New' |localize}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-wizard-v4__content bg-white" data-ktwizard-type="step-content" data-ktwizard-state="current"
+             id="Tab1data">
+            <form *ngIf="active"
+                  #exceptionForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="kt-portlet kt-portlet--mobile">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                <span>{{ l("Exception Information") }}</span>
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <div class="d-inline-flex float-right">
+                                <button type="button" class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm" (click)="close()">
+                                    <i class="fa fa-arrow-left"></i>Back
+                                </button>
+                                <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!exceptionForm.form.valid"
+                                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                                    <i class="fa fa-save"></i>
+                                    <span>{{ l("Save") }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="Exception_Code" class="required">{{ l("Exception ID") }} </label>
+                                        <input type="text"
+                                               id="Exception_Code"
+                                               class="form-control"
+                                               placeholder="System Generated"
+                                               [(ngModel)]="exception.code"
+                                               name="code"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label>{{"Created On" | localize}}</label>
+                                        <div id="creationTime" class="kt-input-icon">
+                                            <input id="creationTime"
+                                                   type="text" disabled
+                                                   #creationTime
+                                                   name="creationTime"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   [(date)]="exception.creationTime"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="businessEntLookUp" class="required">HealthCare Entity </label>
+                                        <ng-select [items]="BusinessEntity" [searchable]="true" bindLabel="name" [disabled]="exception.id" [required]="true"
+                                                   bindValue="id" placeholder="Select HealthCare Entity " (change)="initializeBeLookUpFields(exception.businessEntityId)"
+                                                   [(ngModel)]="exception.businessEntityId" class="kt-align-left"
+                                                   name="BusinessEntityIds" #businessEntLookUp="ngModel">
+                                        </ng-select>
+                                        <validation-messages [formCtrl]="businessEntLookUp"></validation-messages>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="Exception_Title" class="required">{{ l("Title") }} </label>
+                                        <input type="text"
+                                               id="Exception_Title"
+                                               class="form-control" required
+                                               [(ngModel)]="exception.title"
+                                               name="Title" #title="ngModel" />
+                                        <validation-messages [formCtrl]="title"></validation-messages>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group" *ngIf="!exception.id">
+                                        <label class="required">{{"Exception Requestor" | localize}} </label>
+
+
+                                        <select class="form-control" name="requestorIds" required id="requestorId" [(ngModel)]="exception.requestorId">
+                                            <option [ngValue]="appSession.user.id">
+                                                {{ appSession.user.name }} {{ appSession.user.surname }}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" *ngIf="exception.id > 0">
+                                        <label class="required">{{"Exception Requestor" | localize}} </label>
+                                        <select class="form-control" name="requestorIds" id="requestorId" [(ngModel)]="exception.requestorId">
+                                            <option [ngValue]="exception.requestorUser.id">
+                                                {{ exception.requestorUser.name }} {{ exception.requestorUser.surname }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="required">{{"Review Priority" | localize}} </label>
+                                        <ng-select [items]="reviewPriority" [searchable]="true" bindLabel="name"
+                                                   bindValue="id" placeholder="Select Review Priority"
+                                                   [(ngModel)]="exception.reviewPriorityId" class="kt-align-left"
+                                                   name="reviewPriority" [required]="true" #Priority="ngModel">
+                                        </ng-select>
+                                        <validation-messages [formCtrl]="Priority"></validation-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="required">{{"Exception Details" | localize}} </label>
+                                        <textarea type="text" name="exceptionsDetails" required #exceptiondetails="ngModel" class="form-control" [(ngModel)]="exception.exceptionDetails" placeholder="Exception Details" style="height:100px !important"></textarea>
+                                        <validation-messages [formCtrl]="exceptiondetails"></validation-messages>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="required">{{"Requested Till" | localize}} </label>
+                                        <div id="requestDate" class="kt-input-icon">
+                                            <input id="requestDatePicker"
+                                                   type="text"                                                  
+                                                   #requestDatePicker="ngModel"
+                                                   name="requestDatePicker"
+                                                   class="form-control"
+                                                   bsDatepicker required
+                                                   datePickerMomentModifier
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   [(date)]="exception.requestDate"
+                                                   [(ngModel)]="exception.requestDat"
+                                                   autocomplete="off"/>
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                            <validation-messages [formCtrl]="requestDatePicker"></validation-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="kt-portlet__head kt-portlet__head--lg kt-padding-l-0"
+                                 style="border-bottom: 1px solid #ebedf2;">
+                                <div class="kt-portlet__head-label">
+                                    <h5 class="kt-portlet__head-title">
+                                        <span>
+                                            Exception Evaluation / Justification
+                                        </span>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="row kt-padding-t-10">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="Exception_Type" class="required">{{l("Type")}} </label>
+                                        <ng-select [items]="exceptionTypesLookUp" [searchable]="true" bindLabel="name" 
+                                                   bindValue="id" placeholder="Select Type "
+                                                   [(ngModel)]="exception.typeId" class="kt-align-left"
+                                                   name="Exception_Type" [required]="true" #Type="ngModel">
+                                        </ng-select>
+                                        <validation-messages [formCtrl]="Type"></validation-messages>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="required">{{"Criticality" | localize}} </label>
+                                        <ng-select [items]="criticalities" [searchable]="true" bindLabel="name" 
+                                                   bindValue="id" placeholder="Select Criticality "
+                                                   [(ngModel)]="exception.criticalityId" class="kt-align-left"
+                                                   name="criticalities" [required]="true" #Criticality="ngModel">
+                                        </ng-select>
+                                        <validation-messages [formCtrl]="Criticality"></validation-messages>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="impactedCrs">
+                                        {{l("Control Requirements(Impacted)")}}
+                                    </label>
+                                    <angular2-multiselect [data]="controlRequirementLookUp"
+                                                          [(ngModel)]="selectedImpactedItems"
+                                                          name="ImpactedControlRequirements"
+                                                          [settings]="settings">
+                                    </angular2-multiselect>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="compensatingControls">
+                                        {{l("Compensating Controls")}}
+                                    </label>
+                                    <angular2-multiselect [data]="controlRequirementLookUp"
+                                                          [(ngModel)]="selectedCompensatingItems"
+                                                          name="CompensatingControlRequirements"
+                                                          [settings]="settings">
+                                    </angular2-multiselect>
+                                </div>
+                            </div>
+                            <div class="kt-portlet__head kt-portlet__head--lg kt-padding-l-0"
+                                 style="border-bottom: 1px solid #ebedf2;">
+                                <div class="kt-portlet__head-label">
+                                    <h5 class="kt-portlet__head-title">
+                                        <span>
+                                            IRM Information
+                                        </span>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="row kt-padding-t-10">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="relatedbusinessRisks">
+                                            {{l("Business Risks")}}
+                                        </label>
+                                        <p-multiSelect name="bsrlookup" [options]="businessRisksLookUp" placeholder="Select Business Risk" optionLabel="title" [(ngModel)]="selectedBusinessRisks" [style]="{'width': '100%'}"></p-multiSelect>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="Incidents">
+                                            {{l("Incidents")}}
+                                        </label>
+                                        <p-multiSelect name="iclookup" [options]="incidentsLookUp" placeholder="Select Incidents" optionLabel="title" [(ngModel)]="selectedIncidents" [style]="{'width': '100%'}"></p-multiSelect>
+                                    </div>
+                                </div>                              
+                            </div>                         
+                        </div>
+                        <div class="kt-padding-t-10">
+                            <p-accordion>                               
+                                <p-accordionTab header="Attachments">
+                                    <div class="w-100">
+                                        <file-upload [name]="'Exception'"
+                                                     [attachedFile]="attachedFileCodes"
+                                                     [multiple]="true"
+                                                     [attachedfileSize]="2097150"
+                                                     [noFileUpload]="100"
+                                                     (attachmentData)="getAttachment($event)"
+                                                     (attachmentDelete)="deleteAttachmentInput($event)"></file-upload>
+                                    </div>
+                                </p-accordionTab>
+                                <div class="kt-portlet__head kt-portlet__head--lg kt-padding-l-0"
+                                     style="border-bottom: 1px solid #ebedf2;" *ngIf="exception.id">
+                                    <div class="kt-portlet__head-label">
+                                        <h5 class="kt-portlet__head-title">
+                                            <span>
+                                                Review and Approvals
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <br>
+                                <p-accordionTab header="Entity Review & Approval" *ngIf="exception.id">
+                                    <entity-review-approval *ngIf="beUsers.length > 0" [entityReviewers]="beUsers" [entityApprovers]="beUsers" [irm]="exception.entityIRMRelations" [entityUserSignaturePad]="entityUserSignaturePad" [primaryReviewerId]="primarReviwerId" [primaryApproverId]="primaryApproverId" [isEdit]="isEdit" [recordId]="recordId" [pageId]="pageId"></entity-review-approval>
+                                </p-accordionTab>
+                                <p-accordionTab header="Authority Review & Approval" *ngIf="exception.id">
+                                    <authority-review-approval *ngIf="authorityUsers.length > 0" [authorityReviewers]="authorityUsers" [authorityApprovers]="authorityUsers" [irm]="exception.authorityIRMRelations" [authorityUserSignaturePad]="authorityUserSignaturePad" [isEdit]="isEdit" [recordId]="recordId" [pageId]="pageId"></authority-review-approval>
+                                </p-accordionTab>
+                            </p-accordion>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

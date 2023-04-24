@@ -1,0 +1,129 @@
+.detailsRow {
+    display: hidden;
+}
+
+.kt-datatable__toggle-detail {
+    cursor: pointer;
+}
+.dangerBorder {
+    border: 1px solid red;
+}
+
+.notSelectedColor {
+    background-color: #999999;
+}
+.notApplicableColor {
+    background: #ff1a1a;
+}
+.fullyCompliantColor {
+    background-color: #289e00;
+}
+
+.nonCompliantColor {
+    background-color: orange;
+}
+
+.partialyComplintColor {
+    background-color: #779e00;
+}
+.prgressBar {
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    top: 0px;
+    background-color: lightgray;
+    left: 0px;
+    border-radius: 5px;
+}
+
+.overallProgressBar {
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    margin-top: 1px;
+}
+
+.innerProgressBar {
+    position: absolute;
+    background-color: #00cc00;
+    height: 100%;
+    border-radius: 5px;
+    left: 0px;
+}
+.owl-dots {
+    display: none !important;
+}
+
+.width-td-50 {
+    width: 50px !important;
+}
+
+.width-td-80 {
+    width: 80px !important;
+}
+
+.width-td-100 {
+    width: 100px !important;
+}
+
+.width-td-150 {
+    width: 150px !important;
+}
+
+.width-td-200 {
+    width: 200px !important;
+}
+
+.width-td-250 {
+    width: 250px !important;
+}
+
+.width-td-300 {
+    width: 300px !important;
+}
+
+.width-td-400 {
+    width: 400px !important;
+}
+
+.innerProgressBar {
+    position: absolute;
+    background-color: #00cc00;
+    height: 100%;
+    border-radius: 5px;
+    left: 0px;
+}
+.mouse-hover-vertical-view:focus {
+    background-color: #f3f6f9 !important;
+    cursor: pointer !important;
+}
+.mouse-hover-horizontal-view:hover {
+    background-color: #f3f6f9 !important;
+    cursor: pointer !important;
+}
+.mouse-hover-vertical-view:hover {
+    background-color: #f3f6f9 !important;
+    cursor: pointer !important;
+}
+.wizard-1 {
+    left: 100%;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    content: " ";
+    height: 0;
+    width: 0;
+    border: solid transparent;
+    position: absolute;
+    border-left-color: #f3f6f9;
+    border-width: 1rem;
+}
+.border-radius-10 {
+    border-radius: 10px !important
+}
+table tbody tr {
+    font-size: 11px !important;
+}
+.selected {
+    background-color: #f3f6f9 !important;
+}

@@ -1,0 +1,57 @@
+<div appBsModal #SendToAuthorityModalModal="bs-modal" class="modal fade test" tabindex="-1" role="dialog" aria-labelledby="SendToAuthorityModalModal" aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}" style="z-index:auto !important">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form *ngIf="active" #SendToAuthorityModalModalForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="BEAdminFlag"> {{l('Business Entity Admin Review')}}</span>
+                        <span *ngIf="EGAdminFlag"> {{l('Entity Group Admin Review')}}</span>
+                        <span *ngIf="InReviewFlag"> {{l('In Review')}}</span>
+                        <span *ngIf="!BEAdminFlag && !EGAdminFlag && !InReviewFlag">{{l('Submit to Department of Health')}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" >
+                    <div [perfectScrollbar]="{wheelPropagation: false}"
+                         [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                        <p-table [value]="copyToChildBusinessEntity" [(selection)]="selectedCopyToChildBusinessEntity"
+                                  (selectionChange)="onSelectionChange($event)" dataKey="assessementId">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 3rem">
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                    <th hidden>Assessement Id</th>
+                                    <th hidden>Business Entity Id</th>
+                                    <th>Business Entity Name</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-product>
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                                    </td>
+                                    <td hidden>{{product.assessementId}}</td>
+                                    <td hidden>{{product.businessEntityId}}</td>
+                                    <td>{{product.businessEntityName}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                  
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Close" | localize}}</button>
+                    <button type="submit" [disabled]="!btnFlag" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="saveData()"><i class="fa fa-copy"></i> <span>{{"Submit" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-assessment-agreement-modal #assessmentAgreementModal
+                                (modalSave)="backToModal()"></app-assessment-agreement-modal>
+<releationAssessmentAuditProject #releationAssessmentAuditProject></releationAssessmentAuditProject>

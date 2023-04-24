@@ -1,0 +1,106 @@
+<div class="kt-portlet kt-portlet--height-fluid ">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+                {{"ADHICS - Entity Compliance Summary" | localize}}
+            </h3>
+
+        </div>
+        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+
+            <ng-select [items]="entityList"  bindLabel="name" 
+                       bindValue="id" placeholder="Select HealthCare Entity " (change)="onEntityChange(entityId)"
+                       [(ngModel)]="entityId" class="kt-align-left"
+                       name="BusinessEntityIds">
+            </ng-select>
+            <!--<select class="form-control" [(ngModel)]="entityId" (change)="onEntityChange(entityId)">
+                <option *ngFor="let item of entityList" [ngValue]="item.id">
+                    {{item.name}}
+                </option>
+            </select>-->
+        </div>
+    </div>
+    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+        <div class="chartdiv" id="chartdiv"></div>
+        <div id="chartdivcolbar"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-xl-12 col-lg-12">
+                            <div class="kt-align-center kt-font-bold">{{'Entity Compliance Score' | localize}}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-2 col-sm-2 col-md-2 col-lg-2"></div>
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="kt-font-bold">
+                                <rg-gauge-chart [canvasWidth]="canvasWidth"
+                                                [needleValue]="needleValue"
+                                                [centralLabel]="centralLabel"
+                                                [options]="options"
+                                                [name]="name"
+                                                [bottomLabel]="bottomLabel"></rg-gauge-chart>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="kt-align-center kt-font-bold">{{needleValue}}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-6">
+                <div class="w-100 border kt-padding-10 kt-margin-b-5 kt-padding-t-10 kt-padding-b-5">
+                    <div class="row text-success">
+                        <div class="col-1"><i class="fa fa-database"></i></div>
+                        <div class="col-2"><span class="h4 kt-font-boldest">{{TotalCount}}</span></div>
+                        <div class="col-9"> {{"Applicable Controls" | localize}}</div>
+                    </div>
+                </div>
+                <div class="w-100 border kt-padding-10 kt-margin-b-5 kt-padding-t-10 kt-padding-b-5">
+                    <div class="row text-warning">
+                        <div class="col-1"><i class="fa fa-database"></i></div>
+                        <div class="col-2"><span class="h4 kt-font-boldest">{{FullyCompliantCount}}</span></div>
+                        <div class="col-9"> {{"Fully Compliant" | localize}}</div>
+                    </div>
+                </div>
+                <div class="w-100 border kt-padding-10 kt-margin-b-5 kt-padding-t-10 kt-padding-b-5">
+                    <div class="row text-primary">
+                        <div class="col-1"><i class="fa fa-database"></i></div>
+                        <div class="col-2"><span class="h4 kt-font-boldest">{{PartiallyCompliantCount}}</span></div>
+                        <div class="col-9">{{"Partially Compliant" | localize}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="w-100 border kt-padding-10 kt-margin-b-5 kt-padding-t-10 kt-padding-b-5">
+                    <div class="row text-dark">
+                        <div class="col-1"><i class="fa fa-database"></i></div>
+                        <div class="col-2"><span class="h4 kt-font-boldest">{{NonCompliantCount}}</span></div>
+                        <div class="col-9">{{"Non Compliant" | localize}}</div>
+                    </div>
+                </div>
+                <div class="w-100 border kt-padding-10 kt-margin-b-5 kt-padding-t-10 kt-padding-b-5">
+                    <div class="row text-gray">
+                        <div class="col-1"><i class="fa fa-database"></i></div>
+                        <div class="col-2"><span class="h4 kt-font-boldest">{{NotApplicableCount}}</span></div>
+                        <div class="col-9">{{"Not Applicable" | localize}}</div>
+                    </div>
+                </div>
+                <div class="w-100 border kt-padding-10 kt-margin-b-5 kt-padding-t-10 kt-padding-b-5">
+                    <div class="row text-danger">
+                        <div class="col-1"><i class="fa fa-database"></i></div>
+                        <div class="col-2"><span class="h4 kt-font-boldest">{{NotSelectedCount}}</span></div>
+                        <div class="col-9">{{"Not Selected" | localize}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

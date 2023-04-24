@@ -1,0 +1,42 @@
+<div class="pb-5 bg-white">
+    <div *ngIf="!showSection" class="pr-4 pl-4">
+        <div  [innerHTML]="data.groupDescription"></div>
+        <div [ngClass]="data.submitted ? 'pointerNone' : 'pointerAuto'">
+            <p-fileUpload multiple="multiple"
+                          [auto]="true"
+                          [customUpload]="true"
+                          (uploadHandler)="myUploader($event)"></p-fileUpload>
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="bg-light">
+                            <th style="width:30%">{{"File Name" | localize}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="value.length==0">
+                            <td colspan="4" class="kt-align-center">{{"No Attachment" | localize}}</td>
+                        </tr>
+                        <tr *ngFor="let file of value; let i = index">
+                            <td>
+                                <span *ngIf="file.name" id="name{{i}}" name="fileName{{i}}">{{file.name}}</span>                               
+                                <a (click)="deleteAttachment(i)" class="float-right" *ngIf="file.code">                                   
+                                    <i class="fa fa-trash kt-font-danger"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showSection">
+        <table-top-exercise-section [sectionData]="data" [ttxId]="ttxId"></table-top-exercise-section>
+    </div>
+    <div *ngIf="!showSection" class="pb-5 pr-5 pl-5">
+        <button type="button" class="btn btn-brand float-lg-right mr-2" (click)="nextStep()">
+            {{'Next'}}
+            <i class="la la-angle-double-right"></i>
+        </button>       
+    </div>
+</div>

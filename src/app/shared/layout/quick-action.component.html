@@ -1,0 +1,219 @@
+<style>
+  .navbar-nav li:hover > ul.dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-submenu {
+    position: relative;
+  }
+
+  .dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+  }
+
+  /* rotate caret on hover */
+  .dropdown-menu > li > a:hover:after {
+    text-decoration: underline;
+    transform: rotate(-90deg);
+  }
+</style>
+
+<div
+  id="kt_header_quikc_menu"
+  class="kt-header-menu-mobile kt-header-menu--layout-tab form-check-inline w-100"
+>
+  <nav class="navbar navbar-expand-md navbar-light bg-light1">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown kt-padding-t-15">
+          <a
+            class="nav-link dropdown-toggle kt-font-light kt-padding-b-15 kt-font-bolder"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+            <span class="kt-padding-l-10">{{'Quick Action' | localize}}</span>
+          </a>
+          <ul class="dropdown-menu"
+              style="min-width: 250px;"
+              aria-labelledby="navbarDropdownMenuLink"
+              *ngIf="mID== 'Administration'">
+              <li class="dropdown-submenu">
+                  <a class="dropdown-item dropdown-toggle1">
+                      <i class="flaticon-interface-8"></i>
+                      <span>{{'Administration'| localize}}</span>
+                  </a>
+                  <ul class="dropdown-menu" style="min-width: 250px;">
+                      <li *ngFor="let item of administration; let i = index">
+                          <ng-container *ngIf="item.permision | permission">
+                              <a class="dropdown-item" [routerLink]="item.url">
+                                  <i class="la {{item.icon}} "></i>
+                                  <span>{{item.title | localize}}</span>
+                              </a>
+                          </ng-container>
+                      </li>
+                  </ul>
+              </li>
+              <li class="dropdown-submenu">
+                  <a class="dropdown-item dropdown-toggle1">
+                      <i class="flaticon-interface-8"></i>
+                      <span>{{'Dynamic Parameters'| localize}}</span>
+                  </a>
+                  <ul class="dropdown-menu" style="min-width: 250px;">
+                      <li *ngFor="let item of dynamicParameters; let i = index">
+                          <ng-container *ngIf="item.permision | permission">
+                              <a class="dropdown-item" [routerLink]="item.url">
+                                  <i class="la {{item.icon}} "></i>
+                                  <span>{{item.title | localize}}</span>
+                              </a>
+                          </ng-container>
+                      </li>
+                  </ul>
+              </li>
+              <li class="dropdown-submenu">
+                  <a class="dropdown-item dropdown-toggle1">
+                      <i class="la flaticon-interface-8"></i>
+                      <span>{{'Work Flow'| localize}}</span>
+                  </a>
+                  <ul class="dropdown-menu" style="min-width: 250px;">
+                      <li *ngFor="let item of workFlow; let i = index">
+                          <ng-container *ngIf="item.permision | permission">
+                              <a class="dropdown-item" [routerLink]="item.url">
+                                  <i class="la {{item.icon}} "></i>
+                                  <span>{{item.title | localize}}</span>
+                              </a>
+                          </ng-container>
+                      </li>
+                  </ul>
+                  <ul class="dropdown-menu" style="min-width: 250px;">
+                      <li *ngFor="let item of workFlow; let i = index">
+                          <ng-container *ngIf="item.permision | permission">
+                              <a class="dropdown-item" [routerLink]="item.url">
+                                  <i class="la {{item.icon}} "></i>
+                                  <span>{{item.title | localize}}</span>
+                              </a>
+                          </ng-container>
+                      </li>
+                  </ul>
+              </li>
+              <li class="dropdown-submenu">
+                  <a class="dropdown-item dropdown-toggle1">
+                      <i class="la flaticon-interface-8"></i>
+                      <span>{{'Incidents'| localize}}</span>
+                  </a>
+                  <ul class="dropdown-menu" style="min-width: 250px;">
+                      <li *ngFor="let item of incidents; let i = index">
+                          <ng-container *ngIf="item.permision | permission">
+                              <a class="dropdown-item" [routerLink]="item.url">
+                                  <i class="la {{item.icon}} "></i>
+                                  <span>{{item.title | localize}}</span>
+                              </a>
+                          </ng-container>
+                      </li>
+                  </ul>
+              </li>
+              <li class="dropdown-submenu">
+                  <a class="dropdown-item dropdown-toggle1">
+                      <i class="flaticon2-ui"></i>
+                      <span>{{'System Set Up'| localize}}</span>
+                  </a>
+                  <ul class="dropdown-menu" style="min-width: 250px;">
+                      <li *ngFor="let item of systemSetUp; let i = index">
+                          <ng-container *ngIf="item.permision | permission">
+                              <a class="dropdown-item" [routerLink]="item.url">
+                                  <i class="la {{item.icon}} "></i>
+                                  <span>{{item.title | localize}}</span>
+                              </a>
+                          </ng-container>
+                      </li>
+                  </ul>
+              </li>
+          </ul>
+          <ul
+            class="dropdown-menu"
+            style="min-width: 250px;"
+            aria-labelledby="navbarDropdownMenuLink"
+            *ngIf="mID== 'Authority Setup'"
+          >
+            <li *ngFor="let item of organizationSetup; let i = index">
+              <ng-container *ngIf="item.permision | permission">
+                <a class="dropdown-item" [routerLink]="item.url">
+                  <i class="la {{item.icon}} "></i>
+                  <span>{{item.title | localize}}</span>
+                </a>
+              </ng-container>
+            </li>
+          </ul>
+          <ul
+            class="dropdown-menu"
+            style="min-width: 250px;"
+            aria-labelledby="navbarDropdownMenuLink"
+            *ngIf="mID== 'HealthCare Entities'"
+          >
+            <li *ngFor="let item of healthCareEntities; let i = index">
+              <ng-container *ngIf="item.permision | permission">
+                <ng-container *ngIf="item.title != 'All HealthCare Entities'">
+                  <a class="dropdown-item" [routerLink]="item.url">
+                    <i class="la {{item.icon}} "></i>
+                    <span>{{item.title}}</span>
+                  </a>
+                </ng-container>
+                <ng-container *ngIf="item.title == 'All HealthCare Entities'">
+                    <a class="dropdown-item" [routerLink]="['/app/main/businessEntities/healthcare']" [queryParams]="{ type: 0 }">
+                        <i class="la {{item.icon}}"></i>
+                        <span>{{item.title}}</span>
+                    </a>
+                </ng-container>
+              </ng-container>
+            </li>
+          </ul>
+          <ul
+            class="dropdown-menu"
+            style="min-width: 250px;"
+            aria-labelledby="navbarDropdownMenuLink"
+            *ngIf="mID== 'Compliance Management'"
+          >
+            <li *ngFor="let item of complianceManagement; let i = index">
+              <ng-container *ngIf="item.permision | permission">
+                <a class="dropdown-item" [routerLink]="item.url">
+                  <i class="la {{item.icon}} "></i>
+                  <span>{{item.title | localize}}</span>
+                </a>
+              </ng-container>
+            </li>
+          </ul>
+          <ul
+            class="dropdown-menu"
+            style="min-width: 250px;"
+            aria-labelledby="navbarDropdownMenuLink"
+            *ngIf="mID== 'Audit Management'"
+          >
+            <li *ngFor="let item of auditManagement; let i = index">
+              <ng-container *ngIf="item.permision | permission">
+                <a class="dropdown-item" [routerLink]="item.url">
+                  <i class="la {{item.icon}} "></i>
+                  <span>{{item.title | localize}}</span>
+                </a>
+              </ng-container>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>

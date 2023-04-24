@@ -1,0 +1,35 @@
+<dx-data-grid id="gridExample"
+              [columns]="columnsName"
+              [dataSource]="dataSource"
+              [wordWrapEnabled]="false"
+              [showBorders]="false"
+              [showColumnLines]="false"
+              [showRowLines]="false"
+              [rowAlternationEnabled]="false"
+              [allowColumnReordering]="false">
+    <dxo-paging [pageSize]="5" [pageIndex]="0"></dxo-paging>
+    <dxo-pager [showPageSizeSelector]="true"
+               [allowedPageSizes]="[5, 10, 20, 50, 100, 250, 500]"
+               [showInfo]="true"
+               [showNavigationButtons]="true">
+    </dxo-pager>
+    <dxo-search-panel [visible]="true"
+                      [width]="240"
+                      placeholder="Search...">
+    </dxo-search-panel>
+    <dxo-selection [selectAllMode]="allMode"
+                   [showCheckBoxesMode]="checkBoxesMode"
+                   mode="multiple"></dxo-selection>
+    <div *dxTemplate="let a of 'action'">
+        <a>
+            <i class="far fa-eye icon-font-size-1 kt-font-success" (click)="url()"></i>
+        </a>
+        <a class="kt-padding-l-20">
+            <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info" (click)="createEmailNotificationModals.show()"></i>
+        </a>
+        <a class="kt-padding-l-20">
+            <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+        </a>
+    </div>
+</dx-data-grid>
+

@@ -1,0 +1,359 @@
+<div bsModal
+     #createEditMeetingModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createEditMeetingModal"
+     aria-hidden="true"
+     [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl border-grey" id="fix_modal_body">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #createEditMeetingForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{'Create New Message Plan and Meeting' | localize}}
+                    </h4>
+                </div>
+                <div class="modal-body"
+                     [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div>
+                        <div class="kt-section kt-section--first">
+                            <div class="kt-section__body" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label>{{"ID" | localize}}</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   disabled
+                                                   [(ngModel)]="meetingData.code"
+                                                   name="code"
+                                                   placeholder="System Generated" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="required">{{"Title" | localize}}</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   placeholder="Title"
+                                                   name="meetingTitle" required
+                                                   [(ngModel)]="meetingData.meetingTitle" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label>{{"Description" | localize}}</label>
+                                            <textarea type="text"
+                                                      class="form-control"
+                                                      placeholder="Description..."
+                                                      style="height: 100px !important;"
+                                                      name="description"
+                                                      [(ngModel)]="meetingData.description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="required">{{"Type" | localize}}</label>
+                                            <ng-select [items]="meetingTypes" [searchable]="true" bindLabel="name" [required]="true"
+                                                       bindValue="id" placeholder="Select Type " [disabled]="disableMeetingType"
+                                                       [(ngModel)]="meetingData.meetingTypeId" class="kt-align-left" (ngModelChange)="onTypeChange($event,meetingTypes)"
+                                                       name="meetingTypeId">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="!hideTextBox">
+                                        <div class="form-group">
+                                            <label>{{"Stage" | localize}}</label>
+                                            <ng-select [items]="meetingStage"
+                                                       [searchable]="true"
+                                                       bindLabel="name"
+                                                       bindValue="id"
+                                                       placeholder="Select Meeting Stage"
+                                                       [(ngModel)]="meetingData.meetingStageId"
+                                                       name="meetingStage">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0" *ngIf="!hideTextBox">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pr-0" style="float:left;">
+                                            <div class="form-group">
+                                                <label>{{"Start Date" | localize}}</label>
+                                                <div id="startDate" class="kt-input-icon">
+                                                    <input id="startDatePicker"
+                                                           type="text"
+                                                           #startDatePicker
+                                                           name="startDatePicker"
+                                                           class="form-control"
+                                                           bsDatepicker
+                                                           required
+                                                           datePickerMomentModifier
+                                                           [(date)]="meetingData.startDate"
+                                                           autocomplete="off"
+                                                           (dateChange)="setTime($event)"
+                                                           [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY HH:mm' }" />
+                                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                        <span><i class="flaticon-calendar-1"></i></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12" style="float:left;">
+                                            <div class="form-group">
+                                                <div class="col-6" style="float:left;">
+                                                    <label>{{"Hour" | localize}}</label>
+                                                    <ng-select [items]="hrlist" style="min-width:50%!important;" [searchable]="true" [required]="true" placeholder="Select Hour " [disabled]="meetingData.startDate==undefined"
+                                                               [(ngModel)]="sDatehr" class="kt-align-left" (ngModelChange)="onHrChange($event,meetingData.startDate,0)"
+                                                               name="shr">
+                                                    </ng-select>
+                                                </div>
+                                                <div class="col-6 pr-0" style="float:left;">
+                                                    <label>{{"minutes" | localize}}</label>
+                                                    <ng-select [items]="minlist" style="min-width:50%!important;" [searchable]="true" [required]="true" placeholder="Select Minute " [disabled]="meetingData.startDate==undefined"
+                                                               [(ngModel)]="sDatemin" class="kt-align-left" (ngModelChange)="onMinChange($event,meetingData.startDate,0)"
+                                                               name="smin">
+                                                    </ng-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0" *ngIf="!hideTextBox">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pr-0" style="float:left;">
+                                            <div class="form-group">
+                                                <label>{{"End Date" | localize}}</label>
+                                                <div id="endDate" class="kt-input-icon">
+                                                    <input id="endDatePicker"
+                                                           type="text"
+                                                           #endDatePicker
+                                                           required
+                                                           name="endDatePicker"
+                                                           class="form-control"
+                                                           bsDatepicker
+                                                           (dateChange)="setendTime($event)"
+                                                           datePickerMomentModifier
+                                                           autocomplete="off"
+                                                           [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY HH:mm' }"
+                                                           [(date)]="meetingData.endDate" />
+                                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                        <span><i class="flaticon-calendar-1"></i></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12" style="float:left;">
+                                            <div class="form-group">
+                                                <div class="col-6" style="float:left;">
+                                                    <label>{{"Hour" | localize}}</label>
+                                                    <ng-select [items]="hrlist" style="min-width: 50% !important;" [searchable]="true" [required]="true" placeholder="Select Hour " [disabled]="meetingData.endDate==undefined"
+                                                               [(ngModel)]="eDatehr" class="kt-align-left" (ngModelChange)="onHrChange($event,meetingData.endDate,1)"
+                                                               name="ehr">
+                                                    </ng-select>
+                                                </div>
+                                                <div class="col-6 pr-0" style="float:left;">
+                                                    <label>{{"minutes" | localize}}</label>
+                                                    <ng-select [items]="minlist" style="min-width: 50% !important;" [searchable]="true" [required]="true" placeholder="Select Minute " [disabled]="meetingData.endDate==undefined"
+                                                               [(ngModel)]="eDatemin" class="kt-align-left" (ngModelChange)="onMinChange($event,meetingData.endDate,1)"
+                                                               name="emin">
+                                                    </ng-select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label>{{"Audit Vendor" | localize}}</label>
+                                            <div class="form-group">
+                                                <ng-select [items]="auditCompaniesLookUp" [searchable]="true" bindLabel="businessEntity.name"
+                                                           bindValue="businessEntity.id" placeholder="Select  Audit Vendor "
+                                                           [(ngModel)]="meetingData.auditVendorId" class="kt-align-left"
+                                                           name="vendorsList">
+                                                </ng-select>                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label class="required">{{"Audit Project" | localize}}</label>
+                                        <div class="form-group">
+                                            <ng-select [items]="auditProjects" [searchable]="true" bindLabel="auditTitle" [required]="true" [disabled]="meetingData.auditProjectId"
+                                                       bindValue="auditProjectId" placeholder="Select  Audit Project "
+                                                       [(ngModel)]="meetingData.auditProjectId" class="kt-align-left"
+                                                       name="auditProjectId">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="required">{{"Organization" | localize}}</label>
+                                            <div class="form-group">
+                                                <ng-select [items]="businessEntitiesLookUp" [searchable]="true" bindLabel="name" [required]="true"
+                                                           bindValue="id" placeholder="Select  Organization "
+                                                           [(ngModel)]="meetingData.auditOrgId" class="kt-align-left"
+                                                           name="auditOrgId">
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label>{{"Plan Details" | localize}}</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   placeholder="Plan Details"
+                                                   name="meetingVenue"
+                                                   [(ngModel)]="meetingData.meetingVenue" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right !important;">
+                                        <div class="form-check-inline">
+
+                                            <ng-select [items]="propertiesNames"
+                                                       placeholder="To"
+                                                       [searchable]="true"
+                                                       bindLabel="pageName"
+                                                       class="position-relative"
+                                                       bindValue="id"
+                                                       (change)="onToPropertyChange($event)"
+                                                       [(ngModel)]="txtTo"
+                                                       name="titleto">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="form-group">
+                                            <input type="text" name="to" placeholder="To Email" [(ngModel)]="emailnotification.to" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right !important;">
+                                        <div class="form-check-inline">
+                                            <ng-select [items]="propertiesNames"
+                                                       placeholder="CC"
+                                                       [searchable]="true"
+                                                       bindLabel="pageName"
+                                                       class="position-relative"
+                                                       bindValue="id"
+                                                       (change)="onCcPropertyChange($event)"
+                                                       [(ngModel)]="txtCc"
+                                                       name="titlecc">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="form-group">
+                                            <input type="text" name="cc" placeholder="Cc Email" [(ngModel)]="emailnotification.cc" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right !important;">
+                                    <div class="form-check-inline">                                        
+                                        <ng-select [items]="propertiesName"
+                                                   [searchable]="true"
+                                                   class="kt-align-left"
+                                                   bindLabel="pageName"
+                                                   bindValue="id"
+                                                   (change)="onemailBodyPropertyChange($event)"
+                                                   [(ngModel)]="txtBody"
+                                                   placeholder="Body Parameters"
+                                                   name="bodyProperty">
+                                        </ng-select>
+                                        <ng-select [items]="meetingTemplateList" [searchable]="true"
+                                                   bindLabel="templateTitle" bindValue="id" placeholder="Template"
+                                                   [(ngModel)]="meetingTemplateId" (change)="setBodyContent($event)"
+                                                   class="kt-align-left kt-margin-l-10" name="templateTitle">
+                                        </ng-select>
+                                        <button [disabled]="meetingTemplateId==undefined" type="button" class="btn btn-brand btn-icon-sm btn-sm btn-sm kt-margin-l-10"
+                                                *ngIf="('Pages.MeetingTemplates.Edit' | permission)"
+                                                (click)="openMeetingTemplateModal(meetingTemplateId)">
+                                            {{"Update Template" | localize}}
+                                        </button>
+                                        <button type="button" class="btn btn-brand btn-icon-sm btn-sm btn-sm kt-margin-l-10"
+                                                *ngIf="('Pages.MeetingTemplates.Create' | permission)"
+                                                (click)="openMeetingTemplateModal(0)">
+                                            {{"Create Template" | localize}}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label>{{"Details" | localize}}</label>
+                                        <summernote-text-editor [name]="'New SummerNote'"
+                                                                (setSummerNoteData)="setSummerNoteData($event)"
+                                                                [getSummerNoteData]="getSummerNoteData"></summernote-text-editor>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div>
+                            <p-accordion>
+                                <p-accordionTab header="Related Attachments">
+                                    <div class="w-100">
+                                        <file-upload [name]="'Metting'"
+                                                     [showRollWise]="reauditPermissions"
+                                                     [showDelete]="!reauditPermissions"
+                                                     [multiple]="true"
+                                                     [attachedfileSize]="2097150"
+                                                     [noFileUpload]="100"                                                   
+                                                     [attachedFile]="attachedFileCodes"
+                                                     (attachmentData)="getAttachment($event)"></file-upload>
+                                    </div>
+                                </p-accordionTab>
+                            </p-accordion>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{"Cancel" | localize}}
+                    </button>
+                    <button type="submit" [ngStyle]="reauditPermissions ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                            *ngIf="hideButton == 1"                          
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!createEditMeetingForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-envelope"></i> <span>{{ l("Resend") }}</span>
+                    </button>
+                    <button type="submit"  [ngStyle]="reauditPermissions ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                            *ngIf="hideButton != 1"                           
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!createEditMeetingForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save & Send") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<MeetingTemplateModals #MeetingTemplateModals (modalSave)="getAllMeetingTemplates()"></MeetingTemplateModals>

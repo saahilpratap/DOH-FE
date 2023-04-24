@@ -1,0 +1,11 @@
+<span class="input-group-append" *ngIf="data">
+    <i class="la la-info-circle font-weight-bolder" data-toggle="popover"
+       data-trigger="hover" data-html="true" [popover]="popTemplate"
+       triggers="mouseenter:mouseleave"></i>
+    <ng-template #popTemplate>
+        <span>
+            {{data}}
+        </span>
+    </ng-template>
+</span>
+

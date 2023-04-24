@@ -1,0 +1,87 @@
+<div class="row">
+    <div class="col-8"></div>
+    <div class="col-lg-4 col-md-4 co-sm-4">
+        <div class="form-group">
+            <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5 btn-label-info"
+                    style="border-radius: 7px;" for="setPrimaryKey" (click)="showEntityApproval()">
+                {{ l("View")}}
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row kt-padding-t-20">
+    <div class="col-6">
+        <div class="form-group">
+            <label class="required">{{"Expert Reviewer" | localize}}</label>
+            <p-multiSelect name="ers"
+                           (onChange)="entityReviewerChange()"
+                           [options]="entityReviewers"
+                           placeholder="Select Expert Reviewers"
+                           optionLabel="name"
+                           [disabled]="isEdit"
+                           [(ngModel)]="entityReviewerArr"
+                           [style]="{'width': '100%'}"></p-multiSelect>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label class="required">{{"Entity Approver" | localize}}</label>
+            <p-multiSelect name="eas"
+                           (onChange)="entityApporverChange()"
+                           [options]="entityApprovers"
+                           placeholder="Select Entity Approvers"
+                           optionLabel="name"
+                           [disabled]="isEdit"
+                           [(ngModel)]="entityApproverArr"
+                           [style]="{'width': '100%'}"></p-multiSelect>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label *ngIf="!reviewerPermissionShow" class="required">{{"Reviewer Comments" | localize}}</label>
+            <label *ngIf="reviewerPermissionShow">{{"Reviewer Comments" | localize}}</label>
+            <textarea type="text"
+                      [disabled]="reviewerPermissionShow"
+                      class="form-control"
+                      placeholder="Reviewer Comments"
+                      [(ngModel)]="irm.reviewComments"
+                      style="height: 100px !important;"></textarea>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label *ngIf="!approverpermissionShow" class="required">{{"Approved Till Date" | localize}}</label>
+                    <label *ngIf="approverpermissionShow">{{"Approved Till Date" | localize}}</label>
+                    <div id="startDate" class="kt-input-icon">
+                        <input id="startDatePicker"
+                               [disabled]="approverpermissionShow"
+                               type="text"
+                               #startDatePicker
+                               name="startDatePicker"
+                               class="form-control"
+                               bsDatepicker
+                               datePickerMomentModifier
+                               [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                               [(date)]="irm.approvalDate"
+                               autocomplete="off" />
+                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                            <span><i class="flaticon-calendar-1"></i></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label>{{"Signature" | localize}}</label>
+                    <common-signature-pad (signatureUrl)="signatureUrl($event)"
+                                          [imgUrl]="irm.signature"
+                                          [signatureShow]="signatureShow"></common-signature-pad>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<createEntityReviewApprovalSignatureModal #createEntityReviewApprovalSignatureModal>
+</createEntityReviewApprovalSignatureModal>

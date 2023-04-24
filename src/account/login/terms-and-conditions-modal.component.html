@@ -1,0 +1,20 @@
+<div appBsModal #termsAndConditionsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="termsAndConditionsModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #termsAndConditionsForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalLongTitle">{{"Terms and Condition" |localize}}</h6>
+                    <button type="button" class="close" (click)="close()" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '70vh', 'position': 'relative'}">                    
+                    <angular-editor id="editor1" [config]="editorConfig" name="textData" [(ngModel)]="textData"></angular-editor>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-brand btn-icon-sm btn-sm btn-sm" (click)="close()" data-dismiss="modal">{{"Accept" | localize}}</button>                  
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

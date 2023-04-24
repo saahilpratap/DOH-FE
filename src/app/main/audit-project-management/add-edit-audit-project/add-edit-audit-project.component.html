@@ -1,0 +1,245 @@
+<div #myDiv id="kt_aside_toggler" class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" (ngInit)="toggleLeftAside()">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>
+                        {{"Edit Audit Project Management" | localize}}
+                    </span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"All Audit Projects" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{"Edit Audit Project" | localize}} <span *ngIf="auditProject.isClone">                            
+                            (Cloned From : EAP-{{originalAuditProjectIdBind(auditProject.originalAuditProjectId)}})
+                        </span>
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">                   
+                    <button type="button"
+                            (click)="btnBack()"
+                            class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm">
+                        <i class="fa fa-arrow-left"></i>{{"Back" | localize}}
+                    </button>
+                    <button type="submit" (click)="save(selectedItem)" *ngIf="btnSaveHide" 
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                        <i class="fa fa-save"></i>
+                        <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-padding-t-10">
+                <div>
+                    <ul id="tab-nav" class="w-100 nav nav-tabs nav-tabs-line nav-tabs-line-info nav-tabs-line-2x nav-tabs-line-left bg-ghostwhite" role="tablist">
+                        <li class="nav-item" [ngClass]="{ 'selectedTab': 1 == selectedItem }">
+                            <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(1, auditProID)">
+                                {{'Audit Project' | localize}}
+                            </a>
+                        </li>
+                        <ng-container *ngIf="('Pages.AuditProject.AuditReports' | permission)">
+                            <li class="nav-item" *ngIf="auditProID"
+                                [ngClass]="{ 'selectedTab': 2 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(2, auditProID)">
+                                    {{'Audit Report' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.CorrectiveActionPlan' | permission)">
+                            <li class="nav-item" *ngIf="auditProID"
+                                [ngClass]="{ 'selectedTab': 7 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(7, auditProID)">
+                                    {{'Remediation Plan' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.SurviellanceProgram' | permission)">
+                            <li class="nav-item" *ngIf="auditProID"
+                                [ngClass]="{ 'selectedTab': 3 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(3, auditProID)">
+                                    {{'Surviellance Program' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.CertificateProposal' | permission)">
+                            <li class="nav-item" *ngIf="auditProID"
+                                [ngClass]="{ 'selectedTab': 4 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(4, auditProID)">
+                                    {{'Certification Proposal' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.Dicision' | permission)">
+                            <li class="nav-item" *ngIf="auditProID"
+                                [ngClass]="{ 'selectedTab': 5 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(5, auditProID)">
+                                    {{'Decision' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.Certificate' | permission)">
+                            <li class="nav-item" *ngIf="auditProID"
+                                [ngClass]="{ 'selectedTab': 6 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(6, auditProID)">
+                                    {{'Certificate' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.RelatedAttachments' | permission)">
+                            <li class="nav-item"
+                                [ngClass]="{ 'selectedTab': 8 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(8, auditProID)">
+                                    {{'Related Attachments' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.ReportTab' | permission)">
+                            <li class="nav-item"
+                                [ngClass]="{ 'selectedTab': 9 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(9, auditProID)">
+                                    {{'Reports' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.Certificate' | permission)">
+                            <li class="nav-item"
+                                [ngClass]="{ 'selectedTab': 10 == selectedItem }">
+                                <a class="nav-link kt-padding-l-5 kt-padding-r-5" (click)="selectTab(10, auditProID)">
+                                    {{'Entity Certificate' | localize}}
+                                </a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </div>
+                <div>
+                    <div *ngIf="selectedItem == 1" class="kt-padding-t-10">
+                        <tab-view-audit-project (closeModal)="close($event)" [reauditPermission]="reauditPermissionFlag"
+                                                (hideSaveButton)="hideSaveButton($event)" [isStatusCheckAuditProject]="isStatus"
+                                                [auditProId]="auditProID"></tab-view-audit-project>
+                    </div>
+                    <div *ngIf="selectedItem == 2" class="kt-padding-t-10 row">
+                        <tab-view-audit-report [entityGroupId]="entityGroupId" [reauditPermissionFlag]="reauditPermissionFlag"
+                                               [oldAuditProject]="auditProject"
+                                               [businessentityId]="businessEntityId"
+                                               (closeModal)="close($event)"
+                                               [auditProjectId]="auditProID"
+                                               [vendorId]="vendorId">
+                        </tab-view-audit-report>
+                    </div>
+                    <div *ngIf="selectedItem == 3" class="kt-padding-t-10">
+                        <tab-view-surviellance-program [entityGroupId]="entityGroupId" [reauditPermission]="reauditPermissionFlag"
+                                                       [businessentityId]="businessEntityId"
+                                                       (closeModal)="close($event)"
+                                                       [vendorId]="vendorId"
+                                                       [auditprojectId]="auditProID"></tab-view-surviellance-program>
+                    </div>
+                    <div *ngIf="selectedItem == 4" class="kt-padding-t-10">
+                        <tab-view-certification-proposal [entityGroupId]="entityGroupId" [reauditPermission]="reauditPermissionFlag"
+                                                         [businessentityId]="businessEntityId"
+                                                         (closeModal)="close($event)"
+                                                         [auditProjectId]="auditProID"></tab-view-certification-proposal>
+                    </div>
+                    <div *ngIf="selectedItem == 5" class="kt-padding-t-10">
+                        <tab-view-decision [entityGroupId]="entityGroupId" [reauditPermission]="reauditPermissionFlag"
+                                           [businessentityId]="businessEntityId"
+                                           (closeModal)="close($event)"
+                                           [auditprojectId]="auditProID"></tab-view-decision>
+                    </div>
+                    <div *ngIf="selectedItem == 6" class="kt-padding-t-10">
+                        <tab-view-certificate [auditProjectId]="auditProID" [reauditPermission]="reauditPermissionFlag"></tab-view-certificate>
+                    </div>
+                    <div *ngIf="selectedItem == 7" class="kt-padding-t-10">
+                        <grid-remediation-plan [auditprojectId]="auditProID"></grid-remediation-plan>
+                    </div>
+                    <div *ngIf="selectedItem == 8" class="kt-padding-t-10">
+                        <div>
+                            <file-upload [name]="'AuditProjectManagementRelatedAttachment'"
+                                         [showRollWise]="reauditPermissionFlag"
+                                         [showDelete]="!reauditPermissionFlag"
+                                         [attachedFile]="attachedFileCodes"
+                                         [multiple]="true"
+                                         [attachedfileSize]="2097150"
+                                         [noFileUpload]="100"
+                                         (attachmentData)="getAttachment($event)"
+                                         [auditProjectId]="auditProID"
+                                         (deleteCode)="deleteAttachment($event)"></file-upload>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedItem == 9" class="kt-padding-t-10">
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-75" scope="col">{{"File Name" | localize}}</th>
+                                        <th class="w-25 kt-align-center" scope="col">{{"Action" | localize}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let file of getReportData; let i = index">
+                                        <td>
+                                            <span id="name{{i}}" name="fileName{{i}}">{{file.fileName}}</span>
+                                        </td>
+                                        <td class="kt-align-center">
+                                            <i class="fa fa-download kt-font-skype"
+                                               (click)="downloadAttachmentReport(file.fileName)"></i>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!getReportData">
+                                        <td colspan="2" class="kt-align-center">
+                                            <span>{{"No Report" | localize}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedItem == 10" class="kt-padding-t-10">
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-75" scope="col">{{"File Name" | localize}}</th>
+                                        <th class="w-25 kt-align-center" scope="col">{{"Action" | localize}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let file of getReportData; let i = index">
+                                        <td>
+                                            <span id="name{{i}}" name="fileName{{i}}">{{file.fileName}}</span>
+                                        </td>
+                                        <td class="kt-align-center">
+                                            <i class="fa fa-download kt-font-skype"
+                                               (click)="downloadEntityCertificate(file.fileName)"></i>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!getReportData">
+                                        <td colspan="2" class="kt-align-center">
+                                            <span>{{"No Entity Certificate" | localize}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedItem == 11" class="kt-padding-t-10">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<div appBsModal #ttxEntitiesModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="ttxEntitiesModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #ttxEntitiesForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{"Tabletop Exercise" | localize}}
+
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'min-height': '40vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label class="required"> {{"Tabletop Exercise Name" | localize}} </label>
+                        <ng-select [items]="ttxgroupName" [searchable]="true" bindLabel="tableTopExerciseGroupName" [required]="true"
+                                   [(ngModel)]="createttxEntity.tableTopExerciseGroupId"
+                                   bindValue="id" placeholder="Select TableTop Exercise" (change)="changFeedbackEntity(createttxEntity.tableTopExerciseGroupId)"
+                                   class="kt-align-left"
+                                   name="ExternalAudit">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [buttonBusy]="saving" [disabled]="!ttxEntitiesForm.form.valid"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <span>{{"Send" | localize}}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

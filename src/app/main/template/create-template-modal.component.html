@@ -1,0 +1,144 @@
+<div appBsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal"
+     aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #roleForm="ngForm" novalidate autocomplete="new-password">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>Template</span>
+                    </h4>                   
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label class="required">{{'Page Name' | localize}}</label>
+                        <ng-select [items]="workflow"
+                                   [searchable]="false"
+                                   bindLabel="pageName"
+                                   bindValue="id"
+                                   [(ngModel)]="customTemplateDto.workFlowPageId"
+                                   placeholder="Page Name" required
+                                   (change)="onWorkflowChange()"
+                                   name="name">
+                        </ng-select>
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label class="required">{{'Title' | localize}}</label>                       
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="templateTitle" [(ngModel)]="customTemplateDto.templateTitle" class="form-control" required />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label class="required">{{'Subject' | localize}}</label>
+                        <ng-select [items]="propertiesName"
+                                   [searchable]="true"
+                                   class="position-relative"
+                                   [disabled]="!customTemplateDto.workFlowPageId"
+                                   bindLabel="pageName"
+                                   bindValue="id"
+                                   (change)="onSubjectPropertyChange($event)"
+                                   [(ngModel)]="txtSubject"
+                                   name="subjectProperty">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="templateSubject" [(ngModel)]="customTemplateDto.templateSubject" class="form-control" required />
+                    </div>
+                    <br />
+
+                    <div class="form-group1" id="prop">
+                        <label class="required">{{'TO' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   [disabled]="!customTemplateDto.workFlowPageId"
+                                   bindValue="id"
+                                   (change)="onToPropertyChange($event)"
+                                   [(ngModel)]="txtTo"
+                                   name="titleto">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="templateTo" [(ngModel)]="customTemplateDto.templateTo" class="form-control" required />
+                    </div>
+                    <br />
+                    <div class="form-group1" id="prop">
+                        <label>{{'CC' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   [disabled]="!customTemplateDto.workFlowPageId"
+                                   bindValue="id"
+                                   (change)="onCcPropertyChange($event)"
+                                   [(ngModel)]="txtCc"
+                                   name="titlecc">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="templateCc" [(ngModel)]="customTemplateDto.templateCc" class="form-control" />
+                    </div>
+                    <br />
+
+                    <div class="form-group1" id="prop">
+                        <label>{{'Bcc' | localize}}</label>
+                        <ng-select [items]="propertiesNames"
+                                   [searchable]="true"
+                                   bindLabel="pageName"
+                                   class="position-relative"
+                                   [disabled]="!customTemplateDto.workFlowPageId"
+                                   bindValue="id"
+                                   (change)="onBccPropertyChange($event)"
+                                   [(ngModel)]="txtBcc"
+                                   name="titleBcc">
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="templateBcc" [(ngModel)]="customTemplateDto.templateBcc" class="form-control"  />
+                    </div>
+                    <br />
+
+                    <div class="form-group1" id="prop">
+                        <label>{{'Body' | localize}}</label>
+                        <ng-select [items]="propertiesName"
+                                   [searchable]="true"
+                                   class="position-relative"
+                                   [disabled]="!customTemplateDto.workFlowPageId"
+                                   bindLabel="pageName"
+                                   bindValue="id"
+                                   (change)="onBodyPropertyChange($event)"
+                                   [(ngModel)]="txtBody"
+                                   name="bodyProperty">
+                        </ng-select>
+                    </div>
+                    <div class="form-group mt-4">
+                        <summernote-text-editor [name]="'New SummerNote'" (setSummerNoteData)="setSummerNoteData($event)"></summernote-text-editor>
+                    </div>
+                    <br />
+                    <div class="form-group1 w-100" id="prop">
+                        <label>{{'Attachment' | localize}}</label>
+                        <file-upload [name]="'WorkflowTeamplate'"
+                                     [attachedFile]="attachedFileCodes"
+                                     [templateID]="templateId"
+                                     [multiple]="false"
+                                     [attachedfileSize]="2097150"
+                                     [noFileUpload]="100"
+                                     (attachmentData)="getAttachment($event)"
+                                     (deleteCode)="getDeleteCode($event)"></file-upload>
+                    </div>
+
+                </div>
+                <div class="modal-footer">                    
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="save()" [disabled]="!roleForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

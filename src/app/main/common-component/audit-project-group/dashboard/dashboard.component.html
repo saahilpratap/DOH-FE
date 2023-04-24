@@ -1,0 +1,340 @@
+<div class="div-read-only">
+    <div class="row">
+        <div class="col-5">
+            <div class="kt-portlet kt-portlet--mobile bg-Color kt-portlet--height-fluid">
+                <div class="kt-portlet__head border-0">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{l('Healthcare Entities')}}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                    </div>
+
+                </div>
+                <div class="kt-portlet__body kt-padding-10">
+                    <div class="d-flex align-items-center mb-10 kt-padding-b-10" *ngFor="let item of businessEntity;let i = index">
+                        <div class="symbol symbol-40 symbol-light-success mr-1">
+                            <img [src]="item.logo" *ngIf="item.logo!=null" height="35" width="35">
+                            <img [src]="logo" *ngIf="item.logo==null" height="35" width="35">
+                        </div>
+
+                        <div class="d-flex flex-column flex-grow-1 font-weight-bold">
+                            <a class="text-dark text-hover-primary mb-1 font-size-lg ">{{item.name}}</a>
+                            <span class="text-muted kt-font-md">{{l('License')}} : {{item.licenseNumber}}</span>
+                            <div class="progress kt-progress--sm kt-margin-t-5 kt-margin-b-5 border-radius-5" style="height: 5px;">
+                                <div class="progress-bar bg-skype" role="progressbar" [ngStyle]="{width: item.percentage + '%'}"></div>
+                            </div>
+                        </div>
+                        <div class="kt-font-boldest kt-font-skype">
+                            {{item.percentage}}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-7">
+            <div class="kt-portlet kt-portlet--mobile bg-Color kt-portlet--height-fluid">
+                <div class="kt-portlet__head border-0">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Key Contacts
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-10" *ngIf="keycontact">
+                    <div class="row">
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-boldest">{{l('Name of Chief Executive Officer (CEO) or equivalent')}}</span>:
+                        </div>
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-skype kt-font-bold">{{keycontact.owner_EN}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-boldest">{{l('Email Address of CEO')}}</span>:
+                        </div>
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-skype kt-font-bold">{{keycontact.owner_Email}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-boldest">{{l('Phone Number of CEO')}}</span>:
+                        </div>
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-skype kt-font-bold">{{keycontact.owner_Mobile}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-boldest">{{l('Name of Chief Information Security Officer (CISO) / Chief Cyber Security Officer (CCSO)')}}</span>:
+                        </div>
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-skype kt-font-bold">{{keycontact.cisO_EN}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-boldest">{{l('Email Address of CISO / CCSO')}}</span>:
+                        </div>
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-skype kt-font-bold">{{keycontact.cisO_Email}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-boldest">{{l('Mobile Number of CISO / CCSO')}}</span>:
+                        </div>
+                        <div class="col-6 kt-padding-b-10">
+                            <span class="kt-font-md kt-font-skype kt-font-bold">{{keycontact.cisO_Mobile}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-10 kt-padding-b-10">
+            <span class="kt-font-boldest kt-font-md">{{l('Name and Contact Details of Information Security Governance Committee (ISGC) Members')}}</span>
+        </div>
+        <div class="row kt-padding-t-10" *ngFor="let item of contact;let i = index">
+            <div class="col-2">
+                <span class="kt-font-md kt-font-skype">{{item.firstName +" "+item.lastName}}</span>
+            </div>
+            <div class="col-2">
+                <span class="kt-font-md kt-font-skype">{{item.jobTitle}}</span>
+            </div>
+            <div class="col-2">
+                <span class="kt-font-md kt-font-skype">{{item.companyName}}</span>
+            </div>
+            <div class="col-3">
+                <span class="kt-font-md kt-font-skype">{{item.email}}</span>
+            </div>
+            <div class="col-2">
+                <span class="kt-font-md kt-font-skype">{{item.mobile}}</span>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-10 kt-padding-b-10">
+            <span class="kt-font-boldest kt-font-md">{{l('INFORMATION RELATED TO THE PERSONNEL')}}</span>
+        </div>
+        <div class="row kt-padding-t-10" *ngIf="entitygroupinfo">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-11">
+                        <span class="kt-font-md">{{l('Total number of personnel')}}</span>
+                    </div>
+                    <div class="col-1">
+                        <span class="kt-font-md kt-font-skype">{{entitygroupinfo.totalPersonnel}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-11">
+                        <span class="kt-font-md">{{l('Number of employees/workers')}}</span>
+                    </div>
+                    <div class="col-1">
+                        <span class="kt-font-md kt-font-skype">{{entitygroupinfo.numberEmpWork}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-11">
+                        <span class="kt-font-md">{{l('Number of contractor personnel')}}</span>
+                    </div>
+                    <div class="col-1">
+                        <span class="kt-font-md kt-font-skype">{{entitygroupinfo.contractPersonnel}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-11">
+                        <span class="kt-font-md">{{l('Total number of personnel Number of personnel in IT and in Information & Cyber Security department/ function')}}</span>
+                    </div>
+                    <div class="col-1">
+                        <span class="kt-font-md kt-font-skype">{{entitygroupinfo.itSecurityStaff}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-padding-t-20">
+        <div class="border-bottom kt-padding-t-10 kt-padding-b-10">
+            <span class="kt-font-boldest kt-font-md">{{l('INFORMATION RELATED TO THE SITES  AND INFORMATION SECURITY MANAGEMENT SYSTEM')}}</span>
+        </div>
+        <div>
+            <span class="kt-margin-b-20">{{l('Indicate in the spaces below the total staff operating on behalf of the group.Provide the total staff in Head Office + in any sites.…')}}</span>
+            <div *ngFor="let item of questionGroups;let i = index">
+                <span>{{item.questionaryGroupName}}</span>
+                <hr />
+                <div class="row kt-padding-t-15" *ngFor="let question of item.externalRequirementQuestion;let j = index">
+
+                    <div class="col-9">
+                        <span class="kt-padding-r-5 kt-font-md">{{j+1}} </span> <span class="kt-font-md">{{question.questionDescription}}</span>
+                    </div>
+                    <div class="col-3">
+                        <div *ngIf="question.answerType==2">
+                            <p-inputSwitch class="kt-padding-10" [(ngModel)]="question.answerType" name="{{j}}"
+                                           [readonly]="true"></p-inputSwitch>
+                        </div>
+                        <div *ngIf="question.answerType==1">
+                            <input type="text" class="selectEntity" name="{{j}}" placeholder="" />
+                        </div>
+                        <div *ngIf="item.ansType==3">
+                            <select class="selectEntity">
+                                <option></option>
+                                <option></option>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        </div>
+    </div>
+    <div class="kt-padding-t-20">
+        <div class="border-bottom kt-padding-t-10 kt-padding-b-10">
+            <span class="kt-font-boldest kt-font-md">{{l('In the following table specify all the sites (offices, hospitals, clinics, centers, posts, pharmacies etc.). For bigger list, please attach as a separate list.')}}</span>
+        </div>
+        <div class="row kt-padding-t-10">
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-1">
+                    </div>
+                    <div class="col-11 kt-align-center">
+                        <span class="kt-font-boldest kt-font-md kt-padding-l-20">Name</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    Type
+                </span>
+            </div>
+
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    Location <br />
+                    (Abu Dhabi, Al Ain etc)
+                </span>
+            </div>
+
+            <div class="col-2">
+                <span class="kt-font-boldest kt-font-md">
+                    License #
+                </span>
+            </div>
+
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    No. of staff<br />
+                    (incl. of contractors)
+                </span>
+            </div>
+        </div>
+        <div class="row kt-padding-t-10" *ngFor="let item of businessEntity;let i = index">
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-1">
+                        <span>{{i + 1}}</span>
+                    </div>
+                    <div class="col-11">
+                        <!--<span class="w-100 focus-outline" style="border:none; border-bottom: dashed 0.5px #0093ca;">{{item.name}}</span>-->
+                        <input type="text" class="w-100 focus-outline" name="name" [(ngModel)]="item.name" style="border:none; border-bottom: dashed 0.5px #0093ca;" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <span class="">{{entityType[item.type]}}</span>
+            </div>
+            <div class="col-2">
+                <span class="">{{item.address}}</span>
+            </div>
+            <div class="col-2">
+                <span class="">{{item.licenseNumber}}</span>
+            </div>
+            <div class="col-2">
+                <span class=""></span>
+            </div>
+        </div>
+    </div>
+    <div class="kt-padding-t-20">
+        <div class="border-bottom kt-padding-t-10 kt-padding-b-10">
+            <span class="kt-font-boldest kt-font-md">{{l('Information on Datacenter where the servers & applications are located / Sites where critical assets are located')}}</span>
+        </div>
+        <div class="row kt-padding-t-10">
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-1">
+                    </div>
+                    <div class="col-11 kt-align-center">
+                        <span class="kt-font-boldest kt-font-md kt-padding-l-20">Name</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    Type
+                </span>
+            </div>
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    Location <br />
+                    (Abu Dhabi, Al Ain etc)
+                </span>
+            </div>
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    License #
+                </span>
+            </div>
+            <div class="col-2 kt-align-center">
+                <span class="kt-font-boldest kt-font-md">
+                    No. of staff<br />
+                    (incl. of contractors)
+                </span>
+            </div>
+        </div>
+        <div class="row kt-padding-t-10">
+            <div class="col-4">
+                <div class="row" *ngFor="let item of data1;let i = index">
+                    <div class="col-1">
+                        <span>{{i + 1}}</span>
+                    </div>
+                    <div class="col-11">
+                        <input type="text" class="w-100 focus-outline" style="border:none; border-bottom: dashed 0.5px #0093ca;" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <span class=""></span>
+            </div>
+            <div class="col-2">
+                <span class=""></span>
+            </div>
+            <div class="col-2">
+                <span class=""></span>
+            </div>
+            <div class="col-2">
+                <span class=""></span>
+            </div>
+        </div>
+    </div>
+    <div class="kt-padding-t-20">
+        <div class="kt-font-boldest kt-font-md">Note:</div>
+        <p class="kt-font-md kt-font-md">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor.
+        </p>
+    </div>
+
+</div>

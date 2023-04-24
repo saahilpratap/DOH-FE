@@ -1,0 +1,116 @@
+<div class="kt-padding-t-20">
+    <div class="border-bottom">
+        {{l('Facilities in the Group - Total / Sampled & Exclusions')}}
+    </div>
+    <div>
+        <table class="table kt-margin-t-10 table-bordered">
+            <thead>
+                <tr class="tr-bg-color" style="background-color: #4fa6b0 !important;">
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">{{l('Sampled')}}</th>
+                    <th class="kt-font-bold kt-align-center width-12 kt-font-light kt-font-sm">{{l('Facility Name')}}</th>
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">{{l('Start Date')}}</th>
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">{{l('End Date')}}</th>
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">{{l('Man Day(s)')}}</th>
+                    <th class="kt-font-bold kt-align-center width-12 kt-font-light kt-font-sm">{{l('N° Sampling site')}}</th>
+                    <th class="kt-font-bold kt-align-center width-25 kt-font-light kt-font-sm">{{l('Processes/Aspects')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of AuditReportEntitiesFacility.auditReportEntities;let i=index">
+                    <td>
+                        <p-inputSwitch [(ngModel)]="item.sampled" [disabled]="reauditPermission"></p-inputSwitch>
+                    </td>
+                    <td>
+                        <ng-select [items]="businessentiesList" [searchable]="true" bindLabel="name" disabled [disabled]="reauditPermission"
+                                   bindValue="id" [(ngModel)]="item.businessEntityId" name="businessEntity{{i}}">
+                        </ng-select>
+                    </td>
+                    <td>
+                        <div id="incident_closeDatetime" class="kt-input-icon">
+                            <input id="startDate" readonly [disabled]="reauditPermission"
+                                   type="datetime"
+                                   #startDate
+                                   name="startdate{{i}}"
+                                   class="form-control input-group date"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                   [(date)]="item.startDate"
+                                   autocomplete="off"/>
+                            <span class="position-absolute"
+                                  style="top: 25%; right: 20px; font-size: 18px;">
+                                <span><i class="flaticon-calendar-1"></i></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="incident_closeDatetime" class="kt-input-icon">
+                            <input id="incident_closeDatetime" readonly [disabled]="reauditPermission"
+                                   type="datetime"
+                                   #incident_closeDatetime
+                                   name="endDate{{i}}"
+                                   class="form-control input-group date"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                   [(date)]="item.endDate"
+                                   autocomplete="off" />
+                            <span class="position-absolute"
+                                  style="top: 25%; right: 20px; font-size: 18px;">
+                                <span><i class="flaticon-calendar-1"></i></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="manDays{{i}}" [(ngModel)]="item.manDays" [disabled]="reauditPermission">
+                    </td>
+                    <td> <input type="text" class="form-control" name="samplingSite{{i}}" [(ngModel)]="item.samplingSite" [disabled]="reauditPermission"></td>
+                    <td> <input type="text" class="form-control" name="process{{i}}" [(ngModel)]="item.process" [disabled]="reauditPermission"></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="kt-padding-t-20">
+    <div class="border-bottom">
+        {{l('Facilities for onsite audit and Location Details')}}
+    </div>
+    <div>
+        <table class="table kt-margin-t-10 table-bordered">
+            <thead>
+                <tr class="tr-bg-color" style="background-color: #4fa6b0 !important;">
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm" style="width:5%">{{l('No')}}</th>
+                    <th class="kt-font-bold kt-align-center width-12 kt-font-light kt-font-sm">{{l('Facility')}}</th>
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">{{l('Name')}}</th>
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">{{l('Positions')}}</th>
+                    <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm" style="width:5%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of AuditReportEntitiesFacility.auditReportyFacilitys;let i = index">
+                    <td class="kt-align-center">
+                        {{i+1}}
+                    </td>
+                    <td>
+                        <input type="text" id="facility{{i}}" name="facilityTPAs{{i}}" [(ngModel)]="item.facility" placeholder="Facility" class="form-control" [disabled]="reauditPermission">
+                    </td>
+                    <td>
+                        <input type="text" id="name{{i}}" name="name{{i}}" [(ngModel)]="item.name" class="form-control" placeholder="Name" [disabled]="reauditPermission">
+                    </td>
+                    <td>
+                        <input type="text" id="positions{{i}}" name="positions{{i}}" [(ngModel)]="item.position" class="form-control" placeholder="Positions" [disabled]="reauditPermission">
+                    </td>
+                    <td class="kt-align-center" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                        <button type="button" class="btn btn-sm btn-label-skype-o2" (click)="addItem(item)" *ngIf="i == 0" [disabled]="reauditPermission">
+                            <i class="fa fa-plus p-0"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-label-danger" (click)="removeItem(item)" *ngIf="i != 0" [disabled]="reauditPermission">
+                            <i class="fa fa-trash-alt p-0"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

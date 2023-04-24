@@ -1,0 +1,70 @@
+<div [@routerTransition]>
+    <div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{l("Email Notification")}}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{l("Email Notification")}}
+                    </span>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button (click)="createEmailNotificationModals.show()"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5" *ngIf="'Pages.Workflow.EmailNotification.Create' | permission">
+                            <i class="fa fa-plus"></i> {{l("Create New Email Notification")}}
+                        </button>
+                        <button style="display: none;"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            <i class="fa fa-plus"></i> {{l("Test")}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                            <div class="kt-portlet__body kt-padding-t-10">
+                    <div class="row align-items-center">                       
+                        <dx-data-grid id="gridContainer"
+                                      [dataSource]="dataEmialNotification"
+                                      [wordWrapEnabled]="false"
+                                      [showBorders]="false"
+                                      [showColumnLines]="false"
+                                      [showRowLines]="false"
+                                      [rowAlternationEnabled]="false"
+                                      [allowColumnReordering]="false">
+                            <dxo-paging [pageSize]="10" [pageIndex]="0"></dxo-paging>
+                            <dxo-pager [showPageSizeSelector]="true"
+                                       [allowedPageSizes]="[5, 10, 20]"
+                                       [showInfo]="true"
+                                       [showNavigationButtons]="true">
+                            </dxo-pager>
+
+                            <dxo-search-panel [visible]="true"
+                                              [width]="240"
+                                              placeholder="Search...">
+                            </dxo-search-panel>
+                            <dxi-column dataField="id" [width]="100" caption="Actions" alignment="left" cellTemplate="action"></dxi-column>
+                            <dxi-column dataField="workFlowPage" caption="Work Flow Name"></dxi-column>
+                            <dxi-column dataField="subject" caption="Subject"></dxi-column>
+                            <dxi-column dataField="emailBody" caption="Email Body"></dxi-column>
+                            <div *dxTemplate="let a of 'action'">
+                                <a class="kt-padding-l-20" (click)="createEmailNotificationModals.show(a.value)" *ngIf="'Pages.Workflow.EmailNotification.Edit' | permission">
+                                    <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                </a>
+                                <a class="kt-padding-l-20" (click)="delete(a.value)" *ngIf="'Pages.Workflow.EmailNotification.Delete' | permission">
+                                    <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                </a>
+                            </div>
+                        </dx-data-grid>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<createEmailNotificationModals #createEmailNotificationModals (modalSave)="getEmailNotification()" ></createEmailNotificationModals>

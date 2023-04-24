@@ -1,0 +1,133 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #controlStandardForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="controlStandard.id && hideButton == 1">
+                            {{l("View Control Standard")}}
+                        </span>
+                        <span *ngIf="controlStandard.id && hideButton != 1">
+                            {{l("EditControlStandard")}}
+                        </span>
+                        <span *ngIf="!controlStandard.id">
+                            {{l("CreateNewControlStandard")}}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlStandard_Code" class="required">{{ l("Control ID") }} </label>
+                                    <input type="text"
+                                           id="ControlStandard_Code"
+                                           class="form-control"
+                                           placeholder="System Generated"
+                                           [(ngModel)]="controlStandard.code"
+                                           name="Code" disabled
+                                            />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlStandard_OriginalControlId">{{ l("Original Control ID") }}</label>
+                                    <input type="text"
+                                           id="ControlStandard_OriginalControlId"
+                                           class="form-control"
+                                           [(ngModel)]="controlStandard.originalControlId"
+                                           name="OriginalControlId" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="required">Authoritative Documents </label>
+                                <select class="form-control"
+                                        name="Authoritative Documents"
+                                        [(ngModel)]="selectedADid" (ngModelChange)="setDomainList()">
+                                    <option value="0">Select</option>
+                                    <option *ngFor="let ad of authoritativeDocumentLists"
+                                            [ngValue]="ad.id">
+                                        {{ ad.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="required">AD Domains </label>
+                                <select class="form-control" name="Authoritative Domain" [(ngModel)]="selectedDomainid" (ngModelChange)="setDomainId($event)">
+                                    <option value="0">Select</option>
+                                    <option *ngFor="let domain of domains" value="{{domain.id}}">
+                                        {{ domain.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="ControlStandard_Name" class="required">{{ l("Name") }} </label>
+                                    <input type="text" id="ControlStandard_Name" class="form-control"
+                                           [(ngModel)]="controlStandard.name" name="Name" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="ControlStandard_Description">
+                                        {{l("Control Description")}}
+                                    </label>
+                                    <textarea id="ControlStandard_Description"
+                                              class="form-control"
+                                              [(ngModel)]="controlStandard.description"
+                                              name="ControlStandardDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit" *ngIf="hideButton != 1"
+                            [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!controlStandardForm.form.valid || selectedDomainid==0"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

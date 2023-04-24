@@ -1,0 +1,140 @@
+<div class="pb-5">
+    <ng-container *ngFor="let timer of sectionData.sectionAttachmentQuestions; let t = index">
+        <div *ngIf="t == sectionShow" class="position-fixed text-right w-100 mobile-timer" style=" z-index: 9;">
+            <div class="bg-white float-right p-2 text-right w-25">
+                <span class="h5 text-monospace">
+                    <count-down [seconds]="timer.counterLimit |timerCountdown"></count-down>
+                </span>
+                <div class="progress kt-progress--sm" style="height: 8px;">
+                    <div class="progress-bar" style="background-color: #4fa6b0;"
+                         [ngStyle]="{width:  100 * t / sectionData.sectionAttachmentQuestions.length  + '%'}"></div>
+                </div>               
+            </div>            
+        </div>
+    </ng-container>
+</div>
+<div class="bg-white pr-5 pl-5">    
+    <div class="wizard wizard-6 d-flex flex-column flex-lg-row flex-column-fluid" id="kt_wizard">
+        <div class="wizard-content d-flex flex-column mx-auto py-10 py-lg-20 w-100 w-md-700px">
+            <div class="d-flex flex-column-auto flex-column px-10 pb-2">
+                <div class="wizard-nav pb-lg-10 pb-3 d-flex flex-column align-items-center align-items-md-start">
+                    <div class="wizard-steps d-flex flex-column flex-md-row">
+                        <div class="wizard-step flex-grow-1 flex-basis-0" *ngFor="let item of sectionData.sectionAttachmentQuestions; let i = index">
+                            <div class="wizard-wrapper pr-lg-7" *ngIf="i == sectionShow">
+                                <div class="wizard-icon" [ngClass]="sectionShow== i ? 'section-selected' : ''">
+                                    <i class="wizard-check ki ki-check"></i>
+                                    <span class="wizard-number" style="color:#fff" *ngIf="i == sectionShow">{{i+1}}</span>
+                                </div>
+                                <div class="wizard-label mr-3" *ngIf="i == sectionShow">
+                                    <div [innerHTML]="item.sectionName"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form #ttxEndUserForm="ngForm" autocomplete="off">
+                <div *ngFor="let item of sectionData.sectionAttachmentQuestions; let i = index" class="pr-3 pl-3">
+                    <ng-containe class="pt-2">
+                        <ng-containe *ngIf="i == sectionShow">
+                            <div *ngFor="let file of item.tableTopExerciseSectionAttachements; let k = index">
+                                <img class="mb-3 p-1 border" [src]="file.fullPath" style=" width: 75%; height: 40vh;" />
+                            </div>
+                        </ng-containe>
+                    </ng-containe>
+                    <ng-containe class="pt-2" *ngFor="let res of item.tableTopExerciseEntityResponses; let j = index" [ngClass]="sectionData.submitted ? 'pointerNone' : 'pointerAuto'">
+                        <ng-containe *ngIf="i == sectionShow">
+                            <div class="font-15 text-body pt-1 pb-1 margin-top-5">
+                                <lable for="question{{j}}" class="font-weight-bolder"
+                                       *ngIf="res.questionName != null" [ngClass]="res.questionMandatory == true ? 'required' : ''">
+                                    {{j+1}}.<span> {{res.questionName}}</span>
+                                </lable>
+                            </div>
+                            <div class="pb-2">
+                                <div *ngIf="res.questionName != null">
+                                    <div class="p-1" *ngIf="res.answerType == 1">
+                                        <select class="form-control kt-padding-r-10"
+                                                id="answerTypeSelect{{j}}"
+                                                required="{{res.questionMandatory}}"
+                                                name="{{res.tableTopExerciseSectionId}}-response{{j}}"
+                                                [(ngModel)]="res.response">
+                                            <option value="undefined" disabled selected> {{"Select" | localize}} </option>
+                                            <option *ngFor="let item of res.responseOptions" [value]="item.code">
+                                                {{item.code}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="p-1 radio-inline" *ngIf="res.answerType == 2">
+                                        <label class="radio radio-solid kt-padding-r-10 kt-margin-5">
+                                            <input type="radio"
+                                                   required="{{res.questionMandatory}}"
+                                                   id="answerTypeRadio{{j}}"
+                                                   name="{{res.tableTopExerciseSectionId}}-radio{{j}}"
+                                                   [checked]="res.response == '1'" value="1"
+                                                   (click)="res.response='1'" />
+                                            <span class="radio-lable-position"> {{l('Yes')}}</span>
+                                        </label>
+                                        <label class="radio radio-solid kt-padding-r-10 kt-margin-5">
+                                            <input type="radio"
+                                                   id="answerTypeRadio{{j}}"
+                                                   name="{{res.tableTopExerciseSectionId}}-radio{{j}}"
+                                                   value="2" [checked]="res.response == '2'"
+                                                   (click)="res.response='2'" />
+                                            <span class="radio-lable-position"> {{l('No')}}</span>
+                                        </label>
+                                    </div>
+                                    <div class="p-1" *ngIf="res.answerType == 3">
+                                        <textarea id="answerTypeTestArea{{j}}"
+                                                  required="{{res.questionMandatory}}"
+                                                  name="{{res.tableTopExerciseSectionId}}-response{{j}}"
+                                                  placeholder="Response" rows="3" class="w-100 form-control"
+                                                  [(ngModel)]="res.response"></textarea>
+
+                                    </div>
+                                    <div class="p-1" *ngIf="res.answerType == 4">
+                                        <p-multiSelect id="answerTypeMultiSelect{{j}}"
+                                                       required="{{res.questionMandatory}}"
+                                                       name="{{res.tableTopExerciseSectionId}}-response{{j}}"
+                                                       [options]="res.responseOptions"
+                                                       optionLabel="code"
+                                                       [(ngModel)]="res.multiResponse"
+                                                       [style]="{'width': '100%'}"></p-multiSelect>
+                                    </div>
+                                    <div *ngIf="res.commentRequired" class="pt-2">
+                                        <label for="Comment" [ngClass]="res.commentMandatory == true ? 'required' : ''">{{'Comment' | localize}}</label>
+                                        <textarea id="commentRequired{{j}}"
+                                                  name="{{res.tableTopExerciseSectionId}}-response-{{j}}"
+                                                  required="{{res.commentMandatory}}"
+                                                  placeholder="Comment" rows="3" class="w-100 form-control"
+                                                  [(ngModel)]="res.questionComment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-containe>
+                    </ng-containe>
+                </div>
+                <div class="pb-5">
+                    <button type="button" class="btn btn-brand float-right mr-2"
+                            [disabled]="!ttxEndUserForm.form.valid"
+                            *ngIf="(sectionShow+1)!=this.sectionData.sectionAttachmentQuestions.length"
+                            (click)="nextStep(sectionShow)">
+                        {{'Next'}}
+                        <i class="la la-angle-double-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-brand float-right mr-2"
+                            *ngIf="(sectionShow+1)==this.sectionData.sectionAttachmentQuestions.length && !sectionData.submitted"
+                            [disabled]="!ttxEndUserForm.form.valid"
+                            (click)="Save()">
+                        {{'Submit'}}
+                        <i class="la la-angle-double-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-brand mr-2" [disabled]="sectionShow == 0" (click)="previousStep(sectionShow)">
+                        <i class="la la-angle-double-left"></i>
+                        {{'Previous'}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

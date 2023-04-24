@@ -1,0 +1,152 @@
+<div class="kt-subheader__wrapper kt-align-right" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+    <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 kt-margin-b-5" type="button" (click)="createEditMeetingModals.show(id,auditProID,vendorId)" *ngIf="'Pages.AuditManagement.Meeting.Create' | permission">
+        <i class="fa fa-plus"></i> {{"Create" | localize}}
+    </button>
+</div>
+<div class="row align-items-center no-margin w-100">    
+    <div class="primeng-datatable-container"
+         [busyIf]="primengTableHelper.isLoading" id="gettable">
+        <div>
+            <p-table #dataTable
+                     (onLazyLoad)="getAllMeetings($event)"
+                     [value]="primengTableHelper.records"
+                     [lazy]="true"
+                     [scrollable]="true"
+                     ScrollWidth="100%"
+                     frozenWidth="150px"
+                     [responsive]="primengTableHelper.isResponsive"
+                     [resizableColumns]="primengTableHelper.resizableColumns">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 150px;">
+                            {{'Id' |localize}}
+                        </th>
+                        <th style="width: 170px;">
+                            {{'Title' |localize}}
+                        </th>
+                        <th style="width: 150px;">
+                            {{'Type' |localize}}
+                        </th>
+                        <th style="width: 150px;">
+                            {{'Start Date' |localize}}
+                        </th>
+                        <th style="width: 150px;">
+                            {{'End Date' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'Project Name' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'Organization' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'Vendor' |localize}}
+                        </th>
+                      
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                    <tr>
+                        <td style="width: 150px;">
+                            {{record.code}}
+                        </td>
+                        <td style="width: 170px;">
+                            <div class="table-text-wrap"
+                                 [pTooltip]="record.meetingTitle"
+                                 tooltipPosition="bottom">
+                                {{record.meetingTitle}}
+                            </div>
+                        </td>
+                        <td style="width: 150px;">
+                            <div class="table-text-wrap"
+                                 [pTooltip]="record.meetingTypeName"
+                                 tooltipPosition="bottom">
+                                {{record.meetingTypeName}}
+                            </div>
+                        </td>
+                        <td style="width: 150px;">
+                            {{record.startDate | date}}
+                        </td>
+                        <td style="width: 150px;">
+                            {{record.endDate | date}}
+                        </td>
+                        <td style="width: 200px;">
+                            <div class="table-text-wrap"
+                                 [pTooltip]="record.auditProjectName"
+                                 tooltipPosition="bottom">
+                                {{record.auditProjectName}}
+                            </div>
+                        </td>
+                        <td style="width: 200px;">
+                            <div class="table-text-wrap"
+                                 [pTooltip]="record.auditOrgName"
+                                 tooltipPosition="bottom">
+                                {{record.auditOrgName}}
+                            </div>
+                        </td>
+                        <td style="width: 200px;">
+                            <div class="table-text-wrap"
+                                 [pTooltip]="record.auditVendorName"
+                                 tooltipPosition="bottom">
+                                {{record.auditVendorName}}
+                            </div>
+                        </td>                      
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="frozenheader">
+                    <tr >
+                        <th style="width: 150px;" class="kt-align-center">
+                            {{'Action' |localize}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="frozenbody" let-record>
+                    <tr>
+                        <td style="width: 150px;" class="kt-align-center">
+                            <a class="kt-padding-r-20" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                               (click)="convertPdf(record.id)" *ngIf="'Pages.AuditManagement.Meeting.Pdf' | permission">
+                                <i class="far fa-file-pdf icon-font-size-1 kt-font-danger"></i>
+                            </a>
+                            <a class="kt-padding-r-20" (click)="createEditMeetingModals.show(record.id,auditProID,vendorId,1,reauditPermission)" *ngIf="'Pages.AuditManagement.Meeting.View' | permission">
+                                <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                            </a>
+                            <!--<a class="kt-padding-r-20" *ngIf="'Pages.AuditManagement.Meeting.Edit' | permission">
+        <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"
+           *ngIf="auditProjectBtn"
+           (click)="createEditMeetingModals.show(record.id,auditProID)"></i>
+        <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"
+           *ngIf="!auditProjectBtn"
+           (click)="createEditMeetingModals.show(record.id,auditProID)"></i>
+    </a>-->
+                            <a class="kt-padding-r-20" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                               *ngIf="'Pages.AuditManagement.Meeting.Delete' | permission">
+                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"
+                                   (click)="deleteAuditMeeting(record.id)"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="primeng-no-data"
+             *ngIf="primengTableHelper.totalRecordsCount == 0 ">
+            {{ l("NoData") }}
+        </div>
+        <div class="primeng-paging-container mt-2">
+            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                         #paginator
+                         (onPageChange)="getAllMeetings($event)"
+                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage ">
+            </p-paginator>
+            <span class="total-records-count">
+                {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount ) }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<createEditMeetingModals
+  #createEditMeetingModals
+  (modalSave)="getAllMeetings()"
+></createEditMeetingModals>

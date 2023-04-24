@@ -1,0 +1,364 @@
+<div class="kt-portlet kt-portlet--mobile w-100">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">          
+        </div>
+        <div class="kt-portlet__head-toolbar pull-right">
+            <button (click)="skipStatusSelectedItemes()" style="min-width: 100px; padding: 0.5rem 0.2rem;" *ngIf="skipStatusHideShow && showAuditstatusButton"
+                    class="btn btn-danger btn-icon-sm btn-sm border-radius-5 kt-margin-r-10 kt-margin-l-10">
+                <i class="fa fa-mail-bulk kt-font-light"></i> {{skipstatuslabel}}
+            </button>
+            <ng-select [items]="testAuditStatus" [searchable]="true" bindLabel="name" [required]="true" *ngIf="showAuditstatusButton"
+                       bindValue="id" placeholder="Select Status"
+                       [(ngModel)]="StatusId" class="kt-align-left mr-1" (change)="initializeBeLookUpFields(StatusId)"
+                       name="Statuses">               
+                <ng-template ng-option-tmp let-item="item" let-index="index" >
+                    {{item.name.length > 19 ? (item.name| slice:0:19) + '..' : item.name}}
+                    <tool-tip class="float-right" [data]="item.name"  [index]="index" [showLength]="19"></tool-tip>
+                </ng-template>
+            </ng-select>
+            <button (click)="inviteSelectedItemes()" style="min-width: 100px; padding: 0.5rem 0.2rem;"
+                    *ngIf="StatusId && !hideStatuslable && showAuditstatusButton && !capavalidate"
+                    class="btn btn-brand btn-icon-sm btn-sm border-radius-5 kt-margin-r-10 kt-margin-l-10">
+                <i class="fa fa-mail-bulk kt-font-light"></i> {{statuslabel}}
+            </button>
+            <button (click)="ApproveReport()" style="min-width: 100px; padding: 0.5rem 0.2rem;"
+                    *ngIf="showStatuslable && showAuditstatusButton"
+                    class="btn btn-brand btn-icon-sm btn-sm border-radius-5 kt-margin-r-10 kt-margin-l-10">
+                <i class="fa fa-mail-bulk kt-font-light"></i> {{"Review Completed"}}
+            </button>
+            <ng-select [items]="filteraudit" *ngIf="showAuditstatusButton"
+                       bindLabel="name"
+                       bindValue="id"
+                       placeholder="Select"
+                       (change)="getLockUnlockAudit(selectedfilterauditid)"
+                       [(ngModel)]="selectedfilterauditid">                
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.name.length > 19 ? (item.name| slice:0:19) + '..' : item.name}}                    
+                </ng-template>
+            </ng-select>
+            <div class="form-check-inline kt-margin-l-10">
+                <input [(ngModel)]="licenseNumber"
+                       name="filterSearch"
+                       class="form-control m-input"
+                       [placeholder]="l('Search License No')"
+                       type="text" />
+                <span class="input-group-btn margin-left--5">
+                    <button (click)="getAuditProjectManagement()" class="btn btn-primary form-control" type="submit">
+                        <i class="flaticon-search-1" [attr.aria-label]="l('Search')"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="kt-portlet__body kt-padding-t-10">
+        <form class="kt-form" autocomplete="off">
+            <div class="row" [hidden]="!advancedFiltersAreShown">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="filterTitle">{{l("Audit Title")}}</label>
+                        <input type="text" class="form-control" id="filterTitle" name="filterTitle" [(ngModel)]="filterTitle">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="filterYear">{{l("Fiscal Year")}}</label>
+                        <input type="text" class="form-control" id="filterYear" name="filterYear" [(ngModel)]="filterYear">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="auditAreaId">{{l("Audit Area")}}</label>
+                        <select id="auditAreaId" class="form-control" [(ngModel)]="auditAreaId" name="auditAreaId">
+                            <option value="0" selected> --- Select--- </option>
+                            <option *ngFor="let area of auditAreas"
+                                    [ngValue]="area.id">
+                                {{ area.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="auditTypeId">{{l("Audit Type")}}</label>
+                        <select id="auditTypeId" class="form-control" [(ngModel)]="auditTypeId" name="auditTypeId">
+                            <option value="0" selected> --- Select--- </option>
+                            <option *ngFor="let type of assessmentTypes"
+                                    [ngValue]="type.id">
+                                {{ type.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3" *ngIf="isadminandExternalAdmin">
+                    <div class="form-group">
+                        <label for="countryId">{{l("Lead Auditor")}}</label>
+                        <ng-select [items]="leadAuditorLookUp"
+                                   [searchable]="true"
+                                   bindLabel="name"
+                                   bindValue="id"
+                                   [(ngModel)]="leadAuditorId"
+                                   placeholder="Select Option"
+                                   style="min-width:170px;"
+                                   name="name">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="countryId">{{l("Date")}}</label>
+                        <input class="form-control" id="StartEndRange" name="StartEndRange"
+                               readonly="readonly" bsDaterangepicker
+                               dateRangePickerMomentModifier type="text"
+                               placeholder="Select Date"
+                               placement="Buttom"
+                               [(ngModel)]="filterdateRange"
+                               [bsConfig]="{ rangeInputFormat : 'DD/MM/YYYY', dateInputFormat: 'DD/MM/YYYY', showWeekNumbers: false }"
+                               (bsValueChange)="OndateChange(filterdateRange)" />
+                    </div>
+                </div>
+                <div style="padding-top:24px">
+                    <div class="form-group">
+                        <button (click)="refreshDate()" class="btn btn-primary form-control" type="submit"><i class="fa fa-redo-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                    <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                </div>
+            </div>
+        </form>
+        <div class="row align-items-center no-margin">           
+            <div class="primeng-datatable-container"
+                 [busyIf]="primengTableHelper.isLoading">
+                <p-table #dataTable
+                         (onLazyLoad)="getAuditProjectManagement($event)"
+                         [value]="primengTableHelper.records"
+                         [lazy]="true"
+                         [scrollable]="true"
+                         ScrollWidth="100%"
+                         frozenWidth="120px"
+                         [responsive]="primengTableHelper.isResponsive"
+                         [resizableColumns]="primengTableHelper.resizableColumns"
+                         (onHeaderCheckboxToggle)="onAllRowSelect($event)"
+                         (onRowSelect)="onRowSelect($event)"
+                         (onRowUnselect)="onRowUnselect($event)">
+                    <ng-template pTemplate="frozenheader">
+                        <tr>
+                            <th style="width: 30px !important">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th style="width: 100px;" class="kt-align-center">
+                                {{'Action' |localize}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="frozenbody" let-record let-rowData>
+                        <tr [pSelectableRow]="rowData">
+                            <td style="width: 25px !important">
+                                <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                            </td>
+                            <td style="width: 120px; padding-left:0px; padding-right:0px">
+                                <!--<a class="kt-padding-r-10" (click)="clickListQu(record.id)"
+                       *ngIf="'Pages.AuditManagement.AuditProject.QuestionGroupName' | permission">
+                        <i class="far fa-question-circle icon-font-size-1 kt-font-warning"
+                           (click)="op.toggle($event)"></i>
+                    </a>-->
+                                <a class="kt-padding-r-10" id="kt_aside_toggler"
+                                   *ngIf="'Pages.AuditManagement.AuditProject.Edit' | permission">
+                                    <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"
+                                       (click)="editAuditProjectManagement(record.id)"></i>
+                                </a>
+                                <a class="kt-padding-r-10"
+                                   *ngIf="'Pages.AuditManagement.AuditProject.Delete' | permission">
+                                    <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"
+                                       (click)="deleteAuditProject(record.id)"></i>
+                                </a>
+                                <a class="kt-padding-r-10" *ngIf="!record.isClone && ('Pages.AuditProject.CloneButton' | permission)">
+                                    <i class="fa fa-clone" (click)="cloneAuditProject(record.id,record.code)" style="color:#ddd;"></i>
+                                </a>
+
+                                <ng-container *ngFor="let item of ReauditPermissionCheckIds;">
+                        <ng-container *ngIf="item.id == record.id && item.accessPermission == 0">
+                            <a class="kt-padding-r-10">
+                                <i class="fa fa-lock" (click)="permissionuser(record.id,record.accessPermission)" style="color:#ddd;"></i>
+                            </a>
+                        </ng-container>
+                        <ng-container *ngIf="item.id == record.id && item.accessPermission != 0">
+                            <a class="kt-padding-r-10">
+                                <i class="fa fa-lock-open" *ngIf="item.accessPermission != 0;" (click)="permissionuser(record.id,record.accessPermission)" style="color:#ddd;"></i>
+                            </a>
+                        </ng-container>
+                    </ng-container>
+                                <a class="kt-padding-r-10" (click)="responseRequest.show(record.id,'Response')" *ngIf="record.auditStatusId==CheckResponse && appSession.user.type == 1">
+                                    <i class="fas fa-reply-all icon-font-size-1 kt-font-brand"></i>
+                                </a>
+                                <a class="kt-padding-r-10" (click)="responseRequest.show(record.id,'Request')" *ngIf="record.auditStatusId==CheckResquest && appSession.user.type == 2">
+                                    <i class="far far fa-paper-plane icon-font-size-1 kt-font-twitter"></i>
+                                </a>
+                            </td>
+                            <p-overlayPanel #op [showCloseIcon]="false" [dismissable]="true" [showTransitionOptions]="'1000ms'"
+                                            [styleClass]="'custom-overlay-audit'" [autoZIndex]="false" appendTo="body">
+                                <ng-template pTemplate>
+                                    <div class="row kt-padding-b-5 border-bottom kt-margin-b-5">
+                                        <div class="col-8">
+                                            <span class="kt-font-bolder kt-font-md">{{l('Question Group Name')}}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="kt-font-bolder kt-font-md">{{l('Status')}}</span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="groupList">
+                                        <div class="row kt-padding-b-10" *ngFor="let item of groupList; let i = index">
+                                            <div class="col-8">
+                                                <button (click)="auditProject.show(rowData.id,item)">{{item.questionGroupName}}</button>
+                                            </div>
+                                            <div class="col-4"></div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="noData == 0" class="kt-align-center">
+                                        <span>{{l('No Data')}}</span>
+                                    </div>
+                                </ng-template>
+                            </p-overlayPanel>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 120px;">
+                                {{'AP ID' |localize}}
+                            </th>
+                            <th style="width: 200px;">
+                                {{'Status' |localize}}
+                            </th>
+                            <th style="width: 200px;">
+                                {{'Cloned From' |localize}}
+                            </th>
+                            <th style="width: 150px;">
+                                {{'Group Name' |localize}}
+                            </th>
+                            <th style="width: 250px;">
+                                {{'Entity Name' |localize}}
+                            </th>
+                            <th style="width: 200px;">
+                                {{'Audit Title' |localize}}
+                            </th>
+                            <th style="width: 150px;">
+                                {{'Start Date' |localize}}
+                            </th>
+                            <th style="width: 150px;">
+                                {{'Lead Auditor' |localize}}
+                            </th>
+                            <th style="width: 150px;">
+                                {{'Audit Type' |localize}}
+                            </th>
+                            <th style="width: 200px;">
+                                {{'Authority Document' |localize}}
+                            </th>
+                            <th style="width: 150px;" class="kt-align-center">
+                                {{'Action' |localize}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                        <tr [pSelectableRow]="rowData" [ngClass]="{'kt-font-info' : record.isClone}">
+                            <td style="width: 120px;" [pTooltip]="record.code" tooltipPosition="bottom">{{record.code}}</td>
+
+                            <td style="width: 200px;">
+                                <div class="table-text-wrap" [pTooltip]="record.auditStatusName" tooltipPosition="bottom">
+                                    {{record.auditStatusName.slice(3, 500)}}
+                                </div>
+                            </td>
+                            <td style="width: 200px;">
+                                <div class="table-text-wrap">
+                                    <span *ngIf="record.originalAuditProjectId>0 && record.originalAuditProjectId<10">EAP-00{{record.originalAuditProjectId}}</span>
+                                    <span *ngIf="record.originalAuditProjectId>=10 && record.originalAuditProjectId<100">EAP-0{{record.originalAuditProjectId}}</span>
+                                    <span *ngIf="record.originalAuditProjectId>=100">EAP-{{record.originalAuditProjectId}}</span>
+                                </div>
+                            </td>
+                            <td style="width: 150px;">
+                                <div class="table-text-wrap">{{record.entityGroupName | slice:3:0}}</div>
+                            </td>
+                            <td style="width: 250px;">
+                                <div class="table-text-wrap">{{setBusinessEntity(record.id)}}</div>
+                            </td>
+                            <td style="width: 200px;">
+                                <div class="table-text-wrap">{{record.auditTitle}}</div>
+                            </td>
+                            <td style="width: 150px;">
+                                <div class="table-text-wrap">{{record.startDate | date}}</div>
+                            </td>
+                            <td style="width: 150px;">
+                                <div class="table-text-wrap">{{record.leadAuditorName}}</div>
+                            </td>
+                            <td style="width: 150px;">
+                                <div class="table-text-wrap">{{record.auditStageName}}</div>
+                            </td>
+                            <td style="width: 200px;">
+                                <div class="table-text-wrap">{{record.authorityDocumentName}}</div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div class="primeng-no-data"
+                     *ngIf="primengTableHelper.totalRecordsCount == 0">
+                    {{ l("NoData") }}
+                </div>
+                <div class="primeng-paging-container">
+                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                 #paginator
+                                 (onPageChange)="getAuditProjectManagement($event)"
+                                 [totalRecords]="primengTableHelper.totalRecordsCount"
+                                 [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                    </p-paginator>
+                    <span class="total-records-count">
+                        {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount ) }}
+                    </span>
+                </div>
+            </div>
+                          
+        </div>
+    </div>
+</div>
+<createEditAuditProjectManagementModals #createEditAuditProjectManagementModals
+                                        (modalSave)="getAuditProjectManagement()"></createEditAuditProjectManagementModals>
+<createAuditProjectEmailNotificationModal #createAuditProjectEmailNotificationModal (getAuditProject)="getAuditProjectManagement()">
+</createAuditProjectEmailNotificationModal>
+<auditProjectManagementModals #auditProject (modalSave)="getAuditProjectManagement()"> </auditProjectManagementModals>
+<responseRequestModals #responseRequest (modalSave)="getAuditProjectManagement()"></responseRequestModals>
+<CloneOneModals #CloneOneModals (modalSave)="pageLoad()"></CloneOneModals>
+
+<div appBsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-md">
+
+        <div class="modal-content" style="width: 430px;height: 242px;">
+            <h6 style="margin:25px 0px 0px 89px">Select user to grant permission</h6>
+            <div style="margin: 16px 0px 18px 103px;">
+                <div class="form-check p-1">
+                    <input [(ngModel)]="EA" [checked]="EA" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="exampleRadios1">
+                        External Auditor
+                    </label>
+                </div>
+                <div class="form-check p-1">
+                    <input [(ngModel)]="EAA" [checked]="EAA" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="exampleRadios2">
+                        External Auditor Admin
+                    </label>
+                </div>
+                <div class="form-check p-1">
+                    <input [(ngModel)]="BEA" [checked]="BEA" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="exampleRadios3">
+                        Business Entity Admin /Insurance Entity Admin
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-danger">{{inpureq}}</span>
+                <button type="submit" (click)="savepermission()" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" ng-reflect-button-busy="false" ng-reflect-busy-text="Saving..."><span>Save</span></button>
+                <button type="button" (click)="close()" class="btn btn-default btn-icon-sm btn-sm btn-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

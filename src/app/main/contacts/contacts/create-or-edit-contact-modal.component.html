@@ -1,0 +1,212 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #contactForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="contact.id">{{ l("EditContact") }}</span>
+                        <span *ngIf="!contact.id">
+                            {{
+                            l("CreateNewContact")
+                            }}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row" *ngIf="contact.id">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="Contact_Code">
+                                        {{
+                                        l("Contact ID")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_Code"
+                                           class="form-control"
+                                           [(ngModel)]="contact.code"
+                                           name="Code"
+                                           disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Contact_FirstName" class="required">
+                                        {{
+                                        l("FirstName")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_FirstName"
+                                           class="form-control"
+                                           [(ngModel)]="contact.firstName"
+                                           name="FirstName" required/>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Contact_LastName" class="required">
+                                        {{
+                                        l("LastName")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_LastName"
+                                           class="form-control"
+                                           [(ngModel)]="contact.lastName" required
+                                           name="LastName" />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Contact_JobTitle">
+                                        {{
+                                        l("JobTitle")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_JobTitle"
+                                           class="form-control"
+                                           [(ngModel)]="contact.jobTitle"
+                                           name="JobTitle" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Contact_CompanyName">
+                                        {{
+                                        l("Company Name ")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_CompanyName"
+                                           class="form-control"
+                                           [(ngModel)]="contact.companyName"
+                                           name="CompanyName" />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div>
+                                    <label class="required">Contact Owner (Entity) </label>
+                                    <ng-select [items]="BusinessEntity" [searchable]="true" bindLabel="name" [disabled]="contact.id"
+                                               bindValue="id" placeholder="Select Contact Owner"
+                                               [(ngModel)]="contact.businessEntityId" class="kt-align-left"
+                                               name="ContactOwner" [required]="true">
+                                    </ng-select>
+                                 
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div>
+                                    <label class="required">Contact Type </label>
+                                  
+                                    <ng-select [items]="contactTypesLookUp" [searchable]="true" bindLabel="name" [required]="true"
+                                               bindValue="id" placeholder="Select Contact Type"
+                                               [(ngModel)]="contact.contactTypeId" class="kt-align-left"
+                                               name="contactType">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Contact_EmailAddress" class="required">
+                                        {{
+                                        l("Email")
+                                        }}
+                                    </label>
+                                    <input id="Contact_EmailAddress" #emailAddressInput="ngModel" type="email" name="EmailAddress" class="form-control" [(ngModel)]="contact.email"  required maxlength="256" email />
+                                    <validation-messages [formCtrl]="emailAddressInput"></validation-messages>
+                                   
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Contact_SecEmailAddress">
+                                        {{
+                                        l("Secondary Email")
+                                        }}
+                                    </label>
+                                    <input id="Contact_EmailAddress" #emailAddressesInput="ngModel" type="email" name="SecondaryEmailAddress" class="form-control" [(ngModel)]="contact.secondaryEmail"  maxlength="256" email />
+                                    <validation-messages [formCtrl]="emailAddressesInput"></validation-messages>                                  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Contact_Mobile" class="required">
+                                        {{
+                                        l("Mobile")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_Mobile"
+                                           class="form-control"
+                                           [(ngModel)]="contact.mobile"
+                                           required
+                                           name="Mobile"  (keypress)="numberOnly($event)"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Contact_DirectPhone">
+                                        {{
+                                        l("DirectPhone")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Contact_DirectPhone"
+                                           class="form-control"
+                                           [(ngModel)]="contact.directPhone"
+                                           name="DirectPhone" (keypress)="numberOnly($event)"  />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!contactForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

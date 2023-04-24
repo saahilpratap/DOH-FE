@@ -1,0 +1,395 @@
+<div [@routerTransition]>
+  <div
+    class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
+  >
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+        <div class="kt-subheader__main">
+          <h3 class="kt-subheader__title">
+            <span>{{"Users" | localize}}</span>
+          </h3>
+          <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+          <span class="kt-subheader__desc">
+            {{"UsersHeaderInfo" | localize}}
+          </span>
+        </div>
+        <div class="kt-subheader__toolbar">
+          <div class="kt-subheader__wrapper">
+            <div class="btn-group" dropdown>
+              <button
+                dropdownToggle
+                type="button"
+                class="btn btn-outline-success dropdown-toggle"
+                *ngIf="('Pages.Administration.Users.Export' | permission) && ('Pages.OrganizationSetup.AuthorityEmployees.Export' | permission)"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="far fa-file-excel"></i> {{"ExcelOperations" |
+                localize}}
+              </button>
+              <div
+                class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                *dropdownMenu
+              >
+                <a
+                  class="dropdown-item"
+                  id="ExportUsersToExcelButton"
+                  (click)="exportToExcel()"
+                  *ngIf="userPermission && exportButtonHide"
+                  href="javascript:;"
+                >
+                  <i class="fa fa-download" style="font-size: 1rem;"></i>
+                  {{'ExportToExcel' | localize}}
+                </a>
+                <a
+                  href="javascript:;"
+                  *ngIf="'Pages.Administration.Users.Import' | permission"
+                  class="no-padding"
+                >
+                  <span class="fileinput-button">
+                    <p-fileUpload
+                      customUpload="true"
+                      name="ExcelFileUpload"
+                      #ExcelFileUpload
+                      maxFileSize="10000000"
+                      auto="auto"
+                      accept=".csv,.xls,.xlsx"
+                      (uploadHandler)="uploadExcel($event)"
+                      (onError)="onUploadExcelError()"
+                      chooseLabel="{{'ImportFromExcel' | localize}}"
+                    >
+                    </p-fileUpload>
+                  </span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <span class="dropdown-item-text text-muted pl-3" href="#">
+                  <small
+                    [innerHTML]="l('ImportToExcelSampleFileDownloadInfo', '<a href=/assets/sampleFiles/ImportUsersSampleFile.xlsx>' + l('ClickHere') + '</a>')"
+                  ></small>
+                </span>
+              </div>
+            </div>
+
+            <button
+              (click)="createUser()"
+              *ngIf="'Pages.Administration.Users.Create' | permission"
+              class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+            >
+              <i class="fa fa-plus"></i> {{"CreateNewUser" | localize}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+      <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head">
+          <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+              {{"Users" | localize}}
+            </h3>
+          </div>
+          <div class="kt-portlet__head-toolbar">
+              <button type="button" (click)="inviteSelectedItems()" class="btn btn-primary btn-sm kt-margin-r-20" *ngIf="userDetail && appSession.user.type == 0 || appSession.user.type==3">
+                  <i class="far fa-envelope icon-font-size-1"></i>
+                  {{l('Send User Reset Link')}}
+              </button>
+
+              <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                  <div class="input-group">
+                      <input [(ngModel)]="filterText"
+                             name="filterText"
+                             autofocus
+                             class="form-control m-input"
+                             [placeholder]="l('SearchWithThreeDot')"
+                             type="text" />
+                      <span class="input-group-btn margin-left--5">
+                          <button (click)="getUsers()"
+                                  class="btn btn-primary form-control"
+                                  type="submit">
+                              <i class="flaticon-search-1"
+                                 [attr.aria-label]="l('Search')"></i>
+                          </button>
+                      </span>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="kt-portlet__body kt-padding-t-10">
+          <form class="kt-form" autocomplete="new-password">
+            <div class="row mb-4" [hidden]="!advancedFiltersAreShown">
+              <div
+                [ngClass]="{'col-md-6': ('Pages.Administration.Roles' | permission), 'col-md-12':!('Pages.Administration.Roles' | permission)}"
+              >
+                <div class="form-group">
+                  <permission-tree-modal
+                    #permissionFilterTreeModal
+                    (onModalclose)="getUsers()"
+                  >
+                  </permission-tree-modal>
+                </div>
+              </div>
+              <div
+                class="col-md-6"
+                *ngIf="'Pages.Administration.Roles' | permission"
+              >
+                <div class="form-group">
+                  <role-combo name="roleFilter" [(ngModel)]="role"></role-combo>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="kt-checkbox-list">
+                  <label for="UsersTable_OnlyLockedUsers" class="kt-checkbox">
+                    <input
+                      id="UsersTable_OnlyLockedUsers"
+                      type="checkbox"
+                      name="OnlyLockedUsers"
+                      [(ngModel)]="onlyLockedUsers"
+                    />
+                    {{"OnlyLockedUsers" | localize}}
+                    <span></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-4" *ngIf="advancedFiltersAreShown">
+              <div class="col-sm-12 text-right">
+                <button
+                  class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                  (click)="getUsers()"
+                >
+                  <i class="fa fa-sync"></i>
+                  {{"Refresh" | localize}}
+                </button>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-sm-12">
+                <span
+                  class="clickable-item text-muted"
+                  *ngIf="!advancedFiltersAreShown"
+                  (click)="advancedFiltersAreShown=!advancedFiltersAreShown"
+                >
+                  <i class="fa fa-angle-down"></i> {{"ShowAdvancedFilters" |
+                  localize}}
+                </span>
+                <span
+                  class="clickable-item text-muted"
+                  *ngIf="advancedFiltersAreShown"
+                  (click)="advancedFiltersAreShown=!advancedFiltersAreShown"
+                >
+                  <i class="fa fa-angle-up"></i> {{"HideAdvancedFilters" |
+                  localize}}
+                </span>
+              </div>
+            </div>
+          </form>
+
+          <div class="row align-items-center">
+            <!--<Primeng-TurboTable-Start>-->
+            <div
+              class="primeng-datatable-container"
+              [busyIf]="primengTableHelper.isLoading"
+            >
+              <p-table
+                #dataTable
+                (onLazyLoad)="getUsers($event)"
+                [value]="primengTableHelper.records"
+                rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                [paginator]="false"
+                [lazy]="true"
+                [scrollable]="true"
+                ScrollWidth="100%"
+                [responsive]="primengTableHelper.isResponsive"
+                [resizableColumns]="primengTableHelper.resizableColumns"
+                       [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)"
+              >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 20px !important">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th style="width: 130px;"
+                            [hidden]="!(['Pages.Administration.Users.Impersonation', 'Pages.Administration.Users.Edit', 'Pages.Administration.Users.ChangePermissions', 'Pages.Administration.Users.Delete'] | permissionAny)">
+                            {{'Actions' | localize}}
+                        </th>
+                        <th style="width: 180px;" pSortableColumn="username">
+                            {{'UserName' | localize}}
+                            <p-sortIcon field="username"></p-sortIcon>
+                        </th>
+                        <th style="width: 150px;" pSortableColumn="name">
+                            {{'Name' | localize}}
+                            <p-sortIcon field="name"></p-sortIcon>
+                        </th>
+                        <th style="width: 150px;" pSortableColumn="surname">
+                            {{'Surname' | localize}}
+                            <p-sortIcon field="surname"></p-sortIcon>
+                        </th>
+                        <th style="width: 150px;" *ngIf="!skipBEUsers">
+                            {{ "Company Name" | localize }}
+                        </th>
+                        <th style="width: 180px;">
+                            {{'Roles' | localize}}
+                        </th>
+                        <th style="width: 250px;" pSortableColumn="emailAddress">
+                            {{'EmailAddress' | localize}}
+                            <p-sortIcon field="emailAddress"></p-sortIcon>
+                        </th>
+                        <th style="width: 200px;"
+                            pSortableColumn="isEmailConfirmed">
+                            {{'EmailConfirm' | localize}}
+                            <p-sortIcon field="isEmailConfirmed"></p-sortIcon>
+                        </th>
+                        <th style="width: 100px;" pSortableColumn="isActive">
+                            {{'Active' | localize}}
+                            <p-sortIcon field="isActive"></p-sortIcon>
+                        </th>
+                        <th style="width: 200px;" pSortableColumn="creationTime">
+                            {{'CreationTime' | localize}}
+                            <p-sortIcon field="creationTime"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-record="$implicit" let-rowData>
+                    <tr [pSelectableRow]="rowData">
+                        <td style="width: 20px !important">
+                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                        </td>
+                        <td style="width: 130px;"
+                            [hidden]="!(['Pages.Administration.Users.Impersonation', 'Pages.Administration.Users.Edit', 'Pages.Administration.Users.ChangePermissions', 'Pages.Administration.Users.Delete'] | permissionAny)">
+                            <div class="btn-group dropdown" dropdown container="body">
+                                <button dropdownToggle
+                                        class="dropdown-toggle btn btn-sm btn-primary">
+                                    <i class="fa fa-cog"></i><span class="caret"></span>
+                                    {{"Actions" | localize}}
+                                </button>
+                                <ul class="dropdown-menu" *dropdownMenu>
+                                    <li *ngIf="record.type != 0">
+                                        <a href="javascript:;"
+                                           *ngIf="('Pages.Administration.Users.Impersonation' | permission) && record.id !== appSession.userId"
+                                           (click)="_impersonationService.impersonate(record.id, appSession.tenantId)">{{'LoginAsThisUser' | localize}}</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;"
+                                           *ngIf="'Pages.Administration.Users.Edit' | permission"
+                                           (click)="createOrEditUserModal.show(record.id)">{{'Edit' | localize}}</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;"
+                                           *ngIf="'Pages.Administration.Users.ChangePermissions' | permission"
+                                           (click)="editUserPermissionsModal.show(record.id, record.userName)">{{'Permissions' | localize}}</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;"
+                                           *ngIf="'Pages.Administration.Users.Unlock' | permission"
+                                           (click)="unlockUser(record)">{{'Unlock' | localize}}</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;"
+                                           *ngIf="'Pages.Administration.Users.Delete' | permission"
+                                           (click)="deleteUser(record)">{{'Delete' | localize}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td style="width: 180px;" class="text-nowrap">
+                            <div class="ui-column-title">
+                                {{'UserName' | localize}}
+                            </div>
+                            <div [pTooltip]="record.userName"
+                                 tooltipPosition="bottom">{{record.userName |slice: 0:20}}</div>
+                        </td>
+                        <td style="width: 150px;">
+                            <div class="ui-column-title">
+                                {{'Name' | localize}}
+                            </div>
+                            {{record.name}}
+                        </td>
+                        <td style="width: 150px;">
+                            <div class="ui-column-title">
+                                {{'Surname' | localize}}
+                            </div>
+                            {{record.surname}}
+                        </td>
+                        <td style="width: 150px;" *ngIf="!skipBEUsers">
+                            <div class="ui-column-title">{{"CompanyName" | localize}}</div>
+                            <div [pTooltip]="record.companyName"
+                                 tooltipPosition="bottom">{{ record.companyName | slice: 0:20}}</div>
+                        </td>
+                        <td style="width: 180px;">
+                            <div class="ui-column-title table-text-wrap">
+                                {{'Roles' | localize}}
+                            </div>
+                            <span class="text-nowrap" [pTooltip]="getRolesAsString(record.roles)"
+                                  tooltipPosition="bottom">{{getRolesAsString(record.roles) | slice: 0:20}}</span>
+                        </td>
+                        <td style="width: 250px;">
+                            <div class="ui-column-title table-text-wrap">
+                                {{'EmailAddress' | localize}}
+                            </div>
+                            <div [pTooltip]="record.emailAddress"
+                                 tooltipPosition="bottom">{{record.emailAddress}}</div>
+                        </td>
+                        <td style="width: 200px;">
+                            <div class="ui-column-title table-text-wrap">
+                                {{'EmailConfirm' | localize}}
+                            </div>
+                            <div class="kt-badge kt-badge--success kt-badge--inline"
+                                 *ngIf="record.isEmailConfirmed">{{'Yes' | localize}}</div>
+                            <div class="kt-badge kt-badge--dark kt-badge--inline"
+                                 *ngIf="!record.isEmailConfirmed">{{'No' | localize}}</div>
+                        </td>
+                        <td style="width: 100px;">
+                            <div class="ui-column-title">
+                                {{'Active' | localize}}
+                            </div>
+                            <div class="kt-badge kt-badge--success kt-badge--inline"
+                                 *ngIf="record.isActive">{{'Yes' | localize}}</div>
+                            <div class="kt-badge kt-badge--dark kt-badge--inline"
+                                 *ngIf="!record.isActive">{{'No' | localize}}</div>
+                        </td>
+                        <td style="width: 200px;">
+                            <div class="ui-column-title">
+                                {{'CreationTime' | localize}}
+                            </div>
+                            {{record.creationTime | momentFormat:'L'}}
+                        </td>
+                    </tr>
+                </ng-template>
+              </p-table>
+              <div
+                class="primeng-no-data"
+                *ngIf="primengTableHelper.totalRecordsCount == 0"
+              >
+                {{'NoData' | localize}}
+              </div>
+              <div class="primeng-paging-container">
+                <p-paginator
+                  [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                  #paginator
+                  (onPageChange)="getUsers($event)"
+                  [totalRecords]="primengTableHelper.totalRecordsCount"
+                  [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                >
+                </p-paginator>
+                <span class="total-records-count">
+                  {{'TotalRecordsCount'|localize:primengTableHelper.totalRecordsCount}}
+                </span>
+              </div>
+            </div>
+            <!--<Primeng-TurboTable-End>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <createOrEditUserModal
+      #createOrEditUserModal
+      (modalSave)="getUsers()"
+    ></createOrEditUserModal>
+    <editUserPermissionsModal
+      #editUserPermissionsModal
+    ></editUserPermissionsModal>
+  </div>
+</div>

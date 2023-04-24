@@ -1,0 +1,53 @@
+<div appBsModal #tableTopExerciseGroupModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="tableTopExerciseGroupModal" aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" [formGroup]="groupform" (ngSubmit)="save(); groupform.resetForm()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Table Top Exercise Exercise')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label for="group_name" class="required">{{"Exercise Name" | localize}} </label>
+                        <input id="group_name" formControlName="tableTopExerciseGroupName" placeholder="Exercise Name" type="text" name="tableTopExerciseGroupName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="ttx_Description" class="required">{{"Description" | localize}} </label>
+                        <div class="show-less">
+                            <angular-editor id="ttx_Description"
+                                            [config]="editorConfig"
+                                            formControlName="tableTopExerciseDescription"
+                                            placeholder="Description"
+                                            type="text"
+                                            name="tableTopExerciseDescription"></angular-editor>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="required">{{"Scenario List" | localize}} </label>
+                        <p-pickList [source]="sectionList" [showTargetFilter]="true" [target]="sectionListGroup1" class="w-100" sourceHeader="Scenario" targetHeader="Selected Scenario"
+                                    (onMoveToTarget)="passTargetQue($event)" [responsive]="true" [showSourceControls]="true" [showTargetControls]="true">
+                            <ng-template let-que pTemplate="item">
+                                <div class="ui-helper-clearfix">
+                                    <div>{{que.sectionName }}</div>
+                                </div>
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!groupform.valid" 
+                            [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i>
+                        {{"Save" | localize}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

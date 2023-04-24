@@ -1,0 +1,56 @@
+<div appBsModal #viewExceptionsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewExceptionsModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form #viewExceptionsForm="ngForm">
+                <div class="modal-body">
+                    <div class="border kt-padding-20" style="min-height:350px">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="kt-font-lg kt-font-bolder">{{"Exception" | localize}}</span>
+                            </div>
+                            <div class="col-4 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Business Risk" | localize}}</label>                                   
+                                <div class="btn btn-label-danger btn-sm form-control kt-font-boldest kt-font-md">{{'Revenue Loss' |localize}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
+                            <span class="text-muted mt-3 font-weight-bold font-size-sm">{{exception.code}}</span>
+                            <br />
+                            <span class="card-label font-weight-bolder text-dark">{{exception.title}}</span>
+                        </div>
+                        <div class="kt-padding-t-20">
+                            <p>{{exception.comment}}</p>
+                        </div>
+                        <div class="kt-padding-t-20 kt-padding-b-70">
+                            <div class="form-group">
+                                <label class="kt-font-boldest">{{"Detected" | localize}}</label>
+                                <br />
+                                <span>{{exception.approvedTillDate | momentFormat:'L'}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Type" | localize}}</label>
+                                    <div class="btn btn-label-warning btn-sm form-control kt-font-bold kt-font-sm">Policy</div>
+                                </div>
+                            </div>
+                            <div class="col-4"></div>
+                            <div class="col-4 kt-align-center">
+                                <div class="form-group">
+                                    <label>{{"Approved By" | localize}}</label>
+                                    <div class="btn btn-label-danger btn-sm form-control kt-font-bold kt-font-sm">John Wayne</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

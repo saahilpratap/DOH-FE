@@ -1,0 +1,21 @@
+<div class="kt-padding-100">
+    <p-inputSwitch [(ngModel)]="editModeEnabled"></p-inputSwitch>
+    <div class="options-header">
+        <button mat-raised-button color="accent" (click)="pushItem()" class="add-button cols-2">
+            Resize first item and push others
+        </button>
+        <button (click)="addItem()" class="add-button cols-2">
+           add
+        </button>
+    </div>
+    <gridster [options]="options">
+        <gridster-item [item]="item" *ngFor="let item of dashboard">
+            <div class="button-holder">
+                <button class="btn btn-sm text-white bg-danger deleteWidgetButton" (mousedown)="removeItem($event, item)"
+                        *ngIf="editModeEnabled" (touchstart)="removeItem($event, item)">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </gridster-item>
+    </gridster>
+</div>

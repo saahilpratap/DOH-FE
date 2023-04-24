@@ -1,0 +1,148 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #authoritativeDocumentForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="authoritativeDocument.id && isReadOnly == 0">
+                            {{l("Edit Authoritative Document")}}
+                        </span>
+                        <span *ngIf="authoritativeDocument.id && isReadOnly ==1 ">
+                            {{l("View Authoritative Document")}}
+                        </span>
+                        <span *ngIf="!authoritativeDocument.id && isReadOnly == 0">
+                            {{l("Create Authoritative Document")}}
+                        </span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [ngClass]=" isReadOnly==1 ? 'pointerNone' : 'pointerAuto'">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Code" class="required">{{l("Id")}} </label>
+                                <input type="text"
+                                       id="AuthoritativeDocument_Code"
+                                       placeholder="System Generated"
+                                       class="form-control"
+                                       name="Code"
+                                       [(ngModel)]="authoritativeDocument.code"
+                                       disabled />
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Name" class="required">{{l("Name")}} </label>
+                                <input type="text"
+                                       id="AuthoritativeDocument_Name"
+                                       class="form-control"
+                                       [(ngModel)]="authoritativeDocument.name"
+                                       name="Name"
+                                       required />
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Title">{{l("Short Title")}}</label>
+                                <input type="text" id="short_Title" [(ngModel)]="authoritativeDocument.title" class="form-control" name="short_Title" />
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthorityDepartment_Name" class="required">{{l("Authority Department ")}}</label>
+                                <ng-select [items]="authorityDepartment" [searchable]="false" bindLabel="name"
+                                           bindValue="id" placeholder="All" required
+                                           [(ngModel)]="authoritativeDocument.authorityDepartmentId"
+                                           name="authorityDepartmentId">
+                                </ng-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Code">
+                                    {{l("Applicable Entities")}}
+                                </label>
+                                <p-multiSelect [style]="{'width': '100%'}" [options]="entity" [maxSelectedLabels]="3" [filter]="true" placeholder="Select Audit Type" optionLabel="name" [(ngModel)]="selectedEntity" name="Audit" (onChange)="auditTypeeChange()"></p-multiSelect>
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Code">
+                                    {{l("Status")}}
+                                </label>
+                                <ng-select [items]="documentStatus" [searchable]="true" bindLabel="name"
+                                           bindValue="id" placeholder="Select Status"
+                                           [(ngModel)]="authoritativeDocument.status"
+                                           name="Status">
+                                </ng-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthorityDepartment_Name">{{l("Logo")}}</label>
+                                <div class="form-group m-form__group" (click)="uploadLogo()">
+                                    <div class="input-group m-input-group imgBorder">
+                                        <img [src]="logoUpload" id="PanImage" class="ImageOnDialog imgUpload" height="70" width="100" onError="this.src='../../../../assets/common/images/logo.png';" alt="..." />
+                                        <input hidden type="file" id="fileimageUpload" name="fileimageUpload" accept="{{accept}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Code">{{l("Authoritative Document Type")}}</label>
+                                <ng-select [items]="documentType" [searchable]="false" bindLabel="name"
+                                           bindValue="id" placeholder=" Select Document Type"
+                                           [(ngModel)]="authoritativeDocument.documentTypeId"
+                                           name="Type">
+                                </ng-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Category">{{l("Category")}}</label>
+                                <ng-select [items]="category" [searchable]="false" bindLabel="name"
+                                           bindValue="id" (change)="oncategoryChange($event)" placeholder=" Select category"
+                                           [(ngModel)]="authoritativeDocument.categoryId"
+                                           name="AuthoritativeDocument_Category">
+                                </ng-select>
+                            </div>
+                            <div class="form-group" *ngIf="enable">
+                                <label for="AuthoritativeDocument_Code">
+                                    {{l("Related AD")}}
+                                </label>
+                                <p-multiSelect [style]="{'width': '100%'}" [options]="relatedAD" [maxSelectedLabels]="3" [filter]="true" placeholder="Select Business Service" optionLabel="title" [(ngModel)]="selectedAd" name="Related" (onChange)="relatedAdChange()"></p-multiSelect>
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthoritativeDocument_Code">
+                                    {{l("Third Party") }}
+                                </label>
+                                <ng-select [items]="thirdParty" [searchable]="false" bindLabel="name"
+                                           bindValue="id" placeholder=" Select Third Party"
+                                           [(ngModel)]="authoritativeDocument.businessEntityId"
+                                           name="thirdParty">
+                                </ng-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="AuthorityDepartment_Description">{{l("Description")}}</label>
+                                <textarea class="form-control" [(ngModel)]="authoritativeDocument.description" name="description" rows="7"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" >
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            *ngIf="isReadOnly != 1"
+                            [ngClass]=" isReadOnly==1 ? 'pointerNone' : 'pointerAuto'"
+                            [disabled]="!authoritativeDocumentForm.form.valid" [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>                   
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

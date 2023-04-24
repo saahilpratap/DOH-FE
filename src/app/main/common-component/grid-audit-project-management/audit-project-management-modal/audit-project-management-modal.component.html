@@ -1,0 +1,141 @@
+<div appBsModal #auditProjectManagementModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     id="idCommonQuestionries" aria-labelledby="auditProjectManagementModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-full-height modal-right">
+        <div class="modal-content">
+            <form #auditProjectManagementForm="ngForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{modalHeader}}
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body"
+                     [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '70vh', 'position': 'relative'}"
+                     style="padding: 0.25rem !important;">
+                    <table class="table kt-margin-t-5 table-bordered1">
+                        <thead>
+                            <tr class="tr-bg-color" style="background-color: ghostwhite;">
+                                <th class="kt-font-bold width-40 kt-font-md kt-font-bolder">
+                                    {{l('Question')}}
+                                </th>                               
+                                <th class="kt-font-bold width-20 kt-font-md kt-font-bolder">
+                                    {{l('Response')}}
+                                </th>
+                                <th class="kt-font-bold width-15 kt-font-md kt-font-bolder">
+                                    {{l('Comments')}}
+                                </th>
+                                <th class="kt-font-bold width-10 kt-font-md kt-font-bolder">
+                                    {{l('Attachment')}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let item of testData;let i = index">
+                            <tr style="background-color: ghostwhite;">
+                                <td class="kt-font-bolder" colspan="5"> {{item.sectionName}}</td>
+                            </tr>
+                            <tr style="width:100% !important" *ngFor="let q of item.questionList;let i = index">
+                                <td class="kt-font-md kt-font-bold">
+                                    <div class="form-group kt-margin-b-0">
+                                        <label class="kt-font-bold">
+                                            {{i + 1}}. {{q.description}}
+                                        </label>
+                                    </div>
+                                </td>                              
+                                <td>
+                                    <div *ngIf="q.answerType == 'Logical'" class="form-check-inline w-100">
+                                        <label class="radio radio-solid kt-padding-r-10 kt-margin-5">
+                                            <input [disabled]="reauditPermission" type="radio" name="radio{{i}}" [checked]="q.response == '1'" value="1" (click)="q.response='1'" />
+                                            <span class="radio-lable-position">{{l('Yes')}}</span>
+                                        </label>
+                                        <label class="radio radio-solid kt-padding-r-10 kt-margin-5">
+                                            <input [disabled]="reauditPermission" type="radio" name="radio{{i}}" value="2" [checked]="q.response == '2'" (click)="q.response='2'" />
+                                            <span class="radio-lable-position">{{l('No')}}</span>
+                                        </label>
+                                    </div>
+                                    <div *ngIf="q.answerType == 'Input'">
+                                        <input type="text" [disabled]="reauditPermission" class="form-control" name="response{{i}}" [(ngModel)]="q.response" />
+                                    </div>
+                                    <div *ngIf="q.answerType == 'List'" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                        >
+                                        <!--<select [disabled]="reauditPermission" class="form-control kt-padding-r-10" name="response{{i}}" [(ngModel)]="q.response">-->
+                                        <select [disabled]="reauditPermission" class="form-control kt-padding-r-10" name="response{{i}}" [(ngModel)]="q.response">
+                                            <option value="undefined" disabled selected> Select </option>
+                                            <option *ngFor="let item of q.valueAndScores" [value]="item.value">
+                                                {{item.value}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                    <!--<input [disabled]="reauditPermission" type="text" class="form-control" name="comments{{i}}" [(ngModel)]="q.comments" placeholder="Comments" />-->
+                                    <input type="text" class="form-control" name="comments{{i}}" [(ngModel)]="q.comments" placeholder="Comments" />
+
+                                </td>
+                                <td>
+                                    <div *ngIf="q.attachment" class="form-inline kt-align-center">
+                                        <div *ngIf="q.fileName" [pTooltip]="q.fileName"
+                                             tooltipPosition="left" style="width: 75px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: underline; ">
+                                            <a (click)="downloadAttachment(q.attachment)" class="text-info">
+                                                {{q.fileName}}
+                                            </a>
+                                        </div>
+                                        <a (click)="deleteAttachment(q.attachment)" [disabled]="reauditPermission">
+                                            <i class="fa fa-trash-alt text-danger h5 cursor-pointer"></i>
+                                        </a>
+                                    </div>
+                                    <div *ngIf="!q.response && !q.attachment" class="kt-align-center"
+                                         [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                        <img src="assets/common/images/attachment.svg"
+                                             style="cursor: pointer;" (click)="checkResponse()" [disabled]="reauditPermission"/>
+                                    </div>
+                                    <div *ngIf="q.response">
+                                        <div *ngIf="!q.fileName">
+                                            <div style="text-align: center;">
+                                                <img src="assets/common/images/attachment.svg"
+                                                     style="cursor: pointer;"
+                                                     (click)="inputFile.click()" [disabled]="reauditPermission"/>
+                                                <input name="file"
+                                                       id="file"
+                                                       (change)=" uploadAttachment( $event, q.questionId,q.questionGroupId,q.SectionId )"
+                                                       type="file"
+                                                       #inputFile
+                                                       hidden />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <div class="float-left">
+                        <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="reauditPermission" (click)="Submit()" *ngIf="submitQuestinaryButton">
+                            {{l('Submit Questionnaire')}}
+                        </button>
+                    </div>                  
+                    <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="reauditPermission" (click)="save()">
+                        {{l('Save')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<p-overlayPanel #op [showCloseIcon]="false" [dismissable]="true" [style]="{'width': '550px'}" [styleClass]="'custom-overlay-w-600'" [autoZIndex]="false" appendTo="body">
+    <ng-template pTemplate>
+     
+       
+    </ng-template>
+</p-overlayPanel>
+
+

@@ -1,0 +1,17 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Monitoring Status (Overall)" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">         
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        <!--<div id="chartdiv" style="height:24em"></div>-->
+        <ngx-charts-pie-chart [results]="basicData" [view]="view"
+                              [doughnut]="true" [legend]="true" [labels]="false"
+                              [scheme]="colorScheme" [animations]="true" [legendPosition]="legendPosition"
+                              [tooltipDisabled]="true">
+        </ngx-charts-pie-chart>
+    </div>
+</div>

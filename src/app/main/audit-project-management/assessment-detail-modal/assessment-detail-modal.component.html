@@ -1,0 +1,43 @@
+<div appBsModal #assessmentDetailModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="assessmentDetailModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <form #associatedPogramsForm="ngForm">
+                <div class="modal-header">
+                    <span class="modal-title">
+                        <span *ngIf="assessmentType == 'internalQuestionaire'">
+                            <span class="">{{"Self Assessment  Questionnaire" | localize}}</span>
+                            <span class="label label-light-primary label-inline kt-padding-5 font-10 ml-2">
+                                {{assessmentStatus[statusId]}}
+                            </span>
+                        </span>
+                        <span *ngIf="assessmentType == 'externalQuestionaire'">
+                            <span class="">{{"External Assessment Questionnaire" | localize}}</span>
+                            <span class="label label-light-primary label-inline kt-padding-5 font-10 ml-2">
+                                {{assessmentStatus[statusId]}} 
+                            </span>                           
+                        </span>
+                    </span>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-padding-0" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div *ngIf="assessmentType == 'internalQuestionaire' && assessmentId">
+                        <app-compliance-questionaire [headerTab]="true"
+                                                     [assessmentFlag]="assessmentFlag"
+                                                     [associatementId]="assessmentId"
+                                                     (changeSelfStatus)="changeStatus($event)"></app-compliance-questionaire>
+                    </div>
+                    <div *ngIf="assessmentType == 'externalQuestionaire' && assessmentId">
+                        <app-external-questionaire [headerTab]="true" [assessmentFlag]="assessmentFlag" [associatementId]="assessmentId"
+                                                   (changeExternalStatus)="changeStatus($event)" [auditProjectId]="auditProId"></app-external-questionaire>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="close()">{{"Cancel" | localize}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

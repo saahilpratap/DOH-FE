@@ -1,0 +1,364 @@
+<div appBsModal #createScheduleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createScheduleModal" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form *ngIf="scheduleActive" #createScheduleForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="!assementSchedule.id">{{"Create New Schedule" | localize}}</span>
+                        <span *ngIf="assementSchedule.id > 0">{{"View Scheduled Assessment" | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_SchId">{{ l("Assessment Schedule ID") }}</label>
+                                <input type="text" id="Assessment_SchId" class="form-control" name="scheduleId" [(ngModel)]="assementSchedule.scheduleId" readonly disabled placeholder="System Generated" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_SchName" class="required">{{ l("Assessment Schedule Name") }}</label>
+                                <input type="text" id="Assessment_SchName" class="form-control" required name="scheduleName" [(ngModel)]="assementSchedule.scheduleName" [readonly]="readonly" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_Info" class="required">{{ l("Assessment Info") }}</label>
+                                <textarea type="text" id="Assessment_Info" class="form-control" required name="assessmentInfo" [(ngModel)]="assementSchedule.assessmentInfo" [readonly]="readonly"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group kt-margin-b-10">
+                                <label class="required">{{"Schedule Type" | localize}}</label>
+                                <select class="form-control kt-padding-r-10" required (change)="scheduleChange()"
+                                        name="scheduleTypeId" [(ngModel)]="assementSchedule.scheduleTypeId" [disabled]="readonly">
+                                    <option [ngValue]="undefined">Select Schedule Type</option>
+                                    <option *ngFor="let schedule of scheduleTypes" [ngValue]="schedule.id">
+                                        {{schedule.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_Name" class="required">{{ l("Assessment Name") }}</label>
+                                <input type="text" id="Assessment_Name" class="form-control" required name="assessmentName" [(ngModel)]="assementSchedule.assessmentName" readonly disabled placeholder="System Generated" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_Type" class="required">{{ l("Assessment Type") }}</label>
+                                <select class="form-control kt-padding-r-10" required [disabled]="readonly" (change)="scheduleChange()"
+                                        name="assessmentTypeId" [(ngModel)]="assementSchedule.assessmentTypeId">
+                                    <option [ngValue]="undefined">Select Assessment Type</option>
+                                    <option *ngFor="let assessment of assessmentTypes" [ngValue]="assessment.id">
+                                        {{assessment.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="startDate">{{ l("Start Date ") }}</label>
+                                <div id="startDate" class="kt-input-icon">
+                                    <input id="startDatePicker" [disabled]="readonly"
+                                           type="datetime" (bsValueChange)="scheduleChange()"
+                                           #startDatePicker
+                                           name="startDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY'  }"
+                                           [(date)]="assementSchedule.startDate"
+                                           autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="EndDate">{{ l("End Date") }}</label>
+                                <div id="EndDate" class="kt-input-icon">
+                                    <input id="endDatePicker" [disabled]="readonly"
+                                           type="datetime"
+                                           #endDatePicker
+                                           name="endDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY'}"
+                                           [(date)]="assementSchedule.endDate"
+                                           required autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="authoritativeId" class="required">{{ l("Authoritative Document") }}</label>
+                                <select class="form-control" required [disabled]="readonly"
+                                        name="AuthorititaveId"
+                                        id="authoritativeId" [(ngModel)]="assementSchedule.authoritativeDocumentId">
+                                    <option [ngValue]="undefined">Select Authoritative Document</option>
+                                    <option *ngFor="let authoritativeDocumentLookUp of authoritativeDocumentsLookUp                                                "
+                                            [ngValue]="authoritativeDocumentLookUp.authoritativeDocument.id">
+                                        {{authoritativeDocumentLookUp.authoritativeDocument.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="FeedBack">{{ l("Feedback/Comments") }}</label>
+                                <textarea type="text" id="FeedBack" class="form-control" [readonly]="readonly" name="feedBack" [(ngModel)]="assementSchedule.feedBack"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <div class="kt-checkbox-list">
+                                    <label class="kt-checkbox">
+                                        <input type="checkbox" name="sendEmailNotify" [(ngModel)]="assementSchedule.sendEmailNotify">  <label for="EmailNotify">{{ l("Send Email Notification") }}</label>
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+
+                                <div class="kt-checkbox-list">
+                                    <label class="kt-checkbox">
+                                        <input type="checkbox" name="sendSmsNotify" [(ngModel)]="assementSchedule.sendSmsNotify">  <label for="SmsNotify">{{ l("Send SMS Notification") }}</label>
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button *ngIf="!readonly" type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!createScheduleForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+            <form *ngIf="scheduleDetailActive" #createScheduleForm="ngForm" novalidate (ngSubmit)="saveScheduleAssessments()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="assementScheduleDetail.id > 0">{{"Edit Scheduled Assessment" | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_SchId">{{ l("Assessment Schedule ID") }}</label>
+                                <input type="text" id="Assessment_SchId" class="form-control" name="scheduleId" [(ngModel)]="assementScheduleDetail.scheduleCode" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_SchName" class="required">{{ l("Assessment Schedule Name") }}</label>
+                                <input type="text" id="Assessment_SchName" class="form-control" required name="scheduleName" [(ngModel)]="assementScheduleDetail.scheduleName" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_Info" class="required">{{ l("Assessment Info") }}</label>
+                                <textarea type="text" id="Assessment_Info" class="form-control" required name="assessmentInfo" [(ngModel)]="assementScheduleDetail.assessmentInfo" readonly></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group kt-margin-b-10">
+                                <label class="required">{{"Schedule Type" | localize}}</label>
+                                <select class="form-control kt-padding-r-10" required disabled
+                                        name="scheduleTypeId" [(ngModel)]="assementScheduleDetail.scheduleTypeId">
+                                    <option *ngFor="let schedule of scheduleTypes" [ngValue]="schedule.id">
+                                        {{schedule.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_Name" class="required">{{ l("Assessment Name") }}</label>
+                                <input type="text" id="Assessment_Name" class="form-control" required name="assessmentName" [(ngModel)]="assementScheduleDetail.assessmentName" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="Assessment_Type" class="required">{{ l("Assessment Type") }}</label>
+                                <select class="form-control kt-padding-r-10" required disabled
+                                        name="assessmentTypeId" [(ngModel)]="assementScheduleDetail.assessmentTypeId">
+                                    <option *ngFor="let assessment of assessmentTypes" [ngValue]="assessment.id">
+                                        {{assessment.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="startDate">{{ l("Start Date ") }}</label>
+                                <div id="startDate" class="kt-input-icon">
+                                    <input id="startDatePicker" disabled
+                                           type="datetime"
+                                           #startDatePicker
+                                           name="startDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           [(date)]="assementScheduleDetail.startDate"
+                                           autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="EndDate">{{ l("End  Date") }}</label>
+                                <div id="EndDate" class="kt-input-icon">
+                                    <input id="endDatePicker" disabled
+                                           type="datetime"
+                                           #endDatePicker
+                                           name="endDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           [(date)]="assementScheduleDetail.endDate"
+                                           required autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="authoritativeId" class="required">{{ l("Authoritative Document") }}</label>
+                                <select class="form-control" required disabled
+                                        name="AuthorititaveId"
+                                        id="authoritativeId" [(ngModel)]="assementScheduleDetail.authoritativeDocumentId">
+                                    <option *ngFor="let authoritativeDocumentLookUp of authoritativeDocumentsLookUp                                                "
+                                            [ngValue]="authoritativeDocumentLookUp.authoritativeDocument.id">
+                                        {{authoritativeDocumentLookUp.authoritativeDocument.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="border-bottom kt-padding-10">
+                                <span class="h6">{{l('Entity Selection')}}</span>
+                            </div>
+                            <div class="form-group kt-margin-b-10 kt-padding-10">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" [checked]="flag" [disabled]="editBusinessEntity.length>0" type="radio" checked name="inlineRadioOptions" value="1" (change)="onItemChange($event,1)">
+                                    <label class="form-check-label" for="inlineRadio1">{{l('All Entity')}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input" [checked]="flaghealth" [disabled]="editBusinessEntity.length>0" type="radio" name="inlineRadioOptions" value="2" (change)="onItemChange($event,2)">
+                                    <label class="form-check-label" for="inlineRadio1">{{l('Entity Group')}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" [checked]="flaginsurance" [disabled]="editBusinessEntity.length>0" type="radio" name="inlineRadioOptions" value="3" (change)="onItemChange($event,3)">
+                                    <label class="form-check-label" for="inlineRadio1">{{l('Insurance Facilities')}}</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-12 col-sm-12" *ngIf="flagfacilityType">
+                            <div class="form-group">
+                                <label for="businessEntLookUp"> Facility Type </label>
+                                <p-multiSelect name="Facilitytype" [options]="facility" placeholder="Select Facility Type"
+                                               [panelStyle]="{maxWidth:'12em'}" optionLabel="name" [(ngModel)]="selectedfacility" (onChange)="onfacilityChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12" *ngIf="flagfacilityType">
+                            <div class="form-group">
+                                <label for="SubFacilityTypedynamic"> Facility Sub Type </label>
+                                <p-multiSelect name="Facilitysubtype" [options]="facilitySubType" placeholder="Select Facility Sub Type"
+                                               optionLabel="facilitySubTypeName"
+                                               [panelStyle]="{maxWidth:'12em'}"
+                                               [(ngModel)]="selectedFacilitySubTyes"
+                                               (onChange)="onfacilitysubTypeChange($event)"
+                                               [style]="{'width': '100%'}"></p-multiSelect>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-12 col-sm-12" *ngIf="selectedvalue==2">
+                            <div class="form-group">
+                                <label for="businessEntLookUp" class="required"> Entity Group  </label>
+                                <p-multiSelect name="EntityGroup" [options]="entityGroup" placeholder="Select Entity Group" optionLabel="name" [(ngModel)]="selectedEntityGroup" (onChange)="onEntityChange($event)" required [style]="{'width': '100%'}"></p-multiSelect>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12" *ngIf="selectedvalue==1 || selectedvalue==2">
+                            <label class="required">{{"HealthCare Entity" | localize}}</label>
+                            <p-multiSelect name="belookups" [options]="businessentity" placeholder="Select Business Entities" optionLabel="companyName" [(ngModel)]="selectedBusinessEntity" [style]="{'width': '100%'}"></p-multiSelect>
+
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12" *ngIf="selectedvalue==3">
+                            <label class="required">{{"HealthCare Entity" | localize}}</label>
+                            <p-multiSelect name="belookupEntity" [options]="businessEntitiesLookUps" placeholder="Select Business Entities" optionLabel="companyName" [(ngModel)]="selectedBusinessEntitys" [style]="{'width': '100%'}"></p-multiSelect>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="FeedBack">{{ l("Feedback/Comments") }}</label>
+                                <textarea type="text" id="FeedBack" class="form-control" name="feedBack" [(ngModel)]="assementScheduleDetail.feedBack" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+
+                                <div class="kt-checkbox-list">
+                                    <label class="kt-checkbox">
+                                        <input type="checkbox" name="sendEmailNotify" [(ngModel)]="assementScheduleDetail.sendEmailNotify"> <label for="EmailNotify">{{ l("Send Email Notification") }}</label>
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="form-group">
+
+                                <div class="kt-checkbox-list">
+                                    <label class="kt-checkbox">
+                                        <input type="checkbox" name="sendSmsNotify" [(ngModel)]="assementScheduleDetail.sendSmsNotify">   <label for="SmsNotify">{{ l("Send SMS Notification") }}</label>
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="button" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [buttonBusy]="saving" (click)="saveBusinessEntity()"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!createScheduleForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Generate" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

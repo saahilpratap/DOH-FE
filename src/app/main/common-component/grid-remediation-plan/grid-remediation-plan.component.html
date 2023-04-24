@@ -1,0 +1,101 @@
+<div class="row align-items-center no-margin w-100">
+    <div class="primeng-datatable-container"
+         [busyIf]="primengTableHelper.isLoading">
+        <p-table #dataTable
+                 (onLazyLoad)="remediationPlans($event)"
+                 [value]="primengTableHelper.records"
+                 rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                 [paginator]="false" [lazy]="true" [scrollable]="true" ScrollWidth="100%"
+                 [responsive]="primengTableHelper.isResponsive"
+                 [resizableColumns]="primengTableHelper.resizableColumns"
+                 frozenWidth="150px">
+            <ng-template pTemplate="frozenheader">
+                <tr>
+                    <th style="width: 150px" class="kt-align-center">
+                        {{'Action' |localize}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="frozenbody" let-record>
+                <tr>
+                    <td style="width: 100px">
+                        <a class="kt-padding-r-20"
+                           (click)="editremedition(record.id)">
+                            <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                        </a>
+                        <a class="kt-padding-r-20"
+                           (click)="editremedition(record.id)">
+                            <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                        </a>
+                        <a class="kt-padding-r-20"
+                           (click)="removeremediation(record.id)">
+                            <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="header" let-rowData let-record="$implicit">
+                <tr [pSelectableRow]="rowData">
+                    <th style="width: 100px">
+                        {{'RP ID' |localize}}
+                    </th>
+                    <th style="width: 200px">
+                        {{'Title' |localize}}
+                    </th>
+                    <th style="width: 200px">
+                        {{'HealthCare Entity' |localize}}
+                    </th>
+                    <th style="width: 200px">
+                        {{'Expected Completed Date' |localize}}
+                    </th>
+                    <th style="width: 300px">
+                        {{'Remediation Plan Details' |localize}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                <tr [pSelectableRow]="rowData">
+                    <td style="width: 100px">
+                        {{record.code}}
+                    </td>
+                    <td style="width: 200px">
+                        <div class="table-text-wrap" [pTooltip]="record.title"
+                             tooltipPosition="bottom">
+                            {{record.title}}
+                        </div>
+                    </td>
+                    <td style="width: 200px">
+                        <div class="table-text-wrap" [pTooltip]="record.businessEntity.companyName"
+                             tooltipPosition="bottom">
+                            <span *ngIf="record.businessEntity"> {{record.businessEntity.companyName}}</span>
+                        </div>
+                    </td>
+                    <td style="width: 200px">
+                        {{record.endDate | momentFormat:'L' }}
+                    </td>
+                    <td style="width: 300px">
+                        <div class="table-text-wrap" [pTooltip]="record.remediationPlanDetail"
+                             tooltipPosition="bottom">
+                            {{record.remediationPlanDetail}}
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="primeng-no-data"
+             *ngIf="primengTableHelper.totalRecordsCount == 0 ">
+            {{ l("NoData") }}
+        </div>
+        <div class="primeng-paging-container">
+            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                         #paginator
+                         (onPageChange)="remediationPlans($event)"
+                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+            </p-paginator>
+            <span class="total-records-count">
+                {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+            </span>
+        </div>
+    </div>
+</div>

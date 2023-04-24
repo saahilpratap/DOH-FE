@@ -1,0 +1,85 @@
+<div class="kt-portlet kt-portlet--height-fluid sales-summary-chart">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+                {{"Compliance Summary" | localize}}
+            </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-brand btn-icon-sm btn-sm active"
+                       [ngClass]="{'active': type ==  'Daily'}"
+                       (click)="onclick('Daily')">
+                    <input type="radio" name="SalesSummaryDateInterval">
+                    {{"Daily" | localize}}
+                </label>
+                <label class="btn btn-brand btn-icon-sm btn-sm"
+                       [ngClass]="{'active': type ==  'Weekly'}"
+                       (click)="onclick('Weekly')">
+                    <input type="radio" name="SalesSummaryDateInterval">
+                    {{"Weekly" | localize}}
+                </label>
+                <label class="btn btn-brand btn-icon-sm btn-sm"
+                       [ngClass]="{'active': type ==  'Monthly'}"
+                       (click)="onclick('Monthly')">
+                    <input type="radio" name="SalesSummaryDateInterval">
+                    {{"Monthly" | localize}}
+                </label>
+                <!--<label class="btn btn-brand btn-icon-sm btn-sm"
+                       [ngClass]="{'active': type ==  'Yearly'}"
+                       (click)="onclick('Yearly')">
+                    <input type="radio" name="SalesSummaryDateInterval">
+                    {{"Yearly" | localize}}
+                </label>-->
+            </div>
+        </div>
+    </div>
+    <div class="kt-portlet__body" [perfectScrollbar]>
+        <div class="row list-separated text-center">
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <h6>
+                    {{"Incidents" | localize}}
+                </h6>
+                <div style="cursor:pointer" (click)="redirectTo('/app/main/incidents/incidents')">
+                    <span counto class="kt-font-danger kt-font-bolder">{{incidentTotal}}</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <h6>
+                    {{"Exceptions" | localize}}
+                </h6>
+                <div class="uppercase font-hg font-green-haze" style="cursor:pointer" (click)="redirectTo('/app/main/exceptions/exceptions')">
+                    <span counto class="kt-font-warning kt-font-bolder">{{exceptionTotal}}</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <h6>
+                    {{"Business Risks" | localize}}
+                </h6>
+                <div class="uppercase font-hg font-purple" style="cursor:pointer" (click)="redirectTo('/app/main/businessRisks/businessRisks')">
+                    <span counto class="kt--font-info kt-font-bolder">{{businessRiskTotal}}</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <h6>
+                    {{"Findings" | localize}}
+                </h6>
+                <div class="uppercase font-hg font-blue-sharp" style="cursor:pointer" (click)="redirectTo('/app/main/findingReportings/findingReportings-internal')">
+                    <span counto class="kt--font-info kt-font-bolder">{{findingTotal}}</span>
+                </div>
+            </div>
+        </div>
+        <div style="height: 260px; min-height: 260px;" *ngIf="result.length != 0">
+            <ngx-charts-area-chart-stacked [results]="result"
+                                           [showXAxisLabel]="true"
+                                           showYAxisLabel="true"
+                                           [xAxis]="true"
+                                           [yAxis]="true"
+                                           [showGridLines]="true"                                         
+                                           [timeline]="true"
+                                           [tooltipDisabled]="false"
+                                           [animations]="false">
+            </ngx-charts-area-chart-stacked>
+        </div>
+    </div>
+</div>

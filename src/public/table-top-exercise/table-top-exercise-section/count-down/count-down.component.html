@@ -1,0 +1,3 @@
+<p [ngClass]="{'text-danger kt-animate-blink':(timeRemaining | async) >= 0 && (timeRemaining | async) < 30000,'text-warning kt-animate-blink':(timeRemaining | async) >= 30000 && (timeRemaining | async) < 60000,'text-success':(timeRemaining | async) >= 60000 }">
+    {{ timeRemaining | async | date:'mm:ss' }}
+</p>

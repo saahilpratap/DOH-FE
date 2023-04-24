@@ -1,0 +1,62 @@
+<div id="form_business_management" class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Audit Project Management" | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"All Audit Projects" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar" *ngIf="('Pages.AuditProject.Import' | permission)">
+                <div class="kt-subheader__wrapper">
+                    <div class="btn-group" dropdown>
+                        <button dropdownToggle
+                                type="button"
+                                class="btn btn-outline-success dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <i class="far fa-file-excel"></i> {{"Import" |localize}}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                             *dropdownMenu>
+                            <a class="dropdown-item"
+                               id="ExportUsersToExcelButton"
+                               (click)="exportToExcel()"
+                               href="javascript:;">
+                                <i class="fa fa-download" style="font-size: 1rem;"></i>
+                                {{'ExportToExcel' | localize}}
+                            </a>
+                            <a href="javascript:;"
+                               class="no-padding">
+                                <span class="fileinput-button">
+                                    <p-fileUpload customUpload="true"
+                                                  name="uploadExcel"
+                                                  #ExcelFileUpload
+                                                  maxFileSize="10000000"
+                                                  auto="auto"
+                                                  accept=".csv,.xls,.xlsx"
+                                                  (uploadHandler)="uploadExcel($event)"
+                                                  (onError)="onUploadExcelError()"
+                                                  chooseLabel="{{'ImportFromExcel' | localize}}">
+                                    </p-fileUpload>
+                                </span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item-text text-muted pl-3">
+                                <small [innerHTML]="l('ImportToExcelSampleFileDownloadInfo', '<a href=/assets/sampleFiles/AuditProjectInformation_New.xlsx>' + l('ClickHere') + '</a>')"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <grid-audit-project-management [auditProjects]="primengTableHelper"></grid-audit-project-management>
+    </div>
+</div>
+<createEditAuditProjectManagementModals #createEditAuditProjectManagementModals></createEditAuditProjectManagementModals>

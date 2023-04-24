@@ -1,0 +1,52 @@
+<div appBsModal #responseRequestModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="responseRequestModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form #responseRequestModalForm="ngForm" novalidate autocomplete="off">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{title}}
+                    </h4>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '70vh', 'position': 'relative'}">
+                    <div class="form-group" *ngFor="let requestResponseclarification of requestResponse; let i = index">
+                        <div class="form-group kt-margin-b-0"
+                             *ngIf="requestResponseclarification.actionActive">
+                            <label class="kt-font-bolder" for="Request_Response{{i}}">{{"Audit Project Clarification Request" | localize}} </label>
+                            <textarea type="text"
+                                      [readonly]="true"
+                                      class="form-control"
+                                      placeholder=""
+                                      style="height: 100px !important;"
+                                      name="Request_Response{{i}}"
+                                      [(ngModel)]="requestResponseclarification.actionText"></textarea>
+                        </div>
+                        <div class="form-group kt-margin-b-0"
+                             *ngIf="!requestResponseclarification.actionActive">
+                            <label class="kt-font-bolder" for="responseComment{{i}}">{{" Audit Project Clarification Response" | localize}}</label>
+                            <textarea type="text"
+                                      class="form-control"
+                                      [readonly]="true"
+                                      style="height: 100px !important;"
+                                      name="responseComment"
+                                      [(ngModel)]="requestResponseclarification.actionText"></textarea>
+                        </div>
+                    </div>                   
+                    <div class="form-group" *ngFor="let item of createRequestResponse">
+                        <label for="PhoneNumber">{{title}}</label>
+                        <textarea rows="5" name="requestResponse" required [(ngModel)]="item.actionText" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default btn-icon-sm btn-sm btn-sm kt-font-light" (click)="close()"> {{l('Close')}} </button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="save()" [disabled]="!responseRequestModalForm.form.valid" [buttonBusy]="saving">
+                        <i class="fa fa-save"></i>
+                        <span>{{title}}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

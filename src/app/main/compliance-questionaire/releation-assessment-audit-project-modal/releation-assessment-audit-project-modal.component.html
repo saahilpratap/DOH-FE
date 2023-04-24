@@ -1,0 +1,39 @@
+<div appBsModal #releationAssessmentAuditProjectModal="bs-modal" class="modal fade test" tabindex="-1" role="dialog" aria-labelledby="releationAssessmentAuditProjectModal" aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}" style="z-index:auto !important">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form *ngIf="active" #allBusinessEntityForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <span class="modal-title font-12">                      
+                        <span>{{modalTitel}}</span>                        
+                    </span>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" >
+                    <div [perfectScrollbar]="{wheelPropagation: false}"
+                         [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                        <p-table [value]="result" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10,25,50,100]">
+                            <ng-template pTemplate="header">
+                                <tr>                                                                  
+                                    <th *ngIf="modalTitel != 'Control Name'">{{'Licence No'}}</th>
+                                    <th *ngIf="modalTitel =='Control Name'">{{'Control Name'}}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-result>
+                                <tr>                                   
+                                    <td>{{result.name}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>                  
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Close" | localize}}</button>
+                    <!--<button type="submit" [disabled]="!btnFlag" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"><i class="fa fa-copy"></i> <span>{{"Submit" | localize}}</span></button>-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+.filterButton {
+    margin-right: 15px;
+    float: left;
+}
+.rounded {
+    border-radius: 12px;
+}
+.textDataLabel{
+    font-size: 10px!important;
+    transform: rotate(360deg);
+}

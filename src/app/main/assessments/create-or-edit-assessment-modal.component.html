@@ -1,0 +1,257 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{ l("Assessments") }}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span *ngIf="assessment.id" class="kt-subheader__desc">
+                    {{l("Edit Assessment")}}
+                </span>
+                <span *ngIf="!assessment.id" class="kt-subheader__desc">
+                    {{("Create New Assessment")}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-wizard-v4__content bg-white" data-ktwizard-type="step-content" data-ktwizard-state="current"
+             id="Tab1data">
+            <form *ngIf="active"
+                  #assessmentForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <fieldset [disabled]="assessment.id">
+                    <div class="kt-portlet kt-portlet--mobile">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    <span>{{ l("Assessment Information") }}</span>
+                                </h3>
+                            </div>
+                            <div class="kt-portlet__head-toolbar">
+                                <div class="d-inline-flex float-right">
+                                    <button type="button" (click)="close()" class="btn btn-default btn-icon-sm btn-sm btn-sm">
+                                        <i class="fa fa-arrow-left"></i>Back
+                                    </button>
+                                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                            [disabled]="!assessmentForm.form.valid" [buttonBusy]="saving"
+                                            [busyText]="l('SavingWithThreeDot')">
+                                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            <div class="row" *ngIf="assessment.id">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="Assessment_Code" class="required">{{ l("Assessment ID") }} </label>
+                                        <input type="text"
+                                               id="Assessment_Code"
+                                               [(ngModel)]="assessment.code"
+                                               name="assessmentCode"
+                                               class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="Assessment_Info" class="required">
+                                            {{
+                                            l("Assessment Info")
+                                            }}
+                                        </label>
+                                        <textarea id="Assessment_Info"
+                                                  class="form-control"
+                                                  [(ngModel)]="assessment.info"
+                                                  name="AssessmentInfo" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Assessment_Name" class="required">{{ l("Assessment Name") }} </label>
+                                        <input type="text"
+                                               id="Assessment_Name"
+                                               [(ngModel)]="assessment.name"
+                                               name="assessmentName"
+                                               class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label class="required">Assessment Type</label>
+                                        <select class="form-control" required
+                                                name="assessmentTypeId" [(ngModel)]="assessment.assessmentTypeId">
+                                            <option [ngValue]="undefined">Select Assessment Type</option>
+                                            <option *ngFor="let assessment of assessmentTypes" [ngValue]="assessment.id">
+                                                {{assessment.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Assessment_assessmentDate" class="required">{{ l("Start Date") }} </label>
+                                        <input required
+                                               class="form-control m-input"
+                                               type="datetime"
+                                               bsDatepicker
+                                               [(ngModel)]="assessment.assessmentDate"
+                                               id="assessment_assessmentDate"
+                                               name="Assessment_assessmentDate"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Assessment_reportingDate" class="required">{{ l("End Date") }} </label>
+                                        <input required
+                                               class="form-control m-input"
+                                               type="datetime"
+                                               bsDatepicker
+                                               [(ngModel)]="assessment.reportingDate"
+                                               id="assessment_reportingDate"
+                                               name="Assessment_reportingDate"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY', minDate: assessment.assessmentDate }"
+                                               autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label class="required">Authoritative Document </label>
+                                        <select class="form-control"
+                                                name="AuthorititaveId"
+                                                id="authoritativeId"
+                                                [(ngModel)]="assessment.authoritativeDocumentId">
+
+                                            <option [ngValue]="undefined">Select Authoritative Document</option>
+                                            <option *ngFor=" let authoritativeDocumentLookUp of authoritativeDocumentsLookUp"
+                                                    [ngValue]="
+                                                    authoritativeDocumentLookUp.authoritativeDocument.id">
+                                                {{authoritativeDocumentLookUp.authoritativeDocument.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-12">
+                                    <div class="border-bottom kt-padding-10">
+                                        <span class="h6">{{l('Entity Selection')}}</span>
+                                    </div>
+                                    <div class="form-group kt-margin-b-10">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" checked name="inlineRadioOptions" value="1" (change)="onItemChange($event,1)">
+                                            <label class="form-check-label" for="inlineRadio1">{{l('Entity Group')}}</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" value="2" (change)="onItemChange($event,2)">
+                                            <label class="form-check-label" for="inlineRadio1">{{l('HealthCare Entity')}}</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" value="3" (change)="onItemChange($event,3)">
+                                            <label class="form-check-label" for="inlineRadio1">{{l('Insurance Facilities')}}</label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-sm-6" *ngIf="selectedvalue==1">
+                                    <div class="form-group">
+                                        <label for="businessEntLookUp" class="required"> Entity Group  </label>
+                                        <p-dropdown [showClear]="true" filter="true" [options]="entityGroup" placeholder="Select Entity Group" optionLabel="name" [(ngModel)]="selectedEntityGroup" name="entityGroups" (onChange)="onEntityChange($event)" [style]="{'width': '100%'}"></p-dropdown>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" *ngIf="selectedvalue==1">
+                                    <label class="required">{{"HealthCare Entity" | localize}}</label>
+                                    <p-multiSelect name="belookups" [options]="businessentity" placeholder="Select Business Entities" optionLabel="companyName" [(ngModel)]="selectedBusinessEntity" (onChange)="onBusinessEntityChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+
+                                </div>
+                                <div class="col-sm-6" *ngIf="selectedvalue==2 || selectedvalue==3">
+                                    <label class="required">{{"HealthCare Entity" | localize}}</label>
+                                    <p-multiSelect name="belookupEntity" [options]="businessEntitiesLookUps" placeholder="Select Business Entities" optionLabel="name" [(ngModel)]="selectedBusinessEntitys" (onChange)="onBusinessEntityChanges($event)" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+
+                            </div>
+
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-2" *ngIf="assessment.id">
+                                    <div class="form-group">
+                                        <label for="Assessment_ReviewScore" class="required">{{ l("Score") }} </label>
+                                        <input type="number"
+                                               id="Assessment_ReviewScore"
+                                               [(ngModel)]="assessment.reviewScore"
+                                               name="assessmentReviewScore"
+                                               class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Assessment_Feedback">
+                                            {{
+                                            l("Feedback/Comments")
+                                            }}
+                                        </label>
+                                        <textarea id="Assessment_Feedback"
+                                                  class="form-control"
+                                                  [(ngModel)]="assessment.feedback"
+                                                  name="AssessmentFeedback"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="sendEmail">
+                                            {{ l("Send Email Notification") }}
+                                        </label>
+                                        <input type="checkbox"
+                                               id="sendEmail"
+                                               [(ngModel)]="
+                                                assessment.sendEmailNotification
+                                            "
+                                               name="sendEmail"
+                                               class="form-control checkboxInput" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="sendSms">
+                                            {{ l("Send SMS Notification") }}
+                                        </label>
+                                        <input type="checkbox"
+                                               id="sendSms"
+                                               [(ngModel)]="
+                                                assessment.sendSmsNotification
+                                            "
+                                               name="sendSms"
+                                               class="form-control checkboxInput" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

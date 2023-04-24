@@ -1,0 +1,75 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Domain List" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            
+        </div>
+    </div>
+    <div class="kt-portlet__body">        
+        <div class="row">
+            <!--<div class="col-lg-6 col-md-6 col-sm-12 kt-align-center bg-ghostwhite border border-2 border-white">
+        <div class="kt-align-center">
+            <div class="text-success h1 text-center">{{"Strongest Domain" | localize}}</div>
+        </div>
+        <div class="row" *ngFor="let top of topDomain">
+            <div class="col-8 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{top.domainName}}</div>
+            <div class="col-4 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{top.count}}%</div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 kt-align-center bg-ghostwhite  border border-2 border-white">
+        <div class="kt-align-center">
+            <div class="text-danger h1 text-center">{{"Weakest Domain" | localize}}</div>
+        </div>
+        <div class="row" *ngFor="let week of weekDomain">
+            <div class="col-8 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{week.domainName}}</div>
+            <div class="col-4 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{week.count}}%</div>
+        </div>
+    </div>-->
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="kt-align-center">
+                    <div class="text-success h1 text-center">{{"Strongest Domain" | localize}}</div>
+                </div>
+                <div class="form-group kt-margin-b-5" *ngFor="let item of topDomain; let i = index" style="padding-left: 10%; padding-right:10%">
+                    <label class="kt-margin-b-0 kt-font-sm">
+                        <span class="kt-font-bolder kt-padding-r-10">{{item.domainName}}</span>
+                    </label>
+                    <div class="row">
+                        <div class="col-11 pt-2">
+                            <div class="progress kt-progress--sm " style="height: 8px; ">
+                                <div class="progress-bar" role="progressbar" style="background-color:#4fa6b0"
+                                     [ngStyle]="{width: item.count + '%'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span class="kt-font-bolder" style="color: #4fa6b0">{{item.count >= 100 ? 100 : item.count }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="kt-align-center">
+                    <div class="text-danger h1 text-center">{{"Weakest Domain" | localize}}</div>
+                </div>
+                <div class="form-group kt-margin-b-5" *ngFor="let item of weekDomain; let i = index" style="padding-left: 10%; padding-right:10%">
+                    <label class="kt-margin-b-0 kt-font-sm">
+                        <span class="kt-font-bolder kt-padding-r-10">{{item.domainName}}</span>
+                    </label>
+                    <div class="row">
+                        <div class="col-11 pt-2">
+                            <div class="progress kt-progress--sm " style="height: 8px; ">
+                                <div class="progress-bar kt-bg-danger" role="progressbar"
+                                     [ngStyle]="{width: item.count + '%'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span class="kt-font-bolder text-danger">{{item.count >= 100 ? 100 : item.count }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

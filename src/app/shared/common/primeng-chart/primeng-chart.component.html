@@ -1,0 +1,83 @@
+<div class="kt-portlet shadow-none">
+    <div class="kt-portlet__head border-0">
+        <div class="kt-portlet__head-label">
+           
+        </div>
+        <div class="kt-portlet__head-toolbar w-50">
+            <div class="row w-100">
+                <div id="startDate" class="kt-input-icon col-5">
+                    <input id="incident_detectionDate"
+                           type="datetime"
+                           name="formDate"
+                           class="form-control"
+                           bsDatepicker required
+                           datePickerMomentModifier
+                           [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                           autocomplete="off"
+                            [(ngModel)]="startDate"/>
+                    <span class="position-absolute"
+                          style="top: 25%; right: 20px; font-size: 18px;">
+                        <span><i class="flaticon-calendar-1"></i></span>
+                    </span>
+                </div>
+                <div id="startDate" class="kt-input-icon col-5">
+                    <input id="incident_detectionDate"
+                           type="datetime"
+                           name="toDate"
+                           class="form-control"
+                           bsDatepicker required
+                           datePickerMomentModifier
+                           [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                           autocomplete="off"
+                            [(ngModel)]="endDate"/>
+                    <span class="position-absolute"
+                          style="top: 25%; right: 20px; font-size: 18px;">
+                        <span><i class="flaticon-calendar-1"></i></span>
+                    </span>
+                </div>
+                <div class="col-2">
+                    <button type="submit" (click)="globalSearch($event)" class="btn btn-info">{{"Data" | localize}}</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-portlet__body p-2">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 col-sm-12">
+                <pie-chart></pie-chart>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12">
+                <horizontal-bar-chart></horizontal-bar-chart>
+            </div>
+            <div class="col-12">
+                <stacked-bar-chart></stacked-bar-chart>
+            </div>
+            <div class="col-12">
+                <doughnut-chart></doughnut-chart>
+            </div>
+            <div class="col-12">
+                <top-bottom-status-chart></top-bottom-status-chart>
+            </div>
+            <div class="col-12">
+                <vertical-bar-chart></vertical-bar-chart>
+            </div>
+            <div class="col-12">
+                <multi-axis-bar-chart></multi-axis-bar-chart>
+            </div>
+            <div class="col-12">
+                <basic-line-chart></basic-line-chart>
+            </div>
+            <div class="col-12">
+                <top-bottom-control-list></top-bottom-control-list>
+            </div>
+            <div class="col-12">
+                <top-bottom-domain-list></top-bottom-domain-list>
+            </div>
+        </div>
+        </div>
+</div>
+
+
+
+

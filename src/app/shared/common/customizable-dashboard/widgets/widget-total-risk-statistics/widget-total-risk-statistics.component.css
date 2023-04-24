@@ -1,0 +1,8 @@
+.btn-white {   
+    background-color: #fff;
+    border-color: #fff;
+    color: #000;
+}
+ngx-charts-chart .label {
+    display: none !important;
+}

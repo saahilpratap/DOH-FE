@@ -1,0 +1,29 @@
+<div appBsModal #CloneSelectModal="bs-modal" id="popup_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CloneSelectModal" aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}" style="z-index: auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form *ngIf="active" #CloneSelectForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('')}}
+                    </h4>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'min-height': '40vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label class="required"> {{"Select a facility whose external assessment should be generated." | localize}} </label>
+                        <ng-select [items]="data.validEntitiesList" [searchable]="true" bindLabel="businessEntityName" [required]="true"
+                                   [(ngModel)]="selectedExternalAssessmentId"
+                                   bindValue="externalAssessmentId" placeholder="Select Business Entity"
+                                   class="kt-align-left" name="selectedExternalAssessment">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Close" | localize}}</button>
+                    <button [disabled]="selectedExternalAssessmentId==undefined" type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="save()" [buttonBusy]="saving" [busyText]="l('CloningWithThreeDot')"><i class="fa fa-copy"></i> <span>{{"Clone" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

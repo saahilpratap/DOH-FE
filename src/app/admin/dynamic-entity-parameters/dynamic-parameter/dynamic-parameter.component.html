@@ -1,0 +1,149 @@
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{"DynamicParameters" | localize}}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{"Set Dynamic Parameter" | localize}}
+                    </span>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <div class="btn-group" dropdown *ngIf="'Pages.Administration.DynamicParameters.Import' | permission">
+                            <button dropdownToggle  
+                                    type="button"
+                                    class="btn btn-outline-success dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">
+                                <i class="far fa-file-excel"></i> {{"Import Definitions" |localize}}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                                 *dropdownMenu>
+                                <a class="dropdown-item"
+                                   id="ExportUsersToExcelButton"
+                                   (click)="exportDynamicParaToExcel()"
+                                   href="javascript:;" *ngIf="exportButtonHide">
+                                    <i class="fa fa-download" style="font-size: 1rem;"></i>
+                                    {{'ExportToExcel' | localize}}
+                                </a>
+                                <a href="javascript:;"
+                                   class="no-padding">
+                                    <span class="fileinput-button">
+                                        <p-fileUpload customUpload="true"
+                                                      name="ExcelFileDynamicParaUpload"
+                                                      #ExcelFileDynamicParaUpload
+                                                      maxFileSize="10000000"
+                                                      auto="auto"
+                                                      accept=".csv,.xls,.xlsx"
+                                                      (uploadHandler)="uploadDynamicParaExcel($event)"
+                                                      (onError)="onUploadExcelError()"
+                                                      chooseLabel="{{'ImportFromExcel' | localize}}">
+                                        </p-fileUpload>
+                                    </span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <span class="dropdown-item-text text-muted pl-3" href="#">
+                                    <small [innerHTML]="l('ImportToExcelSampleFileDownloadInfo', '<a href=/assets/sampleFiles/ImportDynamicDefinitions.xlsx>' + l('ClickHere') + '</a>')"></small>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="btn-group" dropdown *ngIf="'Pages.Administration.DynamicParameterValue.Import' | permission">
+                            <button dropdownToggle 
+                                    type="button"
+                                    class="btn btn-outline-success dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">
+                                <i class="far fa-file-excel"></i> {{"Import Values" |localize}}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                                 *dropdownMenu>
+                                <a class="dropdown-item"
+                                   id="ExportUsersToExcelButton"
+                                   (click)="exportDynamicParaValuesToExcel()"
+                                   href="javascript:;" *ngIf="exportButtonHide">
+                                    <i class="fa fa-download" style="font-size: 1rem;"></i>
+                                    {{'ExportToExcel' | localize}}
+                                </a>
+                                <a href="javascript:;"
+                                   class="no-padding">
+                                    <span class="fileinput-button">
+                                        <p-fileUpload customUpload="true"
+                                                      name="ExcelFileDynamicValueUpload"
+                                                      #ExcelFileDynamicValueUpload
+                                                      maxFileSize="10000000"
+                                                      auto="auto"
+                                                      accept=".csv,.xls,.xlsx"
+                                                      (uploadHandler)="uploadDynamicValueExcel($event)"
+                                                      (onError)="onUploadExcelError()"
+                                                      chooseLabel="{{'ImportFromExcel' | localize}}">
+                                        </p-fileUpload>
+                                    </span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <span class="dropdown-item-text text-muted pl-3" href="#">
+                                    <small [innerHTML]="l('ImportToExcelSampleFileDownloadInfo', '<a href=/assets/sampleFiles/ImportDynamicValues.xlsx>' + l('ClickHere') + '</a>')"></small>
+                                </span>
+                            </div>
+                        </div>
+                        <button *ngIf="'Pages.Administration.DynamicParameters.Create' | permission"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="addNewDynamicParameter()">
+                            <i class="fa fa-plus"></i>{{"AddNewDynamicParameter" | localize}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet">
+                <div class="kt-portlet__body">
+                    <div class="row align-items-center">
+                        <!--<Primeng-TurboTable-Start>-->
+                        <div class="col primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
+                            <div>
+                                <p-table #dataTable (onLazyLoad)="getDynamicParameters()"
+                                [value]="primengTableHelper.records"
+                                rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false"
+                                [lazy]="true" [responsive]="primengTableHelper.isResponsive">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 100px;"></th>
+                                        <th>{{ 'ParameterName' | localize}}</th>
+                                        <th> {{'InputType' | localize}} </th>
+                                        <th> {{'Permission' | localize}} </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-record="$implicit">
+                                    <tr>
+                                        <td><button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 btn-sm" (click)="goToDetail(record.id)">{{'Detail' | localize}}</button></td>
+                                        <td>
+                                            {{record.parameterName}}
+                                        </td>
+                                        <td>
+                                            {{record.inputType}}
+                                        </td>
+                                        <td>
+                                            {{record.permission}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            </div>
+                            <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                {{'NoData' | localize}}
+                            </div>
+                        </div>
+                        <!--<Primeng-TurboTable-End>-->
+                    </div>
+                </div>
+            </div>
+            <create-or-edit-dynamic-parameter-modal #createOrEditDynamicParameter (modalSave)="getDynamicParameters()">
+            </create-or-edit-dynamic-parameter-modal>
+        </div>
+    </div>
+</div>

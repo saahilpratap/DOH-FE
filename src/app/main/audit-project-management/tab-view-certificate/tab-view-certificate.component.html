@@ -1,0 +1,67 @@
+<style>
+    .curved {
+        margin: 0 auto;
+        height: 400px;
+        background: lightblue;
+        border-radius: 100% 0 0 0;
+        position: absolute
+    }
+</style>
+
+<div class="kt-portlet border-radius-5 shadow-none w-100">
+    <div class="kt-portlet__body pt-0">
+        <!--<div class="kt-align-right" *ngIf="('Pages.AuditProject.ReportTab.CertificateReport' | permission)">
+            <dev-express-report [btnName]="'Generate Report Certification'" [reportName]="'Audit_Project_Certification_Report'"
+                                [ids]="auditProID"></dev-express-report>
+        </div>-->
+        <div class="row">
+            <div class="col-12 kt-align-right" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                <button type="submit" *ngIf="('Pages.AuditProject.Certificate.Generate' | permission)" (click)="generateCertificate()" class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                    <span>{{l("Generate Certificate")}}</span>
+                </button>
+
+                <button type="submit" *ngIf="('Pages.AuditProject.Certificate.Send' | permission)" (click)="sendCertificate()" class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                    <span>{{l("Send Certificate")}}</span>
+                </button>
+            </div>
+        </div>
+        <!--<div style="padding-left:15%; padding-right:15%; padding-top:5em">
+            <div style="background-image: url('../../../../assets/common/images/side-pattern.svg');background-repeat: no-repeat;">
+                <div align="right" style="padding-right: 10%;">
+                    <img src="../../../../assets/common/images/logo set.svg" style="height:9em; width:20em" />
+                </div>
+
+                <div align="center">
+                    <div>
+                        <img src="../../../../assets/common/images/certificate of achievement.svg" style="height:7em; width:20em" />
+                    </div>
+                    <div style="padding-left:20%; padding-right:20%">
+                        <div style="font-family: Corporate S EU;"><h3>It Is Hereby Certified That</h3></div>
+                        <div style="padding-left:5%; padding-right:5%">
+                            <h3 style="color:#4FA6B0;font-weight: 600;font-family: Corporate S EU; border-bottom:solid 3px;padding-bottom:5px;line-height: 1; padding-top: 0.9em;">
+                                <span>MF2257 Bareen International Hospital</span>
+                            </h3>
+                        </div>
+                        <div style="font-family: Corporate S EU;font-weight: 500; font-size: 1.3rem;line-height: 1;padding-top: 0.9em;">
+                            Has successfully compledted the audit and found to be compliant with the requirements of
+                        </div>
+                        <div style="color:#4FA6B0; font-weight: 500;font-family: Corporate S EU; font-size: 1.3rem;line-height: 1;padding-top: 0.9em;">
+                            Abu Dhabi Healthcare Information and Cyber Security [ADHICS] Standard
+                        </div>
+                        <div style="font-family: Corporate S EU;font-weight: 500;line-height: 1;padding-top: 2em;">
+                            <h6>The use and validity of this certificate are subject to compliance withh the relevant rules and regulations and continual maintenance of the compliance achieved is as established by the certification rules of Department of Health - Abu Dhabi</h6>
+                        </div>
+                    </div>
+                </div>
+                <div align="right" style="padding-right: 10%;">
+                    <img id='barcode'
+                         src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&amp;size=100x100"
+                         alt="" title="HELLO" width="100" height="100" />
+                    <div style="font-family: Corporate S EU;">Issue Date: 01 July 2021</div>
+                    <div style="font-family: Corporate S EU;">Expiry Date: 30 June 2024</div>
+                </div>
+            </div>
+        </div>-->
+
+    </div>
+</div>

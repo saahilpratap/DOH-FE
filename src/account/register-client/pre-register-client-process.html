@@ -1,0 +1,116 @@
+<form #businessEntityForm="ngForm" *ngIf="showForm"
+      novalidate
+      (ngSubmit)="save()"
+      autocomplete="off">
+    <div class="kt-portlet__head kt-portlet__head--lg"
+         style=" border-bottom: 1px solid #ebedf2;padding: 10px 0px;">
+        <div class="row">
+            <div class="col-8">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        Pre Registration Verification
+                    </h3>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="d-inline-flex float-right">
+                    <span class="kt-portlet__head-wrapper kt-padding-r-20">
+                        <button type="button"
+                                (click)="backClicked()"
+                                class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm btn-sm">
+                            <i class="fa fa-arrow-left"></i>Back
+                        </button>
+                    </span>
+                    <span class="kt-portlet__head-wrapper">
+                        <button type="submit"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5 btn-square"
+                                [disabled]="!businessEntityForm.form.valid"
+                                [buttonBusy]="saving"
+                                [busyText]="l('SavingWithThreeDot')">
+                            Register
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container kt-margin-t-20-desktop kt-margin-0">
+        <div class="row form-group">
+            <h4>Entity Information</h4>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="BusinessEntity_Name" class="required">Entity Name </label>
+                    <input type="text"
+                           id="BusinessEntity_Name"
+                           class="form-control"
+                           [(ngModel)]="model.name"
+                           name="name"
+                           required />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="BusinessEntity_LegalName">
+                        Company (Legal Name) *
+                    </label>
+                    <input type="text"
+                           id="BusinessEntity_LegalName"
+                           class="form-control"
+                           [(ngModel)]="model.companyName"
+                           name="legalName"
+                           required />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="BusinessEntity_LegalName" class="required">Entity Type </label>
+                    <div style="margin-top: 10px;">
+                        <label style="display: inline-flex;line-height: 1;">
+                            <input type="radio"
+                                   name="IncomeStatisticsDatePeriod"
+                                   class="toggle" />
+                            <span style="margin-left: 5px;">Public</span>
+                        </label>
+                        <label style="margin-left: 20px;display: inline-flex;line-height: 1;">
+                            <input type="radio"
+                                   name="IncomeStatisticsDatePeriod"
+                                   class="toggle" />
+                            <span style="margin-left: 5px;">Private</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <h4>Admin Information</h4>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="BusinessEntity_Email" class="required">Admin Email </label>
+                    <input type="text"
+                           id="BusinessEntity_Email"
+                           class="form-control"
+                           [(ngModel)]="model.adminEmail"
+                           name="adminEmail"
+                           required />
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="BusinessEntity_AdminMobile" class="required">Admin Mobile </label>
+                    <input type="text"
+                           id="BusinessEntity_AdminMobile"
+                           class="form-control"
+                           [(ngModel)]="model.adminMobile"
+                           name="adminMobile" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

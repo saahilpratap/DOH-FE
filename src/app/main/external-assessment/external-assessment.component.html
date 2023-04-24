@@ -1,0 +1,132 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{ l("Programs & Projects") }}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"All Audit Programs and Projects" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+                    <button *ngIf="('Pages.AuditProgram.CreateExternalAssessmentQuestion' | permission)" (click)="createOrEditExternalQuestionModal.show()"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                        <i class="flaticon-attachment"></i>
+                        {{"Attach External Assessment Questions" | localize}}
+                    </button>
+                    <button *ngIf="('Pages.AuditProgram.CreateNewAudit' | permission)" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" (click)="addAuditProject.show()">
+                        <i class="fa fa-plus"></i>
+                        {{"New Audit Project" | localize}}
+                    </button>
+                    <button *ngIf="('Pages.AuditProgram.CreateNewAuditSchedule' | permission)" (click)="createExtScheduleModals.show()"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                        <i class="fa fa-plus"></i>
+                        {{ l("New Audit Program Schedule") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{ l("Audit Programs & Projects") }}
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">                  
+                    <form class="kt-form" autocomplete="off">
+                        <div>
+                            <div class="row align-items-center">
+                                <div class="col-xl-12">
+                                    <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                                     
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-check-inline" *ngIf="allAssessmentSearchBox">
+                        <select class="form-control kt-padding-r-10"
+                                name="selectedResponseType"
+                                [(ngModel)]="selectedAssessmentStatusFilter "
+                                (change)="filterByStatus()">
+                            <option [ngValue]="0">{{"All" | localize}}</option>
+                            <option [ngValue]="1">{{"Initialized" | localize}}</option>
+                            <option [ngValue]="2">{{"In Review" | localize}}</option>
+                            <option [ngValue]="3">{{"BE Admin Review" | localize}}</option>
+                            <option [ngValue]="4">{{"Entity Group Admin review" | localize}}</option>
+                            <option [ngValue]="5">{{"Sent To Authority" | localize}}</option>
+                            <option [ngValue]="6">{{"Approved" | localize}}</option>
+                            <option [ngValue]="7">{{"Clarification Needed" | localize}}</option>
+                        </select>
+                    </div>
+                    <!--<button (click)="showAllSchedules()" style="float:right" *ngIf="assessmentsScheduleBackButton"
+                            class="btn btn-brand btn-icon-sm kt-margin-l-5 border-radius-5">
+                        Back to Schedules
+                    </button>-->
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-padding-5">
+                <div class="row related-info-view">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div>
+                            <ul id="tab-nav" class="w-100 nav nav-tabs nav-tabs-line nav-tabs-line-info nav-tabs-line-2x nav-tabs-line-left" role="tablist">
+                                <li class="nav-item" [ngClass]="{ 'selectedTab': 1 == selectedItem }" (click)="selectTab(1)" *ngIf="('Pages.AuditProgram.AuditProgramsSchedule' | permission)">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                        {{'Audit Programs Schedule' | localize}}
+                                    </a>
+                                </li>
+                                <li class="nav-item" (click)="selectTab(2)" *ngIf="('Pages.AuditProgram.ScheduleCalendar' | permission)" [ngClass]="{ 'selectedTab': 2 == selectedItem }">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                        {{'Schedule Calendar' | localize}}
+                                    </a>
+                                </li>
+                                <li class="nav-item" (click)="selectTab(3)" *ngIf="('Pages.AuditProgram.AuditProjects' | permission)" [ngClass]="{ 'selectedTab': 3 == selectedItem }">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                        {{'Audit Projects' | localize}}
+                                    </a>
+                                </li>
+                                <li class="nav-item" (click)="selectTab(4)" *ngIf="('Pages.AuditProgram.ExternalAssessments' | permission)" [ngClass]="{ 'selectedTab': 4 == selectedItem }">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10">
+                                        {{'External Assessments' | localize}}
+                                    </a>
+                                </li>                                
+                            </ul>
+                        </div>
+                        <div>
+                            <div *ngIf="selectedItem == 1 && ('Pages.AuditProgram.AuditProgramsSchedule' | permission)">
+                                <grid-view-audit-programs-schedule></grid-view-audit-programs-schedule>
+                            </div>
+                            <div *ngIf="selectedItem == 2" id="calendarPopover">
+                                <angular-calendar-year-view [themecolor]="themecolor"
+                                                            [events]="events"
+                                                            [viewDate]="viewDate"
+                                                            [nothingToshowText]="nothingToshowText"
+                                                            (eventClicked)="eventClicked($event)"
+                                                            (actionClicked)="actionClicked($event)">
+                                </angular-calendar-year-view>
+                            </div>
+                            <div *ngIf="selectedItem == 3">
+                                <div class="w-100">
+                                    <grid-audit-project-management [auditProjects]="primengTableHelper"></grid-audit-project-management>
+                                </div>
+                            </div>
+                            <div *ngIf="selectedItem == 4">
+                                <grid-view-external-assessments></grid-view-external-assessments>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<createOrEditExternalControlRequirementModal #createOrEditExternalQuestionModal ></createOrEditExternalControlRequirementModal>
+<createExtScheduleModals #createExtScheduleModal ></createExtScheduleModals>
+<createEditAuditProjectManagementModals #addAuditProject></createEditAuditProjectManagementModals>
+

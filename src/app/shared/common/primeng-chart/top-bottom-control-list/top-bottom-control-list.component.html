@@ -1,0 +1,77 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Control List" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+           
+        </div>
+    </div>
+    <div class="kt-portlet__body">        
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 bg-ghostwhite border border-2 border-white">
+                <div class="kt-align-center">
+                    <div class="h1 text-success text-center">{{"Strongest Control" | localize}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="row">
+
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white"><button class="h1 shadow" style="background-color:#CC00FF!important;color:white!important">{{"Hospital" | localize}}</button></div>
+                        </div>
+                        <div class="row" *ngFor="let strong of strongHospitalStatus">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{strong.description}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white"><button class="h1 shadow" style="background-color:#FF00CC!important;color:white!important">{{"Center" | localize}}</button></div>
+                        </div>
+                        <div class="row" *ngFor="let strongcenter of strongCenterStatus">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{strongcenter.description}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white"><button class="h1 shadow" style="background-color:#0033FF!important;color:white!important">{{"Clinic" | localize}}</button></div>
+                        </div>
+                        <div class="row" *ngFor="let strongclinic of strongClinicStatus">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{strongclinic.description}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 bg-ghostwhite border border-2 border-white">
+                <div class="kt-align-center">
+                    <div class="h1 text-danger text-center">{{"Weakest Control" | localize}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white"><button class="h1 shadow" style="background-color:#CC00FF!important;color:white!important">{{"Hospital" | localize}}</button></div>
+                        </div>
+                        <div class="row" *ngFor="let weakHospital of weakHospitalStatus">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{weakHospital.description}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white"><button class="h1 shadow" style="background-color:#FF00CC!important;color:white!important">{{"Center" | localize}}</button></div>
+                        </div>
+                        <div class="row" *ngFor="let weakCenter of weakCenterStatus">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{weakCenter.description}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white"><button class="h1 shadow" style="background-color:#0033FF!important;color:white!important">{{"Clinic" | localize}}</button></div>
+                        </div>
+                        <div class="row" *ngFor="let weakClinic of weakClinicStatus">
+                            <div class="col-12 kt-align-center bg-ghostwhite p-2 border border-2 border-white ">{{weakClinic.description}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,387 @@
+<div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Remediation Plan" | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Status" | localize}} 
+                </span>
+                <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5"
+                      style="min-width: 100px;"
+                      *ngIf="Remediationstatus">
+                    {{Remediationstatus}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper"></div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <form *ngIf="active"
+              #remedationForm="ngForm"
+              novalidate
+              (ngSubmit)="save()"
+              autocomplete="off">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{"Remediation Plan" | localize}}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <button type="button"
+                                (click)="close()"
+                                class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm">
+                            <i class="fa fa-arrow-left"></i>Back
+                        </button>
+                        <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [ngClass]=" hideButtons == 1 ? 'pointerNone' : 'pointerAuto'" [disabled]="!remedationForm.form.valid"
+                                [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                            <i class="fa fa-save"></i>
+                            <span>{{ l("Save") }}</span>
+                        </button>                      
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label>{{"Remediation Plan ID" | localize}}</label>
+                                <input type="text"
+                                       class="form-control"
+                                       [(ngModel)]="remediation.code"
+                                       disabled
+                                       placeholder="System Generated" name="code"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label>{{"Creared On" | localize}}</label>
+                                <div id="Creared" class="kt-input-icon">
+                                    <input id="CrearedDatePicker"
+                                           type="text"
+                                           disabled
+                                           #CrearedDatePicker
+                                           name="CrearedDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [(date)]="remediation.creationTime"
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{"HealthCare Entity" | localize}}</label>
+                                <ng-select [items]="BusinessEntity" [searchable]="true" bindLabel="name" [disabled]="remediation.id" [required]="true"
+                                           bindValue="id" placeholder="Select HealthCare Entity" (change)="initializeBeLookUpFields()"
+                                           [(ngModel)]="remediation.businessEntityId" class="kt-align-left"
+                                           name="HealthCareEntityId">
+                                </ng-select>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{"Title" | localize}}</label>
+                                <input type="text"
+                                       class="form-control"
+                                       [(ngModel)]="remediation.title"
+                                       name="title"
+                                       placeholder="Title" required />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{"Start Date" | localize}}</label>
+                                <div id="startDate" class="kt-input-icon">
+                                    <input id="startDatePicker"
+                                           type="text"
+                                           #startDatePicker
+                                           name="startDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [(date)]="remediation.startDate" required
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{"Expected Completed Date" | localize}}</label>
+                                <div id="Expected" class="kt-input-icon">
+                                    <input id="ExpectedDatePicker"
+                                           type="text"
+                                           #ExpectedDatePickerDatePicker
+                                           name="ExpectedDatePicker"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier required
+                                           [(date)]="remediation.endDate"
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{"Remediation Plan Details" | localize}}</label>
+                                <textarea type="text"
+                                          class="form-control"
+                                          [(ngModel)]="remediation.remediationPlanDetail"
+                                          name="plandetails"
+                                          placeholder="Remediation Plan Details" required
+                                          style="height: 100px !important;"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <div class="checkbox-list">
+                                    <label class="checkbox">
+                                        <input type="checkbox"
+                                               [(ngModel)]="remediation.isRemediation" name="isRemediation"/>
+                                        Is Remediation Completed
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <label>{{"Actual Closure Date" | localize}}</label>
+                                <div id="Actual" class="kt-input-icon">
+                                    <input id="ActualDatePicker"
+                                           type="text"
+                                           #ActualDatePicker
+                                           name="ActualDatePicker"
+                                           class="form-control"
+                                           [disabled]="!remediation.isRemediation"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [(date)]="remediation.actualClosureDate"
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           autocomplete="off" />
+                                    <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                        <span><i class="flaticon-calendar-1"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__head kt-portlet__head--lg kt-padding-l-0"
+                         style="border-bottom: 1px solid #ebedf2;">
+                        <div class="kt-portlet__head-label">
+                            <h5 class="kt-portlet__head-title">
+                                <span>
+                                    Entity Review & Approval
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-20">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>{{"Expert Reviewer" | localize}}</label>
+                                <ng-select [items]="beUsers"
+                                           [searchable]="true"
+                                           bindLabel="name"
+                                           bindValue="id"
+                                           placeholder=" Select Expert Reviewer"
+                                           [(ngModel)]="remediation.expertReviewerId"
+                                           name="entityExpertReviewer">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>{{"Entity Approver" | localize}}</label>
+                                <ng-select [items]="beUsers"
+                                           [searchable]="true"
+                                           bindLabel="name"
+                                           bindValue="id"
+                                           placeholder=" Select Entity Approver"
+                                           [(ngModel)]="remediation.entityApproverId"
+                                           name="EntityApprover">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>{{"Reviewer Comments" | localize}}</label>
+                                <textarea type="text"
+                                          class="form-control"
+                                          [(ngModel)]="remediation.reviewerComment"
+                                          placeholder="Reviewer Comments"
+                                          style="height: 100px !important;" name="reviewerComment"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>{{"Approved Till Date" | localize}}</label>
+                                        <div id="ApprovedTill" class="kt-input-icon">
+                                            <input id="ApprovedTillDatePicker"
+                                                   type="text"
+                                                   #ApprovedTillDatePicker
+                                                   name="ApprovedTillDatePicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="remediation.approvedTillDate"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>{{"Signature" | localize}}</label>
+                                        <common-signature-pad (signatureUrl)="signatureUrl($event)"
+                                                              [imgUrl]="remediation.signature"
+                                                              [signatureShow]="signatureShow"></common-signature-pad>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__head kt-portlet__head--lg kt-padding-l-0"
+                         style="border-bottom: 1px solid #ebedf2;">
+                        <div class="kt-portlet__head-label">
+                            <h5 class="kt-portlet__head-title">
+                                <span>
+                                    Authority Review & Approval
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-20">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>{{"Expert Reviewer" | localize}}</label>
+                                <ng-select [items]="autorativeUser"
+                                           [searchable]="true"
+                                           bindLabel="fullname"
+                                           bindValue="id"
+                                           placeholder=" Select Expert Reviewer"
+                                           [(ngModel)]="remediation.authorityExpertReviewerId"
+                                           name="AuthorityReviewer">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="">{{"Approver" | localize}} </label>
+                                <ng-select [items]="autorativeUser"
+                                           [searchable]="true"
+                                           bindLabel="fullname"
+                                           bindValue="id"
+                                           placeholder=" Select Approver"
+                                           [(ngModel)]="remediation.authorityApproverId"
+                                           name="Approver">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>{{"Reviewer Comments" | localize}}</label>
+                                        <textarea type="text"
+                                                  class="form-control"
+                                                  [(ngModel)]="remediation.reviewComment"
+                                                  placeholder="Reviewer Comments"
+                                                  style="height: 100px !important;" name="reviewComment"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>{{"Next Review Date" | localize}}</label>
+                                        <div id="NextDate" class="kt-input-icon">
+                                            <input id="NexDatePicker"
+                                                   type="text"
+                                                   #NexDatePicker
+                                                   name="NexDatePicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="remediation.nextReviewDate"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>{{"Approved Till Date" | localize}}</label>
+                                        <div id="ApprovedDate" class="kt-input-icon">
+                                            <input id="ApprovedDateDatePicker"
+                                                   type="text"
+                                                   #ApprovedDateDatePicker
+                                                   name="ApprovedDateDatePicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="remediation.authorityApprovedTillDate"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>{{"Signature" | localize}}</label>
+                                        <common-signature-pad (signatureUrl)="signatureUrl1($event)"
+                                                              [imgUrl]="remediation.authoritysignature"
+                                                              [signatureShow]="signatureShow"></common-signature-pad>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p-accordion>
+                        <p-accordionTab header="Attachments">
+                            <div class="w-100">
+                                <file-upload [name]="'Remediation Plan'"
+                                             [attachedFile]="attachedFileCodes"
+                                             [multiple]="true"
+                                             [attachedfileSize]="2097150"
+                                             [noFileUpload]="100"
+                                             (attachmentData)="getAttachment($event)"
+                                             (attachmentDelete)="deleteAttachmentInput($event)"></file-upload>
+                            </div>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div appBsModal #SectionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="SectionModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" #MeetingTemplateForm="ngForm" novalidate  (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Section')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'min-height': '60vh', 'position': 'relative'}">
+                    <div class="form-group w-100">
+                        <label class="required">{{"Name" | localize}}</label>
+                        <input type="text" class="form-control w-100" name="name"   [(ngModel)]="sectionCreate.name" [required]="true"  placeholder="Name"  />
+                    </div>
+                    <div class="form-group w-100">
+                        <label>{{"Related Question" | localize}}</label>
+                        <p-pickList [source]="allExternalQuestions" [showTargetFilter]="true" [target]="attachedExternalQuestions" class="w-100" sourceHeader="Question" targetHeader="Selected Question"
+                                    [responsive]="true" [showSourceControls]="true" [showTargetControls]="true">
+                            <ng-template let-que pTemplate="item">
+                                <div class="ui-helper-clearfix">
+                                    <div>{{que.questionDescription}}</div>
+                                </div>
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Close" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!MeetingTemplateForm.form.valid " [buttonBusy]="saving"><span>{{"Save" | localize}}</span></button>                  
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

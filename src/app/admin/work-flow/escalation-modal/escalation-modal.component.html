@@ -1,0 +1,132 @@
+<div appBsModal #escalationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="escalationModal" aria-hidden="true" >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <form *ngIf="active" #escalationForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Escalation')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}" style="min-height:300px !important">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4">
+                                    {{'Deadline' | localize}}
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" name="deadlines" [(ngModel)]="createAction.actionTime" min="0" class="form-control" />
+                                </div>
+                                <div class="col-4">
+                                    <ng-select [items]="actionTimeType"
+                                               [searchable]="false"
+                                               [multiple]="False"
+                                               bindLabel="name"
+                                               bindValue="id"
+                                                [(ngModel)]="createAction.actionTimeType" 
+                                               placeholder="Deadline"
+                                               name="actionTimeTypes" required>
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4">
+                                    {{'Email Template' | localize}}
+                                </div>
+                                <div class="col-8">
+                                    <ng-select [items]="template"
+                                               [searchable]="false"
+                                               bindLabel="templateTitle"
+                                               [multiple]="false"
+                                               bindValue="id"
+                                               [(ngModel)]="createAction.templateId" 
+                                               placeholder="Email Template"
+                                               name="name" required>
+                                    </ng-select>
+                                </div>
+                            </div>
+
+                            <div style="display:none">
+                                <div class="row kt-padding-t-15">
+                                    <div class="col-4">
+                                        {{'Notify' | localize}}
+                                    </div>
+                                    <div class="col-8">
+                                        <ng-select [items]="data"
+                                                   [searchable]="false"
+                                                   [multiple]="true"
+                                                   bindLabel="name"
+                                                   bindValue="id"
+                                                   placeholder="Notify"
+                                                   name="name" required>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="row kt-padding-t-15">
+                                    <div class="col-4">
+                                        {{'CC' | localize}}
+                                    </div>
+                                    <div class="col-8">
+                                        <ng-select [items]="data"
+                                                   [searchable]="false"
+                                                   [multiple]="true"
+                                                   bindLabel="name"
+                                                   bindValue="id"
+                                                   placeholder="CC"
+                                                   name="name" required>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="row kt-padding-t-15">
+                                    <div class="col-4">
+                                        {{'BCC' | localize}}
+                                    </div>
+                                    <div class="col-8">
+                                        <ng-select [items]="data"
+                                                   [searchable]="false"
+                                                   [multiple]="true"
+                                                   bindLabel="name"
+                                                   bindValue="id"
+                                                   placeholder="BCC"
+                                                   name="name" required>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="row kt-padding-t-15">
+                                    <div class="col-4">
+                                        {{'SMS' | localize}}
+                                    </div>
+                                    <div class="col-8">
+                                        <ng-select [items]="data"
+                                                   [searchable]="false"
+                                                   [multiple]="true"
+                                                   bindLabel="name"
+                                                   bindValue="id"
+                                                   placeholder="SMS"
+                                                   name="name" required>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="col-6 kt-padding-l-25-desktop kt-padding-r-25-desktop">
+                            <div class="form-group">
+                                <label class="kt-font-bolder kt-font-lg">{{l('Help Text')}}</label>
+                                <p class="">{{'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget' | localize}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!escalationForm.form.valid"><i class="fa fa-save"></i> <span>{{"Add To Action" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

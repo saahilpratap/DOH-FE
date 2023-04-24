@@ -1,0 +1,40 @@
+<div bsModal #findingCAPAListModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="findingCAPAListModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form *ngIf="active" #findingCAPAListForm="ngForm" novalidate>
+                <div class="modal-body">
+                    <div class="kt-align-center">
+                        <i class="flaticon2-warning message-icon-size text-warning"></i>
+                    </div>
+                    <div class="font-12 h6 p-2" *ngIf="messageName == 'CAPA Submitted Notification'">{{"Kindly provide Corrective Action Response for the below finding(s)" | localize}}</div>
+                    <div class="font-12 h6 p-2" *ngIf="messageName == 'CAPA Accept'">{{"Findings cannot be accepted as CAPA update required is set to YES for the below finding(s)" | localize}}</div>
+                    <div class="font-12 h6 p-2" *ngIf="messageName == 'CAPA Approved'">{{"The below finding(s) cannot be approved as the finding status is open. Please set the finding status to close before approving the CAPA." | localize}}</div>
+                    <div class="pl-5 pr-5" [perfectScrollbar]="{wheelPropagation: false}"
+                         [ngStyle]="{'max-height': '60vh', 'position': 'relative'}">
+                        <table class="table table-bordered table-head-solid">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        {{"Finding Id" | localize}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of testData;let index = index" >
+                                    <td>
+                                        {{item}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>                       
+                    </div>
+                </div>
+                <div class="modal-footer " align="center">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

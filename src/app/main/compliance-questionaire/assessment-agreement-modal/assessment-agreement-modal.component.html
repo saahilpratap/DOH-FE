@@ -1,0 +1,72 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #assessmentForm="ngForm"
+                  novalidate
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">Assessment Submission Agreement</h4>
+                    <button type="button" class="close"
+                            (click)="close()" aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                    
+                </div>
+                <div class="modal-body">
+                    <angular-editor id="editor1" [config]="editorConfig"
+                                    name="textData"
+                                    [(ngModel)]="textMessage"></angular-editor>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="agreement_signature" class="required">{{ l("Signature") }} </label>
+                                    <common-signature-pad [signatureShow]="true" (signatureUrl)="signatureUrl($event)" [imgUrl]="signature"></common-signature-pad>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="hasAccepted" class="required">{{ l("Acceptance") }} </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="checkbox"
+                                               id="agreement_acceptance"
+                                               class="form-control checkboxInput"
+                                               [(ngModel)]="hasAccepted"
+                                               name="agreementAcceptance"
+                                               required />
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span style="float:left">{{appSession.user.name}} {{appSession.user.surname}}</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <h6>
+                                            By Clicking Continue you accept the terms of agreement.
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="save()">
+                        {{ l("Continue") }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

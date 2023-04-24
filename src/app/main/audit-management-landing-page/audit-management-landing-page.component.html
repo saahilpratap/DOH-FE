@@ -1,0 +1,214 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" style="background-color:#fff">
+    <div class="kt-subheader kt-grid__item border-bottom">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Audit Management" | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                </span>
+                <span class="label label-lg  kt-align-center" style="width:300px">
+                    <ng-select [items]="externalAudit" [searchable]="true" bindLabel="companyName"
+                               bindValue="id" placeholder="Select External Audit" (change)="onEntityChange(externalAuditId)"
+                               [(ngModel)]="externalAuditId" class="kt-align-left"
+                               name="ExternalAudit">
+                    </ng-select>
+                </span>
+                <span class="label label-lg  kt-align-center" style="width:300px ; margin-left: 10px !important;">
+                    <ng-select [items]="entityGroup" [searchable]="true" bindLabel="name" style="margin-left: 10px !important;"
+                               bindValue="id" placeholder="Select Group Name" (change)="onEntityGroupChange(entityGroupId)"
+                               [(ngModel)]="entityGroupId" class="kt-align-left"
+                               name="entityGroup">
+                    </ng-select>
+                </span>
+                <span class="label label-lg  kt-align-center" style="width:300px ; margin-left: 10px !important;">
+                    <ng-select [items]="healthcare" [searchable]="true" bindLabel="companyName" style="margin-left: 10px !important;"
+                               bindValue="id" placeholder="Select HealthCare Entity" (change)="onhelthcareChange(healthentityId)"
+                               [(ngModel)]="healthentityId" class="kt-align-left"
+                               name="healthcare">
+                    </ng-select>
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="row">
+            <div class="col-lg-4 com-md-4 col-sm-4">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <span> <i style="font-size:25px" class="la la-university"></i></span>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Active Audit Total')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{dashboardCount?.externalAuditFindingCount?.count}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 com-md-4 col-sm-4">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <span><i style="font-size:25px" class="la la-university"></i></span>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Total External Assessments')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{dashboardCount?.externalAssessmentCount?.count}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 com-md-4 col-sm-4">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <span><i style="font-size:25px" class="la la-university"></i></span>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Total  Audit Project')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{dashboardCount?.auditProjectCount?.count}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('External Assessment By Type')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-0 kt-padding-t-10" style="min-height:200px">
+                        <div class="kt-widget14">
+                            <div class="row kt-widget14__content">
+                                <div class="col-lg-6 col-sm-6">
+                                    <ngx-charts-pie-chart [results]="assementCount"
+                                                          [view]="[250,250]"
+                                                          [doughnut]="true" [legend]="false" [labels]="false"
+                                                          [scheme]="colorScheme" [animations]="false"
+                                                          [tooltipDisabled]="true">
+                                    </ngx-charts-pie-chart>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 kt-widget14__legends">
+
+                                    <div class="kt-widget14__legend" *ngFor="let item of assementCount; index as i">
+                                        <span class="kt-widget14__bullet " [style.backgroundColor]="colorScheme.domain[i]"></span>
+
+                                        <span class="kt-widget14__stats">
+                                            {{item?.label}}
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('External Assessment By Fiscal Year')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <input class="form-control" id="StartEndRange" name="StartEndRange"
+                                   readonly="readonly" bsDaterangepicker
+                                   dateRangePickerMomentModifier type="text"
+                                   placeholder="Select Date"
+                                   placement="left"
+                                   [(ngModel)]="dateRangeText"
+                                   [bsConfig]="{ rangeInputFormat : 'DD/MM/YYYY', dateInputFormat: 'DD/MM/YYYY', showWeekNumbers: false }"
+                                   (bsValueChange)="OndateChange(dateRangeText)" />
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <div *ngIf="fiscalYear">
+                            <ngx-charts-bar-vertical-2d [view]="[550,300]"
+                                                        [scheme]="colorScheme"
+                                                        [results]="fiscalYear"
+                                                        [gradient]="gradient"
+                                                        [xAxis]="showXAxis"
+                                                        [yAxis]="showYAxis"
+                                                        [legend]="false"
+                                                        [maxXAxisTickLength]="9"
+                                                        [maxYAxisTickLength]="5"
+                                                        [showXAxisLabel]="showXAxisLabel"
+                                                        [showYAxisLabel]="showYAxisLabel"
+                                                        [xAxisLabel]="xAxisLabel"
+                                                        [yAxisLabel]="yAxisLabel"
+                                                        [legendTitle]="false">
+                            </ngx-charts-bar-vertical-2d>
+                        </div>
+                        <div *ngIf="!fiscalYear">
+                            No result
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{l('External Assessments By Lead Assessor')}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <ngx-charts-bar-vertical-2d [view]="[1111,300]"
+                                                    [scheme]="colorScheme"
+                                                    [results]="leadAuditor"
+                                                    [gradient]="gradient"
+                                                    [xAxis]="showXAxis"
+                                                    [yAxis]="showYAxis"
+                                                    [legend]="true"
+                                                    [maxXAxisTickLength]="10"
+                                                    [maxYAxisTickLength]="5"
+                                                    [showXAxisLabel]="showXAxisLabel"
+                                                    [showYAxisLabel]="showYAxisLabel"
+                                                    [xAxisLabel]="xAxisLabel"
+                                                    [yAxisLabel]="yAxisLabel"
+                                                    [legendTitle]="false">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

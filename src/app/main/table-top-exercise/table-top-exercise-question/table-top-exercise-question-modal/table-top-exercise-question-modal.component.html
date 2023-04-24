@@ -1,0 +1,151 @@
+<div appBsModal #tableTopExerciseQuestionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="tableTopExerciseQuestionModal" aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" [formGroup]="questionform" (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Table Top Exercise  Question')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label class="required" for="question">{{"Question" | localize}} </label>
+                        <input id="question_id" formControlName="name" placeholder="Question" type="text" name="name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="description" >{{"Description" | localize}} </label>
+                        <textarea id="question_id" formControlName="description" placeholder="Description" type="text" name="description" rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="mandatory">{{"Mandatory" | localize}} </label>
+                        <span class="switch switch-brand">
+                            <label>
+                                <input type="checkbox" name="mandatory" formControlName="mandatory">
+                                <span></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div class="form-group" >
+                        <label for="commentMandatory"> </label>
+                        <div class="kt-checkbox-list ">
+                            <label for="commentRequired" class="kt-checkbox">
+                                <input id="commentRequired" type="checkbox" name="commentRequired" formControlName="commentRequired"
+                                       (change)="eventCheck($event.target)">
+                                {{"Comment Required" | localize}}
+                                <span></span>                                
+                            </label>
+                        </div>
+                    </div>                    
+                    <div class="form-group" *ngIf="questionform.value.commentRequired == true">
+                        <label for="commentMandatory">{{"Comment Mandatory" | localize}} </label>
+                        <span class="switch switch-brand">
+                            <label>
+                                <input type="checkbox" name="commentMandatory" formControlName="commentMandatory">
+                                <span></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="answerType" class="required">{{"Answer Type" | localize}} </label>
+                        <select class="form-control" name="answerType" formControlName="answerType" (change)="onAnswerTypeChange(questionform,questionform.value.answerType)">
+                            <option value="">{{l("Select Answer Type")}}</option>
+                            <option value="1">{{l("List")}}</option>
+                            <option value="2">{{l("Logical")}}</option>
+                            <option value="3">{{l("Input")}}</option>
+                            <option value="4">{{l("Multiselect")}}</option>
+                        </select>
+                    </div>
+                    <div formArrayName="tableTopExerciseQuestionOption">
+                        <div *ngIf="questionform.value.answerType == 1">
+                            <div class="align-items-center bg-icon-chart border-radius-5 ml-0 mr-0 pb-2 pt-2 row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    {{"Answer Option" | localize}}
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5">
+                                    {{"Answer Score" | localize}}
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1">
+                                    <button type="button" class="border-0 btn btn-brand btn-sm float-right" (click)="addAnswerOption(questionform.value)">
+                                        <span class="fa fa-plus"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row p-2 align-items-center" *ngFor="let quantity of tableTopExerciseQuestionOption().controls; let i=index" [formGroupName]="i">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input id="question_value" formControlName="value" type="text" name="value" class="form-control">
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5">
+                                    <input id="question_score" formControlName="score" type="text" name="score" class="form-control">
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1">
+                                    <button type="button" class="border-0 btn mr-1 btn-danger btn-sm float-right" (click)="deleteAnswerOption(i)">
+                                        <span class="fa fa-times"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="questionform.value.answerType == 2">
+                            <div class="row align-items-center p-2" *ngFor="let quantity of tableTopExerciseQuestionOption().controls; let i=index" [formGroupName]="i">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input id="question_value" formControlName="value" type="text" name="value" class="form-control">
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input id="question_score" formControlName="score" type="text" name="score" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="questionform.value.answerType == 3">
+                            <div class="row align-items-center p-2" *ngFor="let quantity of tableTopExerciseQuestionOption().controls; let i=index" [formGroupName]="i">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input id="question_value" formControlName="value" type="text" name="value" class="form-control">
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input id="question_score" formControlName="score" type="text" name="score" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="questionform.value.answerType == 4">
+                            <div class="align-items-center bg-icon-chart border-radius-5 ml-0 mr-0 pb-2 pt-2 row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    {{"Answer Option" | localize}}
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5">
+                                    {{"Answer Score" | localize}}
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1">
+                                    <button type="button" class="border-0 btn btn-brand btn-sm float-right" (click)="addAnswerOption(questionform.value)">
+                                        <span class="fa fa-plus"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row p-2 align-items-center" *ngFor="let quantity of tableTopExerciseQuestionOption().controls; let i=index" [formGroupName]="i">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input id="question_value" placeholder="Value" formControlName="value" type="text" name="value" class="form-control">
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5">
+                                    <input id="question_score" formControlName="score" type="text" name="score" class="form-control">
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1">
+                                    <button type="button" class="border-0 btn btn-danger mr-1 btn-sm float-right" (click)="deleteAnswerOption(i)">
+                                        <span class="fa fa-times"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!questionform.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                    <i class="fa fa-save"></i>
+                    <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

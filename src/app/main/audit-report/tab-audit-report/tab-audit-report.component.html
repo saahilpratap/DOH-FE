@@ -1,0 +1,170 @@
+<div>
+    <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+        <span class="h6">{{l('Audit Report')}}</span>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>{{l('Audit Report ID')}}</label>
+                <input type="text" class="form-control" value="{{auditproject.code}}" disabled>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>{{l('Reference Standard')}}</label>
+                <select class="form-control kt-padding-r-10" disabled [(ngModel)]="selectedADId">
+                    <option *ngFor="let item of authorityDocuments" [ngValue]="item.id">
+                        {{item.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>{{l('Audit Project')}}</label>
+                <input type="text" class="form-control" value="{{auditproject.auditTitle}}" disabled>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12"  *ngIf="entityGroupId!=null">
+            <div class="form-group">
+                <label>{{l('Group Name')}}</label>
+                <ng-select [items]="entityGroup" [searchable]="true" bindLabel="name" [disabled]="entityGroupId > 0"
+                           bindValue="id" placeholder="Group Name" (change)="onGroupChange(entityGroupId)"
+                           [(ngModel)]="entityGroupId"
+                           name="Group Name">
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>{{l('Facilities')}}</label>
+                <input type="text" disabled class="form-control" name="facilityname" [(ngModel)]="entityPrimary.name" placeholder="Facility Name">
+
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>{{l('License Number')}}</label>
+                <input type="text" class="form-control" [(ngModel)]="entityPrimary.licenseNumber" disabled>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+        <span class="h6">{{l('Audit Schedule Information')}}</span>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+                <label>{{l('Documents')}}</label>
+                <div class="checkbox-list row">
+                        <label class="checkbox col-6" *ngFor="let item of assessmentTypes;let i = index">
+                            <input type="radio" name="Checkboxes1" [checked]="auditproject.auditStageId==item.id" [disabled]="reauditPermission">
+                            <span></span><span class="kt-padding-l-5 lable-position">{{item.name}}</span>
+                        </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+                <div class="col-2">
+                    <div class="form-group">
+                        <label class="kt-font-sm kt-font-bolder">{{l('Stage 1')}}</label>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="form-group">
+                        <label>{{l('Start Date')}}</label>
+                        <div id="startDate" class="kt-input-icon">
+                            <input id="startDate" required
+                                   type="datetime"
+                                   #incident_closeDatetime
+                                   name="closeDate" readonly disabled
+                                   class="form-control input-group date"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                   [(date)]="auditproject.startDate"
+                                   autocomplete="off"/>
+                            <span class="position-absolute"
+                                  style="top: 25%; right: 20px; font-size: 18px;">
+                                <span><i class="flaticon-calendar-1"></i></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="form-group">
+                        <label>{{l('End Date')}}</label>
+                        <div id="endDate" class="kt-input-icon">
+                            <input id="endDate" required
+                                   type="datetime"
+                                   #incident_closeDatetime
+                                   name="closeDate" readonly disabled
+                                   class="form-control input-group date"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                   [(date)]="auditproject.endDate"
+                                   autocomplete="off" />
+                            <span class="position-absolute"
+                                  style="top: 25%; right: 20px; font-size: 18px;">
+                                <span><i class="flaticon-calendar-1"></i></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <div class="form-group">
+                        <label class="kt-font-sm kt-font-bolder">{{l('Stage 2')}}</label>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="form-group">
+                        <label>{{l('Start Date')}}</label>
+                        <div id="stageStartDate" class="kt-input-icon">
+                            <input id="stageStartDate" required
+                                   type="datetime"
+                                   #incident_closeDatetime
+                                   name="closeDate" readonly disabled
+                                   class="form-control input-group date"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                   [(date)]="auditproject.stageStartDate"
+                                   autocomplete="off" />
+                            <span class="position-absolute"
+                                  style="top: 25%; right: 20px; font-size: 18px;">
+                                <span><i class="flaticon-calendar-1"></i></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="form-group">
+                        <label>{{l('Start Date')}}</label>
+                        <div id="stageEndDate" class="kt-input-icon">
+                            <input id="stageEndDate" required
+                                   type="datetime"
+                                   #incident_closeDatetime
+                                   name="closeDate" readonly disabled
+                                   class="form-control input-group date"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                   [(date)]="auditproject.stageEndDate"
+                                   autocomplete="off" />
+                            <span class="position-absolute"
+                                  style="top: 25%; right: 20px; font-size: 18px;">
+                                <span><i class="flaticon-calendar-1"></i></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

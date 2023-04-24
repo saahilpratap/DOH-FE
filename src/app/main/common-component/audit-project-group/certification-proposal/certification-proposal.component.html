@@ -1,0 +1,124 @@
+<div class="kt-portlet shadow-none">
+    <div class="kt-portlet__body kt-padding-0">
+        <div>
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('Surviellance Audit')}}</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('CP ID')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.cpidCode}}</span>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Reference Standard')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.referenceStandard}}</span>                   
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Release Number')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.releaseNumber}}</span>                    
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Group Name')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.entityGroupId}}</span>                   
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Facilities')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{facilityName}}</span>                    
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="w-50">{{l('Proposal - Date')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.proposalDate | date}}</span>                   
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('Input Documents Checked - Evidences & Artifacts')}}</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label>{{l('Scope')}}</label>
+                        <p class="kt-font-sm kt-font-bold kt-font-skype">{{certificationProposalInput.scope}}</p>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('Audit Information')}}</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="w-75">{{l('Total Man Days')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.totalManDays}}</span>                   
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="w-75">{{l('Number of Full Non-Compliance Identified')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.fullyCompliantCount}}</span>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="w-75">{{l('Exclusion/Non Applicability')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.notApplicableCount}}</span>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="w-75">{{l('Number of Partial Non-Compliance Identified ')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{certificationProposalInput.partiallyCompliantCount}}</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+                <span class="h6 kt-font-bolder">{{l('Domains Under Evaluation and Verification')}}</span>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="w-50">{{l('External Assessment ID')}}</label>
+                    <span class="kt-font-md kt-font-bold kt-font-skype">{{externalAssessmentId}}</span>                    
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">                      
+                        <select class="form-control">
+                            <option selected>Domain Name</option>
+                            <option *ngFor="let item of certificationProposalCalculation; let i = index">
+                                {{item.domainName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <table class="table kt-margin-t-10 table-bordered">
+                <thead>
+                    <tr class="tr-bg-color" style="background-color: #00aff0 !important;">
+                        <th class="kt-font-bold kt-align-center width-40 kt-font-light kt-font-md kt-font-bold">{{l('Domains')}}</th>
+                        <th class="kt-font-bold kt-align-center width-20 kt-font-light kt-font-md kt-font-bold">{{l('Auditor(s)')}}</th>
+                        <th class="kt-font-bold kt-align-center width-20 kt-font-light kt-font-md kt-font-bold">{{l('Auditee(s)')}}</th>
+                        <th class="kt-font-bold kt-align-center width-20 kt-font-light kt-font-md kt-font-bold">{{l('Level of Compliance')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of domainDetails">
+                        <td class="kt-font-md kt-font-bold kt-font-skype">{{item.Name}}</td>
+                        <td class="kt-font-md kt-font-bold kt-font-skype">{{item.AuditorName}}</td>
+                        <td class="kt-font-md kt-font-bold kt-font-skype">{{item.AuditeeName}}</td>
+                        <td class="kt-font-md kt-font-bold kt-font-skype kt-align-right">{{item.Level}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-7"></div>
+                <div class="col-5">
+                    <div class="row">
+                        <div class="col-4">
+                            <label class="kt-font-md kt-font-bold">{{l('Grade')}}</label>
+                        </div>
+                        <div class="col-8 kt-align-right">
+                            <span class="kt-font-md kt-font-bold kt-font-skype kt-padding-r-20">{{certificationProposalInput.grade}}</span>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

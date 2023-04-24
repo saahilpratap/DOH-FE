@@ -1,0 +1,72 @@
+<!-- <customizable-dashboard
+    [dashboardName]="dashboardName"
+></customizable-dashboard> -->
+
+<div>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" [busyIf]="busy">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{"Dashboard" | localize}}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{"DashboardHeaderInfo" | localize}}
+                    </span>
+                    <div class="kt-pagination kt-pagination--brand d-none">
+                        <ul class="kt-pagination__links">
+                            <li class="kt-pagination__link--next">
+                                <a href="#"><i class="fa fa-angle-left kt-font-brand"></i></a>
+                            </li>
+                            <li class="kt-pagination__link--prev">
+                                <a href="#"><i class="fa fa-angle-right kt-font-brand"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="kt-subheader__toolbar">
+
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="row">
+                <div class="col-12">
+                    <app-widget-entity-assessment-user></app-widget-entity-assessment-user>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <widget-entity-compliance-summary></widget-entity-compliance-summary>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <widget-total-risk-statistics></widget-total-risk-statistics>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <app-widget-sales-summary></app-widget-sales-summary>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <app-widget-profit-share></app-widget-profit-share>
+                </div>
+            </div>
+            <!--<div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <app-widget-vertical-bar-chart></app-widget-vertical-bar-chart>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <app-widget-pie-chart [subName]="'HIE Control Compliance'"></app-widget-pie-chart>
+                </div>
+            </div>-->
+            <!--<div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12" id="123">
+                    <app-widget-pie-chart2></app-widget-pie-chart2>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>

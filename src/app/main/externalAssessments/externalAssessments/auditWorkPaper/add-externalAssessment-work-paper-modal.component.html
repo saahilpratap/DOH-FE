@@ -1,0 +1,230 @@
+<div bsModal
+     #addExternalAssessmentWorkModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #externalAssessmentworkForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>
+                            Assessment / Audit Workpaper
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="workloadDataTitle">{{ l("Title") }}</label>
+                                <input type="text"
+                                       id="workloadDataTitle"
+                                       class="form-control"
+                                       name="workloadDataTitle"
+                                       [(ngModel)]="workPaperData.title" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="datePrepared">{{ l("Date Prepared") }}</label>
+                                <div id="startDate" class="kt-input-icon">
+                                    <input id="datePrepared" required
+                                           type="datetime"
+                                           #datePrepared
+                                           name="datePrepared"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                           [(date)]="workPaperData.datePrepared" autocomplete="off" />
+                                    <span class="position-absolute"
+                                          style="top: 25%; right: 20px; font-size: 18px;">
+                                        <span><i class="fa fa-calendar"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="workloadData_Description">
+                                    {{ l("Description") }}
+                                </label>
+                                <textarea [(ngModel)]="workPaperData.description"
+                                          name="description"
+                                          class="form-control"
+                                          id="workloadData_Description"
+                                          rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="workloadData_notes">
+                                    {{ l("Notes") }}
+                                </label>
+                                <textarea [(ngModel)]="workPaperData.notes"
+                                          name="description"
+                                          class="form-control"
+                                          id="workloadData_notes"
+                                          rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="workloadDatalink">{{ l("Link") }}</label>
+                                <input type="text"
+                                       id="workloadDatalink"
+                                       class="form-control"
+                                       name="workloadDatalink"
+                                       [(ngModel)]="workPaperData.link" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5>{{ l("Audit Meeting Agenda") }}</h5>
+                    <hr />
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="form-group">
+                                <input type="text" id="meetingAgenda" class="form-control" name="meetingAgenda" required
+                                       [(ngModel)]="meetingAgenda.title"
+                                       placeholder="Document Title" />
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-skype kt-padding-t-5" (click)="inputFile1.click()">
+                                <i class="la la-cloud-upload" style="font-size: 2rem;"> </i>
+                            </span>
+                            <input name="file" id="meetingAgendaFile" (change)="uploadAttachment($event,meetingAgenda,1)" type="file" #inputFile1 hidden />
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-success kt-padding-t-5" (click)="downloadAttachment(meetingAgenda.code)">
+                                <i class="fa fa-download" style="font-size: 1.5rem;"></i>
+                            </span>
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-danger kt-padding-t-5" (click)="deleteAttachmentInput(meetingAgenda,1)">
+                                <span class="fas fa-trash-alt" style="font-size: 1.5rem;"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <h5>{{ l("Audit Management Checklist") }}</h5>
+                    <hr />
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="form-group">
+                                <input type="text" id="mgmtChecklist" class="form-control" name="mgmtChecklist" required
+                                       [(ngModel)]="mgmtChecklist.title"
+                                       placeholder="Document Title" />
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-skype kt-padding-t-5" (click)="inputFile2.click()">
+                                <i class="la la-cloud-upload" style="font-size: 2rem;"> </i>
+                            </span>
+                            <input name="file" id="mgmtChecklistFile" (change)="uploadAttachment($event,mgmtChecklist,2)" type="file" #inputFile2 hidden />
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-success kt-padding-t-5" (click)="downloadAttachment(mgmtChecklist.code)">
+                                <i class="fa fa-download" style="font-size: 1.5rem;"></i>
+                            </span>
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-danger kt-padding-t-5" (click)="deleteAttachmentInput(mgmtChecklist,2)">
+                                <span class="fas fa-trash-alt" style="font-size: 1.5rem;"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <h5>{{ l("General Attachment") }}</h5>
+                    <hr />
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="form-group">
+                                <input type="text" id="generalAttachment" class="form-control" name="generalAttachment" required
+                                       [(ngModel)]="generalAttachment.title"
+                                       placeholder="Document Title" />
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-skype kt-padding-t-5" (click)="inputFile3.click()">
+                                <i class="la la-cloud-upload" style="font-size: 2rem;"> </i>
+                            </span>
+                            <input name="file" id="generalAttachmentFile" (change)="uploadAttachment($event,generalAttachment,3)" type="file" #inputFile3 hidden />
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-success kt-padding-t-5" (click)="downloadAttachment(generalAttachment.code)">
+                                <i class="fa fa-download" style="font-size: 1.5rem;"></i>
+                            </span>
+                        </div>
+                        <div class="col-1">
+                            <span type="button" class="kt-font-danger kt-padding-t-5" (click)="deleteAttachmentInput(generalAttachment,3)">
+                                <i class="fas fa-trash-alt" style="font-size: 1.5rem;"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <h5>{{ l("Signature") }}</h5>
+                    <hr />
+                    <common-signature-pad (signatureUrl)="signatureUrl($event)" [imgUrl]="signImg"></common-signature-pad>
+
+                    <!--<div class="row">
+        <div class="form-group" *ngIf="signImg==undefined">
+            <canvas #sigPad width="300" height="150" (mousedown)="onMouseDown($event)"
+                    (mousemove)="onMouseMove($event)"></canvas>
+            <br />
+            <button type="button"
+                    class="btn btn-clean" (click)="clear()">
+                clear
+            </button>
+        </div>
+        <div class="form-group" *ngIf="signImg!=undefined">
+            <img [src]="signImg" width="300" height="150" />
+            <br />
+            <button type="button"
+                    class="btn btn-clean" (click)="newSign()">
+                New
+            </button>
+        </div>
+    </div>-->
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!externalAssessmentworkForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Add") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

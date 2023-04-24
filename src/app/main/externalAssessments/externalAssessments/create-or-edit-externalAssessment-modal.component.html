@@ -1,0 +1,664 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #externalAssessmentForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="externalAssessment.id">
+                            {{
+                            l("EditExternalAssessment")
+                            }}
+                        </span>
+                        <span *ngIf="!externalAssessment.id">
+                            {{
+                            l("CreateNewExternalAssessment")
+                            }}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving || reauditPermission">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body1">
+                    <h5>Assessment Info</h5>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_ID">
+                                    {{
+                                        l("External Assessment ID")
+                                    }}
+                                </label>
+                                <input type="text"
+                                       id="ExternalAssessment_ID"
+                                       class="form-control"
+                                       [(ngModel)]="externalAssessment.code"
+                                       name="id"
+                                       [disabled]="true || reauditPermission" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_Name">
+                                    {{
+                                        l("Name")
+                                    }}
+                                </label>
+                                <input type="text"
+                                       id="ExternalAssessment_Name"
+                                       class="form-control"
+                                       [(ngModel)]="externalAssessment.name"
+                                       name="name" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_fiscalYear">{{ l("Fiscal Year") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_fiscalYear"
+                                       class="form-control"
+                                       [(ngModel)]="externalAssessment.fiscalYear"
+                                       name="fiscalYear" [disabled]="reauditPermission"/>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_StartDate">
+                                    {{l("StartDate")}}
+                                </label>
+                                <input required
+                                       class="form-control m-input"
+                                       type="datetime"
+                                       bsDatepicker
+                                       [(ngModel)]="externalAssessment.startDate"
+                                       [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                       id="ExternalAssessment_StartDate"
+                                       name="ExternalAssessment_StartDate"
+                                       autocomplete="off" [disabled]="reauditPermission"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_EndDate">
+                                    {{l("EndDate")}}
+                                </label>
+                                <input required
+                                       class="form-control m-input"
+                                       type="datetime"
+                                       bsDatepicker
+                                       [(ngModel)]="externalAssessment.endDate"
+                                       [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                       id="ExternalAssessment_EndDate"
+                                       name="ExternalAssessment_EndDate"
+                                       autocomplete="off" [disabled]="reauditPermission"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_Type">
+                                    {{
+                                        l("Type")
+                                    }}
+                                </label>
+                                <select class="form-control"
+                                        name="Type"
+                                        id="ExternalAssessment_Type"
+                                        [(ngModel)]="externalAssessment.type">
+                                    <option value="0">
+                                        {{
+                                            l("Annual External Assessment")
+                                        }}
+                                    </option>
+                                    <option value="1"> Special Assessment </option>
+                                    <option value="2">
+                                        {{
+                                            l("Pre-Audit Questionnaire")
+                                        }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_AuthoritativeDocuments">
+                                    {{
+                                            l("Authoritative Documents")
+                                    }}
+                                </label>
+                                <p-multiSelect name="authDocuments" [disabled]="readonly || reauditPermission" [options]="authorativeDocument" placeholder="Select Authoritative Documents " optionLabel="name" [(ngModel)]="selectedauthorativeDocument" (onChange)="authDocumentChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+
+                            </div>
+                        </div>
+                    </div>
+                    <h6>Assessor Information</h6>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_Vendors">
+                                    {{
+                                        l("Vendor")
+                                    }}
+                                </label>
+                                <select class="form-control"
+                                        name="vendorsList"
+                                        id="ExternalAssessment_Vendors"
+                                        [(ngModel)]="
+                                            externalAssessment.vendorId
+                                        "
+                                        [disabled]="externalAssessment.id || isAuditEntityUser() || reauditPermission"
+                                        (ngModelChange)="onVendorChange($event)">
+
+                                    <option *ngFor="let auditeeCompany of auditCompaniesLookUp"
+                                            [ngValue]="auditeeCompany.businessEntity.id">
+                                        {{
+                                                auditeeCompany.businessEntity
+                                                    .name
+                                        }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_LeadAssessor">{{ l("Lead Assessor ") }}</label>
+                                <select class="form-control"
+                                        name="leadAssessor"
+                                        id="ExternalAssessment_LeadAssessor"
+                                        [(ngModel)]="externalAssessment.leadAssessorId" [disabled]="reauditPermission">
+                                    <option [ngValue]="0">Not Selected</option>
+                                    <option *ngFor="let user of leadAssessors"
+                                            [ngValue]="user.id">
+                                        {{ user.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_leadAssessorPhone">{{ l("Phone") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_leadAssessorPhone"
+                                       class="form-control"
+                                       name="leadAssessorPhone"
+                                       [disabled]="true || reauditPermission"
+                                       [(ngModel)]="leadAssessorPhone" />
+                            </div>
+                        </div>
+                        <div class="col-sm-4" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_leadAssessorMobile">{{ l("Mobile") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_leadAssessorMobile"
+                                       class="form-control"
+                                       name="leadAssessorMobile"
+                                       [disabled]="true || reauditPermission" />
+                            </div>
+                        </div>
+                        <div class="col-sm-4" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_leadAssessorEmail">{{ l("Email") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_leadAssessorEmail"
+                                       class="form-control"
+                                       name="leadAssessorEmail"
+                                       [disabled]="true || reauditPermission"
+                                       [(ngModel)]="leadAssessorEmail" />
+                            </div>
+                        </div>
+                    </div>
+                    <h6>Auditee Information</h6>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_entityName">{{ l("Entity Name") }}</label>
+                                <select id="ExternalAssessment_entityName"
+                                        class="form-control"
+                                        [(ngModel)]="externalAssessment.businessEntityId" name="businessEntityName"
+                                        (ngModelChange)="onEntityChange($event)"
+                                        [disabled]="externalAssessment.id || reauditPermission">
+                                    <option [ngValue]="0">
+                                        Not Selected
+                                    </option>
+                                    <option *ngFor="
+                                                let businessEntityLookUp of businessEntitiesLookUp
+                                            "
+                                            [ngValue]="
+                                                businessEntityLookUp
+                                                    .businessEntity.id
+                                            ">
+                                        {{
+                                                businessEntityLookUp
+                                                    .businessEntity.name
+                                        }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ExternalAssessment_auditee">{{ l("Auditee Name") }}</label>
+                                    <select id="ExternalAssessment_auditee"
+                                            class="form-control"
+                                            [(ngModel)]="externalAssessment.businessEntityLeadAssessorId"name="beAssessor" [disabled]="reauditPermission">
+                                        <option [ngValue]="0">Not Selected</option>
+                                        <option *ngFor="let user of beAuditees"
+                                                [ngValue]="user.id">
+                                            {{ user.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_beAuditeeFirstName">{{ l("First Name") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_beAuditeeFirstName"
+                                       class="form-control"
+                                       name="firstName"
+                                       [disabled]="true || reauditPermission"
+                                       [(ngModel)]="auditeeName" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_beAuditeeLastName">{{ l("Last Name") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_beAuditeeLastName"
+                                       class="form-control"
+                                       name="lastName"
+                                       [disabled]="true || reauditPermission"
+                                       [(ngModel)]="auditeeSurname" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_beAuditeeMobile">{{ l("Email") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_beAuditeeMobile"
+                                       class="form-control"
+                                       name="mobile"
+                                       [disabled]="true || reauditPermission"
+                                       [(ngModel)]="auditeeEmail" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="externalAssessment.id">
+                            <div class="form-group">
+                                <label for="ExternalAssessment_beAuditeePhone">{{ l("Phone Number") }}</label>
+                                <input type="text"
+                                       id="ExternalAssessment_beAuditeePhone"
+                                       class="form-control"
+                                       name="phone"
+                                       [disabled]="true || reauditPermission"
+                                       [(ngModel)]="auditeePhone" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving || reauditPermission"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            [ngClass]=" hideButtons == 1 ? 'pointerNone' : 'pointerAuto'"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!externalAssessmentForm.form.valid || reauditPermission"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{ l("External Assessment") }}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span *ngIf="externalAssessment.id"
+                      class="kt-subheader__desc">{{ l("Edit  External Assessment") }}</span>
+                <span *ngIf="!externalAssessment.id"
+                      class="kt-subheader__desc">{{ l("Create new External Assessment") }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="kt-container kt-container--fluid kt-grid__item kt-grid__item--fluid">
+        <div class="body-container">
+            <form *ngIf="active"
+                  #externalAssessmentForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="kt-portlet kt-portlet--mobile">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                External Assessment Information
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm"
+                                    (click)="close()">
+                                <i class="fa fa-arrow-left"></i>Back
+                            </button>
+                            <button type="submit"
+                                    [ngClass]=" hideButtons == 1 ? 'pointerNone' : 'pointerAuto'"
+                                    class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                    [disabled]="!externalAssessmentForm.form.valid || reauditPermission"
+                                    [buttonBusy]="saving"
+                                    [busyText]="l('SavingWithThreeDot')">
+                                <i class="fa fa-save"></i>
+                                <span>{{ l("Save") }}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-paddinf-t-10">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ExternalAssessment_ID">
+                                        {{l("External Assessment ID")}}
+                                    </label>
+                                    <input type="text"
+                                           id="ExternalAssessment_ID"
+                                           class="form-control"
+                                           [(ngModel)]="externalAssessment.code"
+                                           name="id"
+                                           [disabled]="true || reauditPermission" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ExternalAssessment_Name">
+                                        {{l("Name")}}
+                                    </label>
+                                    <input type="text"
+                                           id="ExternalAssessment_Name"
+                                           class="form-control"
+                                           [(ngModel)]="externalAssessment.name"
+                                           name="Name" [disabled]="reauditPermission"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="ExternalAssessment_fiscalYear">{{ l("Fiscal Year") }}</label>
+                                    <input type="text"
+                                           id="ExternalAssessment_fiscalYear"
+                                           class="form-control"
+                                           [(ngModel)]="externalAssessment.fiscalYear"
+                                           name="fiscalYear" [disabled]="reauditPermission"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="startDate">{{ l("StartDate") }}</label>
+                                    <div id="startDate" class="kt-input-icon">
+                                        <input id="startDate" required
+                                               type="datetime"
+                                               #datePrepared
+                                               name="startDate"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                               [(date)]="externalAssessment.startDate"
+                                               autocomplete="off" [disabled]="reauditPermission"/>
+                                        <span class="position-absolute"
+                                              style="top: 25%; right: 20px; font-size: 18px;">
+                                            <span><i class="fa fa-calendar"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="endDate">{{ l("EndDate") }}</label>
+                                    <div id="endDate" class="kt-input-icon">
+                                        <input id="endDate" required
+                                               type="datetime"
+                                               #datePrepared
+                                               name="endDate"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                               [(date)]="externalAssessment.endDate"
+                                                autocomplete="off" [disabled]="reauditPermission"/>
+                                        <span class="position-absolute"
+                                              style="top: 25%; right: 20px; font-size: 18px;">
+                                            <span><i class="fa fa-calendar"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Assessment_Type">{{ l("Audit/Assessment Type") }}</label>
+                                    <select class="form-control kt-padding-r-10" required disabled
+                                            name="assessmentTypeId" [(ngModel)]="externalAssessment.assessmentTypeId">
+                                        <option *ngFor="let assessment of assessmentTypes" [ngValue]="assessment.id">
+                                            {{assessment.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="authoritativeId">{{ l("Authoritative Documents") }}</label>
+                                    <p-multiSelect name="names" [disabled]="readonly || reauditPermission" [options]="authorativeDocument" placeholder="Select Authoritative Documents" optionLabel="name" [required]="true" [(ngModel)]="selectedauthorativeDocument" (onChange)="authDocumentChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container1">
+                            <h6>Assessor Information</h6>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_Vendors">
+                                            {{ l("Vendor") }}
+                                        </label>
+                                        <select class="form-control"
+                                                name="vendorsList"
+                                                id="ExternalAssessment_Vendors"
+                                                [(ngModel)]="externalAssessment.vendorId"
+                                                [disabled]="externalAssessment.id || isAuditEntityUser() || reauditPermission"
+                                                (ngModelChange)="onVendorChange($event)">
+                                            <option [ngValue]="0">
+                                                Not Selected
+                                            </option>
+                                            <option *ngFor="let auditeeCompany of auditCompaniesLookUp"
+                                                    [ngValue]="auditeeCompany.businessEntity.id">
+                                                {{ auditeeCompany.businessEntity.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_LeadAssessor">{{ l("Lead Assessor ") }}</label>
+                                        <select class="form-control"
+                                                name="leadAssessor"
+                                                id="ExternalAssessment_LeadAssessor"
+                                                [(ngModel)]="externalAssessment.leadAssessorId" [disabled]="reauditPermission">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let user of leadAssessors"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4" *ngIf="externalAssessment.id">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_leadAssessorPhone">{{ l("Phone") }}</label>
+                                        <input type="text"
+                                               id="ExternalAssessment_leadAssessorPhone"
+                                               class="form-control"
+                                               name="leadAssessorPhone"
+                                               [disabled]="true || reauditPermission"
+                                               [(ngModel)]="leadAssessorPhone" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4" *ngIf="externalAssessment.id">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_leadAssessorEmail">{{ l("Email") }}</label>
+                                        <input type="text"
+                                               id="ExternalAssessment_leadAssessorEmail"
+                                               class="form-control"
+                                               name="leadAssessorEmail"
+                                               [disabled]="true || reauditPermission"
+                                               [(ngModel)]="leadAssessorEmail" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4" *ngIf="externalAssessment.id">
+                                    <label>{{"External Auditor Team" | localize}}</label>
+                                    <p-multiSelect name="adt" [options]="leadAssessors" placeholder="Select  Auditors" optionLabel="name" [(ngModel)]="auditorTeam" [style]="{'width': '100%'}" [disabled]="reauditPermission"></p-multiSelect>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container1">
+                            <h6>Auditee Information</h6>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_entityName">{{ l("Entity Name") }}</label>
+                                        <select id="ExternalAssessment_entityName"
+                                                class="form-control"
+                                                [(ngModel)]="externalAssessment.businessEntityId"
+                                                name="businessEntityName"
+                                                (ngModelChange)="onEntityChange($event)"
+                                                [disabled]="externalAssessment.id || reauditPermission">
+                                            <option [ngValue]="0">
+                                                Not Selected
+                                            </option>
+                                            <option *ngFor="let businessEntityLookUp of businessEntitiesLookUp"
+                                                    [ngValue]="businessEntityLookUp.businessEntity.id">
+                                                {{ businessEntityLookUp.businessEntity.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_auditee">{{ l("Auditee Name") }}</label>
+                                        <select id="ExternalAssessment_auditee"
+                                                class="form-control"
+                                                [(ngModel)]="externalAssessment.businessEntityLeadAssessorId"
+                                                name="beAssessor">
+                                            <option [ngValue]="0">Not Selected</option>
+                                            <option *ngFor="let user of beAuditees"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4" *ngIf="externalAssessment.id">
+                                    <label>{{"Auditee Team" | localize}}</label>
+                                    <p-multiSelect name="bdt" [options]="beAuditees" placeholder="Select Auditee Team Member" optionLabel="name" [(ngModel)]="auditeeTeam" [style]="{'width': '100%'}" [disabled]="reauditPermission"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6" *ngIf="externalAssessment.id">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_beAuditeeFirstName">{{ l("First Name") }}</label>
+                                        <input type="text"
+                                               id="ExternalAssessment_beAuditeeFirstName"
+                                               class="form-control"
+                                               name="firstName"
+                                               [disabled]="true || reauditPermission"
+                                               [(ngModel)]="auditeeName" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" *ngIf="externalAssessment.id">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_beAuditeeLastName">{{ l("Last Name") }}</label>
+                                        <input type="text"
+                                               id="ExternalAssessment_beAuditeeLastName"
+                                               class="form-control"
+                                               name="lastName"
+                                               [disabled]="true || reauditPermission"
+                                               [(ngModel)]="auditeeSurname" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6" *ngIf="externalAssessment.id">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_beAuditeeMobile">{{ l("Email") }}</label>
+                                        <input type="text"
+                                               id="ExternalAssessment_beAuditeeMobile"
+                                               class="form-control"
+                                               name="mobile"
+                                               [disabled]="true || reauditPermission"
+                                               [(ngModel)]="auditeeEmail" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" *ngIf="externalAssessment.id">
+                                    <div class="form-group">
+                                        <label for="ExternalAssessment_beAuditeePhone">{{ l("Phone Number") }}</label>
+                                        <input type="text"
+                                               id="ExternalAssessment_beAuditeePhone"
+                                               class="form-control"
+                                               name="phone"
+                                               [disabled]="true || reauditPermission"
+                                               [(ngModel)]="auditeePhone" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

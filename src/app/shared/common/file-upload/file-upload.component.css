@@ -1,0 +1,7 @@
+.ui-fileupload-row {
+    display: none !important;
+}
+#fileupload.ui-fileupload-choose.ui-button, .ui-fileupload-choose.ui-button .ui-widget, .ui-fileupload-choose.ui-button .ui-state-default {
+    background-color: #fff;
+    color: #fff !important;
+}

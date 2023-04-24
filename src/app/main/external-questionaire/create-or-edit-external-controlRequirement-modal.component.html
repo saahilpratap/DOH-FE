@@ -1,0 +1,276 @@
+<div bsModal
+     #createOrEditExternalQuestionModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditExternalQuestionModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="crActive"
+                  #controlRequirementForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{
+                            l("Add External Assessment Questions to Control Requirement")
+                        }}
+
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="container">
+                        <h5>General Information</h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6" *ngIf="controlRequirement.id">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_Code"  class="required">
+                                        {{
+                                            l("Control Requirement ID")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="ControlRequirement_Code"
+                                           class="form-control"
+                                           [(ngModel)]="controlRequirement.code"
+                                           name="Code"
+                                           disabled />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_OriginalId">{{ l("CR Original ID") }}</label>
+                                    <input type="text"
+                                           id="ControlRequirement_OriginalId"
+                                           class="form-control"
+                                           [(ngModel)]="
+                                            controlRequirement.originalId
+                                        "
+                                           name="OriginalId" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group m-form__group">
+                                    <label for="ControlStandardName">
+                                        {{
+                                        l("Control Standard")
+                                        }}
+                                    </label>
+                                    <div>
+                                        <select class="form-control"
+                                                name="ControlStandardName"
+                                                id="ControlRequirement_ControlStandard"
+                                                [(ngModel)]="
+                                                controlRequirement.controlStandardId
+                                            ">
+                                            <option *ngFor="
+                                                    let cs of controlStandards
+                                                "
+                                                    [ngValue]="
+                                                    cs.controlStandard.id
+                                                ">
+                                                {{ cs.controlStandard.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_ControlType">{{ l("ControlType") }}</label>
+                                    <select class="form-control"
+                                            name="ControlType"
+                                            id="ControlRequirement_ControlType"
+                                            [(ngModel)]="
+                                            controlRequirement.controlType
+                                        ">
+                                        <option value="0">
+                                            {{
+                                            l("Basic")
+                                            }}
+                                        </option>
+                                        <option value="1">
+                                            {{
+                                            l("Transitional")
+                                            }}
+                                        </option>
+                                        <option value="2">
+                                            {{
+                                            l("Advanced")
+                                            }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_ControlRequirement">{{ l("ControlRequirement") }}</label>
+                                    <textarea id="ControlRequirement_ControlRequirement"
+                                              rows="9"
+                                              placeholder="Type..."
+                                              class="form-control"
+                                              [(ngModel)]="
+                                            controlRequirement.controlRequirement
+                                        "
+                                              name="ControlRequirement"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <h5>Questions</h5>
+                        <hr />
+                        <div class="container">
+                            <div class="row">
+                                <p-pickList [source]="allQuestions" [target]="attachedQuestions" sourceHeader="Available" targetHeader="Selected"
+                                            [responsive]="true" filterBy="questionDescription" [showSourceControls]="false" [showTargetControls]="false">
+                                    <ng-template let-que pTemplate="item">
+                                        <div class="ui-helper-clearfix">
+                                            <div>{{que.questionDescription}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-pickList>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!controlRequirementForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+
+
+            <form *ngIf="etActive"
+                  #controlRequirementForm="ngForm"
+                  novalidate
+                  (ngSubmit)="saveCrQuestions()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Attach External Assessment Questions to Control Requirement
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="container">
+                        <h5>General Information</h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div>
+                                    <label class="required">Authoritative Document </label>
+                                    <select class="form-control" (change)="showControlRequirements(controlRequirement.authoritativeDocumentId)"
+                                            name="AuthorititaveId" required
+                                            id="authoritativeId"
+                                            [(ngModel)]="controlRequirement.authoritativeDocumentId">
+                                        <option *ngFor="let authoritativeDocumentLookUp of authoritativeDocumentsLookUp                                                "
+                                                [ngValue]="authoritativeDocumentLookUp.authoritativeDocument.id">
+                                            {{authoritativeDocumentLookUp.authoritativeDocument.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group m-form__group">
+                                    <label for="ControlRequirement">
+                                        {{
+                                        l("Control Requirements")
+                                        }}
+                                    </label>
+                                    <div>
+                                        <select class="form-control" (change)="showSelectedQuestionsByCR(controlRequirement.controlRequirementId)"
+                                                name="ControlRequirementName"
+                                                id="ControlRequirement" required
+                                                [(ngModel)]="controlRequirement.controlRequirementId">
+
+                                            <optgroup *ngFor="let cs of controlRequirements" label="{{ cs.domainName }}">
+                                                <option *ngFor="let c of cs.controlRequirementList" [ngValue]="c.id">{{c.controlStandardName}}-{{c.code}}-{{c.originalId}}</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="ControlRequirement_ControlRequirement">{{ l("Control Requirement") }}</label>
+                                    <textarea id="ControlRequirement_ControlRequirement"
+                                              rows="9"
+                                              placeholder="Type..."
+                                              class="form-control"
+                                              [(ngModel)]="description"
+                                              name="ControlRequirement" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <h5>Questions</h5>
+                        <hr />
+                        <p-pickList [source]="allQuestions" [target]="attachedQuestions" sourceHeader="Available" targetHeader="Selected"
+                                    [responsive]="true" filterBy="questionDescription" [showSourceControls]="false" [showTargetControls]="false"
+                                    (onMoveToSource)="deattachQuestions($event)" (onMoveToTarget)="attachQuestion($event)">
+                            <ng-template let-que pTemplate="item">
+                                <div class="ui-helper-clearfix">
+                                    <div>{{que.questionDescription}}</div>
+                                </div>
+                            </ng-template>
+                        </p-pickList>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!controlRequirementForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

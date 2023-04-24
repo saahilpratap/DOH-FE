@@ -1,0 +1,221 @@
+<div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Surviellance Audit')}}</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Decision ID')}}</label>
+                    <input type="text" disabled class="form-control" name="code" [(ngModel)]="auditDecision.code" placeholder="System Generated">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="auditDecision.entityGroupId!=null">
+                <div class="form-group">
+                    <label>{{l('Group Name')}}</label>
+                    <ng-select [items]="entityGroup" [searchable]="true" bindLabel="name" [disabled]="auditDecision.entityGroupId > 0"
+                               bindValue="id" placeholder="Group Name" (change)="onGroupChange(auditDecision.entityGroupId)"
+                               [(ngModel)]="auditDecision.entityGroupId"
+                               name="Group Name">
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Facility Name')}}</label>
+                    <input type="text" disabled class="form-control" name="facilityname" [(ngModel)]="entityPrimary.name" placeholder="Facility Name">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('License No')}}</label>
+                    <input type="text" disabled class="form-control" name="License No" [(ngModel)]="entityPrimary.licenseNumber" placeholder="License No">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Facility Type')}}</label>
+                    <input type="text" disabled class="form-control" name="Facility type" [(ngModel)]="entityPrimary.facilityType" placeholder="Facility Type">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label class="required">{{l('Issue Date')}}</label>
+                    <div id="incident_closeDatetime" class="kt-input-icon">
+                        <input id="incident_closeDatetime" required
+                               type="datetime"
+                               [disabled]="reauditPermission"
+                               #incident_closeDatetime
+                               name="closeDate" readonly
+                               class="form-control input-group date"
+                               bsDatepicker
+                               datePickerMomentModifier
+                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                               [(date)]="auditDecision.decisionDate"
+                               autocomplete="off" />
+                        <span class="position-absolute"
+                              style="top: 25%; right: 20px; font-size: 18px;">
+                            <span><i class="flaticon-calendar-1"></i></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label class="required">{{l('Expire Date')}}</label>
+                    <div id="expireDatetime" class="kt-input-icon">
+                        <input id="expireDatetime" required
+                               type="datetime"
+                               [disabled]="reauditPermission"
+                               #expireDatetime
+                               name="closeDate" readonly
+                               class="form-control input-group date"
+                               bsDatepicker
+                               datePickerMomentModifier
+                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                               [(date)]="auditDecision.expireDate"
+                               autocomplete="off" />
+                        <span class="position-absolute"
+                              style="top: 25%; right: 20px; font-size: 18px;">
+                            <span><i class="flaticon-calendar-1"></i></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Input Documents Checked - Evidences & Artifacts')}}</span>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Documents')}}</label>
+                    <div class="checkbox-list row">
+                        <label class="checkbox col-6" *ngFor="let item of selectedDocument;let i = index">
+                            <input [disabled]="reauditPermission" type="checkbox" name="Checkboxes{{i}}" [checked]="item.checked" (click)="setdocument($event,item)">
+                            <span></span><span class="kt-padding-l-5 lable-position">{{item.name}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Others applicable')}}</label>
+                    <input type="text" [disabled]="reauditPermission" class="form-control" name="otherApplicable" [(ngModel)]="auditDecision.otherApplicable" placeholder="Others Applicable">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="border-bottom kt-padding-t-5 kt-padding-b-5 kt-margin-b-10">
+            <span class="h6">{{l('Technical Committee - Decision')}}</span>
+        </div>
+        <span class="kt-margin-t-10 kt-margin-b-10">{{l('Audit documentation was reviewed and audit steps completed, considering all applicable above. A Decision is proposed  as')}}</span>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12 kt-padding-t-10">
+                <div class="form-group">
+
+                    <div class="checkbox-list row">
+                        <label class="checkbox col-12" *ngFor="let item of outputconclusion;let i = index">
+                            <input type="radio" [disabled]="reauditPermission" name="radiogroup" [checked]="idx === 0" [(ngModel)]="auditDecision.outPutConClusion" [value]="item.id" (change)="auditTypeSelect($event,item.id)">
+                            <span></span><span class="kt-padding-l-5 lable-position">{{item.name |Capitalize}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-12 kt-padding-t-10" *ngIf="selectedItem">
+                <div class="form-group">
+                    <label>{{l('Entity Name')}}</label>
+                    <p-multiSelect name="belookup"
+                    [disabled]="reauditPermission"
+                                   [options]="businessentity"
+                                   placeholder="Select Business Entities"
+                                   optionLabel="companyName"
+                                   [(ngModel)]="selectedBusinessEntity"
+                                   (onChange)="getbusinessentityChange()"
+                                   [style]="{'width': '100%'}"></p-multiSelect>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-12 kt-padding-t-10">
+                <div class="form-group">
+                    <label>{{l('Passing Grade Achieved')}}</label>
+                    <input type="text" disabled class="form-control" placeholder="System Generated">
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12 kt-padding-t-10" style="float:left;">
+
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 kt-padding-t-10" style="float:left;">
+                    <div class="form-group">
+                        <label>{{l('Before CAPA Score')}}</label>
+                        <input type="text" id="BeforeCAPAScore" name="BeforeCAPAScore" disabled class="form-control" [(ngModel)]="auditDecision.beforeCAPAScore">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 kt-padding-t-10" style="float:left;">
+                    <div class="form-group">
+                        <label>{{l('After CAPA Score')}}</label>
+                        <input type="text" id="AfterCAPAScore" name="AfterCAPAScore" disabled class="form-control" [(ngModel)]="auditDecision.afterCAPAScore">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Synthetic Judgement')}}</label>
+                    <textarea rows="3" [disabled]="reauditPermission" class="form-control" name="Judgement" [(ngModel)]="auditDecision.judgement" placeholder="Please enter judgement details...."></textarea>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                    <label>{{l('Decision')}}</label>
+                    <textarea rows="3" [disabled]="reauditPermission" class="form-control" name="decison" [(ngModel)]="auditDecision.decision" placeholder="Please enter Decision...."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>    
+        <div class="border-bottom">
+            {{l('Approval')}}
+        </div>
+        <div class="row kt-padding-t-10 kt-padding-b-20">
+            <div class="col-3 pt-4">
+                <div>Name : <span class="padding-left-5">{{approvalName}}</span></div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label>{{"Signature" | localize}} </label>
+                    <div *ngIf="abpUserId == approvalId" [style.pointer-events]="reauditPermission?'none':'auto'">
+                        <common-signature-pad [signatureShow]="true" (signatureUrl)="signatureUrl($event)" [imgUrl]="auditDecision.doHSign"></common-signature-pad>
+                    </div>
+                    <div *ngIf="abpUserId != approvalId" [style.pointer-events]="reauditPermission?'none':'auto'">
+                        <common-signature-pad [signatureShow]="false" (signatureUrl)="signatureUrl($event)" [imgUrl]="auditDecision.doHSign"></common-signature-pad>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 pt-4">
+                <div>Name : <span class="padding-left-5">{{authortiyName}}</span></div>
+            </div>
+            <div class="col-3">
+                <div class="form-group" >
+                    <label>{{"Signature" | localize}} </label>
+                    <div *ngIf="abpUserId == authortiyId" [style.pointer-events]="reauditPermission?'none':'auto'" >
+                        <common-signature-pad [signatureShow]="true" (signatureUrl)="signatureUrl($event)" [imgUrl]="auditDecision.auditVensign"></common-signature-pad>
+                    </div>
+                    <div *ngIf="abpUserId != authortiyId" [style.pointer-events]="reauditPermission?'none':'auto'" >
+                        <common-signature-pad [signatureShow]="false" (signatureUrl)="signatureUrl($event)" [imgUrl]="auditDecision.auditVensign"></common-signature-pad>
+                    </div>
+                </div>
+            </div>
+        </div>   
+</div>
+

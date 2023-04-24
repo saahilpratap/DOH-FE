@@ -1,0 +1,223 @@
+<div appBsModal #createOrEditModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #userForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="user.id">{{"EditUser" | localize}}: {{user.userName}}</span>
+                        <span *ngIf="!user.id">{{"CreateNewUser" | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <tabset>
+                        <tab heading="{{'UserInformations' | localize}}">
+                            <div class="row">
+                                <div class="col-sm-3 text-center mb-2 mt-2">
+                                    <img src="{{profilePicture}}" width="128" height="128" class="img-thumbnail img-rounded" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="form-group">
+                                        <label for="Name" class="required">{{"Name" | localize}}</label>
+                                        <input id="Name" #nameInput="ngModel" class="form-control" type="text" name="Name" [(ngModel)]="user.name" required maxlength="64">
+                                        <validation-messages [formCtrl]="nameInput"></validation-messages>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Surname" class="required">{{"Surname" | localize}} </label>
+                                        <input id="Surname" #surnameInput="ngModel" type="text" name="Surname" class="form-control" [(ngModel)]="user.surname" required maxlength="64">
+                                        <validation-messages [formCtrl]="surnameInput"></validation-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"> </div>
+                                <div class="col-9">
+                                    <div class="kt-radio-inline form-group" *ngIf="appSession.user.businessEntityId == 0 && isEdit==false">
+                                        <label class="kt-radio">
+                                            <input type="radio" id="isBusinessEntityUser" name="radiobtn" [(ngModel)]="isBusinessEntityUser" (change)="selectEntities('businesEntities')">Business Entities
+                                            <span></span>
+                                        </label>
+                                        <label class="kt-radio">
+                                            <input type="radio" id="isAuthorityUser" name="radiobtn" [(ngModel)]="isAuthorityUser" (change)="selectEntities('isAuthorityUser')"> Is Authority User
+                                            <span></span>
+                                        </label>
+                                        <label class="kt-radio">
+                                            <input type="radio" id="isExternalAuditUser" name="radiobtn" [(ngModel)]="isExternalAuditUser" (change)="selectEntities('isExternalAuditUser')"> Is External Audit User
+                                            <span></span>
+                                        </label>
+                                        <label class="kt-radio">
+                                            <input type="radio" id="isInsuranceEntityUser" name="radiobtn" [(ngModel)]="isInsuranceEntityUser" (change)="selectEntities('insuranceEntity')"> Insurance Entities
+                                            <span></span>
+                                        </label>
+                                        <label class="kt-radio">
+                                            <input type="radio" id="isReviwerUser" name="radiobtn" [(ngModel)]="isReviwerUser" (change)="selectEntities('isReviwerUser')"> Is Auditor Reviewer User
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label for="businessEntLookUp"> All Entities </label>   
+                                        <ng-select [items]="businessEntitiesLookUp" [searchable]="true" bindLabel="name" [disabled]="disabledEntitySelectiondropdown"  *ngIf="userTypeByType==0 || userTypeByType==3"
+                                                   bindValue="id" placeholder="Select Business Entity " (change)="SelectedMultipleEntity($event)"
+                                                   [(ngModel)]="selectedMultiple" class="kt-align-left" [multiple]="true"
+                                                   name="businessEntityId" id="businessEntityId" [clearOnBackspace]="false"
+                                                   groupBy="selectedAllGroup" [selectableGroup]="true"
+                                                   [selectableGroupAsModel]="false" [closeOnSelect]="false"
+                                                   (search)="onSearch($event)">
+                                            <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                                                <input id="item-{{index}}" type="checkbox" name="checkBox-{{index}}" [ngModel]="item$.selected" />
+                                                <span class="font-15 pl-1">Select All</span>
+                                            </ng-template>
+                                            <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index" class="p-3">
+                                                <input id="item-{{index}}" type="checkbox" name="name-{{index}}" [ngModel]="item$.selected" />
+                                                <span class="font-15 pl-1">{{item.name}}</span>
+                                            </ng-template>
+                                            <ng-template ng-multi-label-tmp let-items="items">                                               
+                                                <div class="ng-value" *ngIf="items.length >=0">
+                                                    <span class="ng-value-label">{{items.length - 0}} Selected...</span>
+                                                </div>
+                                            </ng-template>
+                                        </ng-select>
+                                    </div>                                  
+                                    <div *ngIf="!(userTypeByType==0 || userTypeByType==3)">
+                                        <p-multiSelect name="Facilitytype" [options]="allBusinessEntitiesList" placeholder="Select "
+                                                       [panelStyle]="{maxWidth:'12em'}" optionLabel="name" [(ngModel)]="multipleselected" [style]="{'width': '100%'}"></p-multiSelect>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="businessEntLookUp"> Primary Entity </label>
+                                        <ng-select [items]="multipleselected" [searchable]="true" bindLabel="name" [disabled]="disabledEntitySelectiondropdown"
+                                                   bindValue="id" placeholder="Select Business Entity " (change)="initializeBeLookUpFields(user.businessEntityId)"
+                                                   [(ngModel)]="user.businessEntityId" class="kt-align-left"
+                                                   name="primaryBusinessEntityId" id="primaryBusinessEntLookUp" [clearOnBackspace]="false">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="EmailAddress" class="required">{{"EmailAddress" | localize}} </label>
+                                <input id="EmailAddress" #emailAddressInput="ngModel" type="email" name="EmailAddress" class="form-control" [(ngModel)]="user.emailAddress" [disabled]="isEdit==true && userTypeByType!==0 && userTypeByType!==3" required maxlength="256" email />
+                                <validation-messages [formCtrl]="emailAddressInput"></validation-messages>
+                            </div>
+                            <div class="form-group">
+                                <label for="PhoneNumber">{{"PhoneNumber" | localize}}</label>
+                                <input id="PhoneNumber" type="text" name="PhoneNumber" class="form-control" [(ngModel)]="user.phoneNumber" maxlength="32">
+                            </div>
+                            <div class="form-group">
+                                <label for="UserName" class="required">{{"UserName" | localize}} </label>
+                                <input id="UserName" #userNameInput="ngModel" type="text" [disabled]="isEdit==true && userTypeByType!==0 && userTypeByType!==3" name="UserName"  class="form-control" [(ngModel)]="user.userName" required maxlength="256">
+                                <span class="help-block" *ngIf="!canChangeUserName">{{"CanNotChangeAdminUserName" | localize}}</span>
+                                <validation-messages [formCtrl]="userNameInput"></validation-messages>
+                            </div>
+                            <div class="kt-checkbox-list" *ngIf="!isdiable">
+                                <label for="EditUser_SetRandomPassword" class="kt-checkbox">
+                                    <input id="EditUser_SetRandomPassword" type="checkbox" [disabled]="isdiable" name="SetRandomPassword" [(ngModel)]="setRandomPassword">
+                                    {{"SetRandomPassword" | localize}}
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="form-group" *ngIf="!setRandomPassword">
+                                <div class="right">
+                                    <label for="Password">{{"Password" | localize}}</label>
+                                    <input id="Password" type="password" name="Password" #Password="ngModel" class="form-control" [(ngModel)]="user.password" [required]="!user.id && !setRandomPassword" maxlength="32"
+                                           [requireDigit]="passwordComplexitySetting.requireDigit" [requireLowercase]="passwordComplexitySetting.requireLowercase"
+                                           [requireUppercase]="passwordComplexitySetting.requireUppercase" [requireNonAlphanumeric]="passwordComplexitySetting.requireNonAlphanumeric" [requiredLength]="passwordComplexitySetting.requiredLength"
+                                           validateEqual="PasswordRepeat" reverse="true"
+                                           autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div [hidden]="setRandomPassword || userForm.form.valid || userForm.form.pristine">
+                                <ul class="help-block text-danger" *ngIf="userForm.controls['Password'] && userForm.controls['Password'].errors">
+                                    <li [hidden]="!userForm.controls['Password'].errors.requireDigit">{{"PasswordComplexity_RequireDigit_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['Password'].errors.requireLowercase">{{"PasswordComplexity_RequireLowercase_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['Password'].errors.requireUppercase">{{"PasswordComplexity_RequireUppercase_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['Password'].errors.requireNonAlphanumeric">{{"PasswordComplexity_RequireNonAlphanumeric_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['Password'].errors.requiredLength">{{"PasswordComplexity_RequiredLength_Hint" | localize:passwordComplexitySetting.requiredLength}}</li>
+                                </ul>
+                            </div>
+                            <div class="form-group" *ngIf="!setRandomPassword">
+                                <div class="right">
+                                    <label for="PasswordRepeat">{{"PasswordRepeat" | localize}}</label>
+                                    <input id="PasswordRepeat" type="password" name="PasswordRepeat" #PasswordRepeat="ngModel" class="form-control" [(ngModel)]="userPasswordRepeat" [required]="!user.id && !setRandomPassword" maxlength="32"
+                                           [requireDigit]="passwordComplexitySetting.requireDigit" [requireLowercase]="passwordComplexitySetting.requireLowercase"
+                                           [requireUppercase]="passwordComplexitySetting.requireUppercase" [requireNonAlphanumeric]="passwordComplexitySetting.requireNonAlphanumeric" [requiredLength]="passwordComplexitySetting.requiredLength"
+                                           validateEqual="Password" reverse="false"
+                                           autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div [hidden]="setRandomPassword || userForm.form.valid || userForm.form.pristine">
+                                <ul class="help-block text-danger" *ngIf="userForm.controls['PasswordRepeat'] && userForm.controls['PasswordRepeat'].errors">
+                                    <li [hidden]="!userForm.controls['PasswordRepeat'].errors.requireDigit">{{"PasswordComplexity_RequireDigit_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['PasswordRepeat'].errors.requireLowercase">{{"PasswordComplexity_RequireLowercase_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['PasswordRepeat'].errors.requireUppercase">{{"PasswordComplexity_RequireUppercase_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['PasswordRepeat'].errors.requireNonAlphanumeric">{{"PasswordComplexity_RequireNonAlphanumeric_Hint" | localize}}</li>
+                                    <li [hidden]="!userForm.controls['PasswordRepeat'].errors.requiredLength">{{"PasswordComplexity_RequiredLength_Hint" | localize:passwordComplexitySetting.requiredLength}}</li>
+                                    <li [hidden]="userForm.controls['PasswordRepeat'].valid">{{"PasswordsDontMatch" | localize}}</li>
+                                </ul>
+                            </div>
+                            <div class="kt-checkbox-list">
+                                <label for="EditUser_ShouldChangePasswordOnNextLogin" class="kt-checkbox" *ngIf="!isdiable">
+                                    <input id="EditUser_ShouldChangePasswordOnNextLogin" type="checkbox" name="ShouldChangePasswordOnNextLogin" [(ngModel)]="user.shouldChangePasswordOnNextLogin">
+                                    {{"ShouldChangePasswordOnNextLogin" | localize}}
+                                    <span></span>
+                                </label> <label for="EditUser_SendActivationEmail" class="kt-checkbox" *ngIf="!isdiable">
+                                    <input id="EditUser_SendActivationEmail" type="checkbox" [disabled]="isdiable" name="SendActivationEmail" [(ngModel)]="sendActivationEmail">
+                                    {{"SendActivationEmail" | localize}}
+                                    <span></span>
+                                </label> <label for="EditUser_IsActive" class="kt-checkbox" *ngIf="showActiveBtn">
+                                    <input id="EditUser_IsActive" type="checkbox" [disabled]="isdiable" name="IsActive" [(ngModel)]="user.isActive">
+                                    {{"Active" | localize}}
+                                    <span></span>
+                                </label> <label *ngIf="isTwoFactorEnabled && !isdiable" for="EditUser_IsTwoFactorEnabled" class="kt-checkbox">
+                                    <input id="EditUser_IsTwoFactorEnabled" type="checkbox" [disabled]="isdiable" name="IsTwoFactorEnabled" [(ngModel)]="user.isTwoFactorEnabled">
+                                    {{"IsTwoFactorEnabled" | localize}}
+                                    <span></span>
+                                </label> <label *ngIf="isLockoutEnabled && !isdiable" for="EditUser_IsLockoutEnabled" class="kt-checkbox">
+                                    <input id="EditUser_IsLockoutEnabled" type="checkbox" [disabled]="isdiable" name="IsLockoutEnabled" [(ngModel)]="user.isLockoutEnabled">
+                                    {{"IsLockoutEnabled" | localize}}
+                                    <span></span>
+                                </label>
+                            </div>
+                        </tab>
+                        <tab heading="{{'Roles' | localize}}"   *ngIf="('Pages.Administration.Users.RolesTab' | permission) && roleTabTrue">
+                            <ng-template tabHeading>
+                                <span class="kt-badge kt-badge--success kt-badge--inline">{{getAssignedRoleCount()}}</span>
+                            </ng-template>
+                            <div class="kt-checkbox-list">
+                                <label attr.for="EditUser_{{role.roleName}}" class="kt-checkbox" *ngFor="let role of roles;let index = index">
+                                    <input id="EditUser_{{role.roleName}}"
+                                           type="checkbox"
+                                           name="{{role.roleName}}"
+                                           [(ngModel)]="role.isAssigned"
+                                           [disabled]="role.inheritedFromOrganizationUnit"
+                                           [checked]="role.isAssigned"
+                                           (change)="changeSelection($event, index)" >
+                                    {{role.roleDisplayName}} <small *ngIf="role.inheritedFromOrganizationUnit">({{'RoleIsInheritedFromOrganizationUnit' | localize}})</small>
+                                    <span></span>
+                                </label>
+                                <!--<div class="form-check" *ngFor="let product of DisplayProductList; let index = index">
+                                    <label class="form-check-label text-break">
+                                        <input class="form-check-input" type="checkbox" [ngModel]="selectedIndex === index"
+                                               (change)="changeSelection($event, index)" />
+                                        {{ product.template_name }}
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>-->
+                            </div>
+                        </tab>
+                        <tab heading="{{'OrganizationUnits' | localize}}" *ngIf="shouldDisplayOrganizationUnits()">
+                            <organization-unit-tree [cascadeSelectEnabled]="false" #organizationUnitTree style="pointer-events:none"></organization-unit-tree>
+                        </tab>
+                    </tabset>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!userForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

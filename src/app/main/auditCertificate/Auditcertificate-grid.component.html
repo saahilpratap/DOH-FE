@@ -1,0 +1,202 @@
+<div [@routerTransition]>
+    <div [@routerTransition]>
+        <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+            <div class="kt-subheader kt-grid__item">
+                <div [class]="containerClass">
+                    <div class="kt-subheader__main">
+                        <h3 class="kt-subheader__title">
+                            <span>{{"Certificate" | localize}}</span>
+                        </h3>
+                        <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                        <span class="kt-subheader__desc">
+                            <span>{{"Certificate" | localize}}</span>
+                        </span>
+                    </div>
+                    <div class="kt-subheader__toolbar">
+                        <div class="kt-subheader__wrapper">
+                            <div class="btn-group" dropdown>
+                                <button dropdownToggle
+                                        type="button"
+                                        class="btn btn-outline-success dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <i class="far fa-file-excel"></i> {{"Import" |localize}}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                                     *dropdownMenu>
+                                    <a href="javascript:;"
+                                       class="no-padding">
+                                        <span class="fileinput-button">
+                                            <p-fileUpload customUpload="true"
+                                                          name="uploadCertificateExcel"
+                                                          #ExcelFileUpload
+                                                          maxFileSize="10000000"
+                                                          auto="auto"
+                                                          accept=".csv,.xls,.xlsx"
+                                                          (uploadHandler)="uploadCertificateExcel($event)"
+                                                          (onError)="onUploadExcelError()"
+                                                          chooseLabel="{{'ImportCertificate' | localize}}">
+                                            </p-fileUpload>
+                                        </span>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="dropdown-item-text text-muted pl-3">
+                                        <small [innerHTML]="l('ImportToExcelSampleFileDownloadInfo', '<a href=/assets/sampleFiles/ImportCertificate.xlsx>' + l('ClickHere') + '</a>')"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+                <div class="kt-portlet kt-portlet--mobile">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                <span>{{"Certificate" | localize}}</span>
+                            </h3>
+                            <h3 class="kt-portlet__head-title kt-padding-l-5">
+                                <button [ngClass]="{ 'no-drop' : !btnCopy }" [disabled]="!btnCopy" (click)="sendCertificate()" class="btn btn-primary btn-sm" type="submit">Send</button>
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-label">
+
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                                <div class="input-group">
+                                    <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                    <span class="input-group-btn margin-left--5">
+                                        <button (click)="getCertiifcate()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-t-10">
+                        <div class="row align-items-center">
+                            <div class="primeng-datatable-container col-12"
+                                 [busyIf]="primengTableHelper.isLoading">
+                                <div>
+                                    <p-table #dataTable
+                                             (onLazyLoad)="getCertiifcate($event)"
+                                             [value]="primengTableHelper.records"
+                                             rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                             [paginator]="false"
+                                             [lazy]="true"
+                                             [scrollable]="true"
+                                             ScrollWidth="100%"
+                                             frozenWidth="150px"
+                                             [responsive]="primengTableHelper.isResponsive"
+                                             [resizableColumns]="primengTableHelper.resizableColumns"
+                                             [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                                        <ng-template pTemplate="frozenheader">
+                                            <tr>
+                                                <th style="width: 30px !important">
+                                                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                                </th>
+                                                <th style="width: 150px" class="kt-align-center">
+                                                    {{'Action' |localize}}
+                                                </th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="frozenbody" let-record let-rowData>
+                                            <tr [pSelectableRow]="selectedRowData">
+                                                <td style="width: 30px !important">
+                                                    <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                                </td>
+                                                <td class="kt-align-center">
+                                                    <i class="far fa-eye icon-font-size-1 kt-font-success pr-4"
+                                                       (click)="viewCertificates(record.licenseNumber)"></i>
+                                                    <i class="fa fa-download kt-font-skype"
+                                                       (click)="downloadCertificates(record.fileName)"></i>
+                                                </td>                                                
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 100px">
+                                                    {{l('Certificate ID')}}
+                                                </th>
+                                                <th style="width: 200px">
+                                                    {{ l("Health Care Entity") }}
+                                                </th>
+                                                <th style="width: 200px">
+                                                    {{ l("LicenseNumber") }}
+                                                </th>
+                                                <th style="width: 200px">
+                                                    {{l('Issue Date')}}
+                                                </th>
+                                                <th style="width: 150px">
+                                                    {{l('Expire Date')}}
+                                                </th>
+                                                <th style="width: 150px">
+                                                    {{l('FIleName')}}
+                                                </th>
+                                                <th style="width: 150px">
+                                                    {{l('Status')}}
+                                                </th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                            <tr [pSelectableRow]="selectedRowData">
+                                                <td style="width:100px">
+                                                    {{record.code}}
+                                                </td>
+                                                <td style="width:200px">
+                                                    <div class="table-text-wrap" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                        -webkit-box-orient: vertical; -webkit-line-clamp: 1;" [pTooltip]="record.entityName" tooltipPosition="top">
+                                                        {{record.entityName}}
+                                                    </div>
+                                                </td>
+                                                <td style="width:200px">
+                                                    <div class="table-text-wrap" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                        -webkit-box-orient: vertical; -webkit-line-clamp: 1;" [pTooltip]="record.licenseNumber" tooltipPosition="top">
+                                                        {{record.licenseNumber}}
+                                                    </div>
+                                                </td>
+                                                <td style="width:200px">
+                                                    {{ record.issueDate}}
+                                                </td>
+                                                <td style="width:150px">
+                                                    {{ record.expireDate}}
+                                                </td>
+                                                <td style="width:150px;" >
+                                                    <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                        -webkit-box-orient: vertical; -webkit-line-clamp: 1;" [pTooltip]="record.fileName" tooltipPosition="top">
+                                                        {{ record.fileName}}
+                                                    </div>                                                   
+                                                </td>
+                                                <td style="width:150px">
+                                                    {{ record.status}}
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                                <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                    {{l('NoData')}}
+                                </div>
+                                <div class="primeng-paging-container">
+                                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                                 #paginator
+                                                 (onPageChange)="getCertiifcate($event)"
+                                                 [totalRecords]="primengTableHelper.totalRecordsCount"
+                                                 [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                                    </p-paginator>
+                                    <span class="total-records-count">
+                                        {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<auditcertificateHistoryModals #auditcertificateHistory></auditcertificateHistoryModals>

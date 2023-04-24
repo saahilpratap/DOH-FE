@@ -1,0 +1,63 @@
+
+<form #feedbackEntityResponseForm="ngForm" novalidate>
+    <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLongTitle">{{"Feedback Entity Response" |localize}}</h6>
+        <button type="button" class="close" (click)="close()" data-dismiss="modal" aria-label="Close">
+        </button>
+    </div>
+    <div [perfectScrollbar]="{wheelPropagation: false}"
+         [ngStyle]="{'max-height': '70vh', 'position': 'relative'}">
+
+        <table class="table kt-margin-t-5 table-bordered1">
+            <thead>
+                <tr class="tr-bg-color" style="background-color: ghostwhite;">
+                    <th class="kt-font-bold width-60 kt-font-md kt-font-bolder" style="width:70%">
+                        {{l('Question')}}
+                    </th>
+                    <th class="kt-font-bold width-20 kt-font-md kt-font-bolder" style="width:30%">
+                        {{l('Response')}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let fe of feedbacklist;let i = index">
+                    <td class="kt-font-md kt-font-bold">
+                        <div class="form-group kt-margin-b-0">
+                            <label class="kt-font-bold">
+                                {{i + 1}}. {{fe.question}} <span *ngIf="fe.mandatory" style="color:red;"> *</span>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="fe.answerType == 1">
+                            <select class="form-control kt-padding-r-10" name="response{{i}}" [(ngModel)]="fe.response">
+                                <option value="undefined" disabled selected> Select </option>
+                                <option *ngFor="let item of fe.responseOptions" [value]="item.questionOption">
+                                    {{item.questionOption}}
+                                </option>
+                            </select>
+                        </div>
+                        <div *ngIf="fe.answerType == 2" class="form-check-inline w-100">
+                            <label class="radio radio-solid kt-padding-r-10 kt-margin-5">
+                                <input type="radio" name="radio{{i}}" [checked]="fe.response == '1'" value="1" (click)="fe.response='1'" />
+                                <span class="radio-lable-position"> {{l('Yes')}}</span>
+                            </label>
+                            <label class="radio radio-solid kt-padding-r-10 kt-margin-5">
+                                <input type="radio" name="radio{{i}}" value="2" [checked]="fe.response == '2'" (click)="fe.response='2'" />
+                                <span class="radio-lable-position"> {{l('No')}}</span>
+                            </label>
+                        </div>
+                        <div *ngIf="fe.answerType == 3">
+                            <textarea id="response{{i}}" name="response{{i}}" rows="2" class="w-100 form-control" [(ngModel)]="fe.response"></textarea>
+                            <!--<input type="text" class="form-control" name="response{{i}}" [(ngModel)]="fe.response" />-->
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <button type="button" [disabled]="this.flag" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" data-dismiss="modal" (click)="updateResponse()">{{"Submit" | localize}}</button>
+      
+    </div>
+</form>

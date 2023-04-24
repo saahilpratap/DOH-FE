@@ -1,0 +1,232 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Questionnaire Group" | localize}}</span>
+                </h3>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <form #quesGrpForm="ngForm" novalidate autocomplete="off">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{"Questionnaire Group" | localize}}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <button type="button"
+                                (click)="back()"
+                                class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm">
+                            <i class="fa fa-arrow-left"></i>Back
+                        </button>
+                        <button type="submit" (click)="Save()" [ngClass]=" hideButtons ==1 ? 'pointerNone' : 'pointerAuto'" [disabled]="!quesGrpForm.form.valid" [buttonBusy]="saving"
+                                    [busyText]="l('SavingWithThreeDot')"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            <i class="fa fa-save"></i>
+                            <span>{{ l("Save") }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10" [ngClass]=" hideButtons ==1 ? 'pointerNone' : 'pointerAuto'">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label>{{l("Group ID")}}</label>
+                                <input type="text" class="form-control" name="code" [(ngModel)]="questionGroup.code" placeholder="System Generated" disabled />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{l("Questionnaire Title")}}</label>
+                                <input type="text" class="form-control" name="title" [(ngModel)]="questionGroup.questionnaireTitle" [required]="true" placeholder="Questionnaire Title" required />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{l("Questionnaire Type")}}</label>
+                                <p-dropdown placeholder="Questionnaire Type" name="questionnaireType" [options]="qTypes" [required]="true" [(ngModel)]="questionGroup.questionnaireType" [style]="{'width': '100%'}"></p-dropdown>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{l("Group Type")}}</label>
+
+                                <p-dropdown placeholder="Group Type" name="groupType" [options]="gTypes" [required]="true" [(ngModel)]="questionGroup.groupType" [style]="{'width': '100%'}" (onChange)="showExternalData()" [disabled]="questionGroup.id > 0"></p-dropdown>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{"Questionnaire Stage" | localize}}</label>
+                                <ng-select [items]="questionnaireStage" [searchable]="true" bindLabel="name" [required]="true"
+                                           bindValue="id" placeholder="Select Questionnaire Stage"
+                                           [(ngModel)]="questionGroup.questionnaireStageId"
+                                           name="meetingStage">
+                                </ng-select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label class="required">{{l("Related AD")}}</label>
+                                <ng-select [items]="authoritativeDocumentsLookUp" [searchable]="true" bindLabel="title" [required]="true"
+                                           bindValue="id" placeholder="Select Related AD"
+                                           [(ngModel)]="adId"
+                                           name="authoritativeDocument">
+                                </ng-select>
+                                <!--<p-dropdown placeholder="Related AD" name="authoritativeDocument" [searchable]="true" [options]="authoritativeDocumentsLookUp" [(ngModel)]="authoritativeDocument" required="true" optionLabel="title" [style]="{'width': '100%'}"></p-dropdown>-->
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="domainTitle.length==0">
+                            <div class="form-group">
+                                <label>{{l("Domain Title")}}</label>
+                                <input type="text" class="form-control" name="Domain" [(ngModel)]="questionGroup.domainTitle" placeholder="Domain Title" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="domainTitle.length >0">
+                            <div class="form-group">
+                                <label>{{l("Domain Title")}}</label>
+                                <ng-select [items]="domainTitle" [searchable]="true" bindLabel="domainTitle"
+                                           bindValue="domainTitle" placeholder="Select"
+                                           [(ngModel)]="questionGroup.domainTitle"
+                                           name="dom">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="subDominTitle.length==0">
+                            <div class="form-group">
+                                <label>{{l("SubDomain Title")}}</label>
+                                <input type="text" class="form-control" name="SubDomain" [(ngModel)]="questionGroup.subDomainTitle" placeholder="SubDomain Title" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="subDominTitle.length >0">
+                            <div class="form-group">
+                                <label>{{l("SubDomain Title")}}</label>
+                                <ng-select [items]="subDominTitle" [searchable]="true" bindLabel="subDomainTitle"
+                                           bindValue="subDomainTitle" placeholder="Select"
+                                           [(ngModel)]="questionGroup.subDomainTitle"
+                                           name="sub">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="sectionTitle.length==0">
+                            <div class="form-group">
+                                <label>{{l("Section Title")}}</label>
+                                <input type="text" class="form-control" name="Section" [(ngModel)]="questionGroup.sectionTitle" placeholder="Section Title" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="sectionTitle.length >0">
+                            <div class="form-group">
+                                <label>{{l("Section Title")}}</label>
+                                <ng-select [items]="sectionTitle" [searchable]="true" bindLabel="sectionTitle"
+                                           bindValue="sectionTitle" placeholder="Select Questionnaire Stage"
+                                           [(ngModel)]="questionGroup.sectionTitle"
+                                           name="sec">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label>{{l("Description")}}</label>
+                                <textarea type="text" class="form-control" name="description" placeholder="Description" [(ngModel)]="questionGroup.description" style="height:100px !important"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label>{{l("Is Active")}}</label>
+                                <br />
+                                <p-inputSwitch [(ngModel)]="questionGroup.isActive" name="isActive"></p-inputSwitch>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="questionGroup.groupType == 2">
+                            <div class="form-group">
+                                <label>{{l("Audit Vendor")}}</label>
+                                <p-dropdown placeholder="Audit Vendor" name="auditCompany" [options]="auditCompaniesLookUp" [(ngModel)]="auditCompany" optionLabel="name" [style]="{'width': '100%'}"></p-dropdown>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                        <div class="border-bottom kt-padding-b-5 kt-margin-b-5">
+                            <h5>Categorization</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Control Type")}}</label>
+                                    <p-dropdown placeholder="Control Type" name="controlType" [options]="controlTypes" [(ngModel)]="questionGroup.controlType" [style]="{'width': '100%'}"></p-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Category")}}</label>
+                                    <p-dropdown placeholder="Category" name="category" [options]="categories" [(ngModel)]="category" optionLabel="name" [style]="{'width': '100%'}"></p-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Facility Type")}}</label>
+                                    <p-dropdown placeholder="Facility Type" name="facilityType" [options]="facilityTypesLookUp" [(ngModel)]="facilityType" optionLabel="name" [style]="{'width': '100%'}"></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div *ngIf="questionGroup.groupType == 1">
+                        <div class="border-bottom kt-padding-b-5 kt-margin-b-5">
+                            <h5>Select Related Questions</h5>
+                        </div>
+                        <div class="row" id="relatedQuestions">
+                            <div class="col-1"></div>
+                            <div class="col-10">
+                                <p-pickList [source]="allInternalQuestions" [target]="attachedInternalQuestions" class="w-100" sourceHeader="All Questions" targetHeader="Selected Questions"
+                                            [responsive]="true" filterBy="description" [showSourceControls]="false" [showTargetControls]="false">
+                                    <ng-template let-qu pTemplate="item">
+                                        <div class="ui-helper-clearfix">
+                                            <div class="kt-padding-t-5 kt-padding-b-5">{{qu.questionDescription}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-pickList>
+
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="questionGroup.groupType == 2">
+                        <div class="border-bottom kt-padding-b-5 kt-margin-b-5">
+                            <h5>Select Related Section</h5>
+                        </div>
+                        <div class="row" id="relatedQuestions">
+                            <div class="col-1"></div>
+                            <div class="col-10">
+                                <p-pickList [source]="allSection" [target]="attachedallSection" sourceHeader="Available" targetHeader="Selected"
+                                            [responsive]="true" filterBy="name" [showSourceControls]="false" [showTargetControls]="false">
+                                    <ng-template let-que pTemplate="item">
+                                        <div class="ui-helper-clearfix">
+                                            <div>{{que.name}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-pickList>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

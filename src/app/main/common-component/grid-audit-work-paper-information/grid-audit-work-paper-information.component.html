@@ -1,0 +1,85 @@
+
+    <div class="primeng-datatable-container col-12">
+        <p-table #dataTable
+                 (onLazyLoad)="getData($event)"
+                 [value]="primengTableHelper.records"
+                 [paginator]="false"
+                 [lazy]="true"
+                 [scrollable]="true"
+                 ScrollWidth="100%"
+                 [responsive]="primengTableHelper.isResponsive"
+                 [resizableColumns]="primengTableHelper.resizableColumns ">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 80px">
+                        {{ l("Title") }}
+                    </th>
+                    <th style="width: 100px">
+                        {{ l("Date") }}
+                    </th>
+                    <th style="width: 100px">
+                        {{ l("Link") }}
+                    </th>
+                    <th style="width: 100px">
+                        {{ l("Meeting Agenda") }}
+                    </th>
+                    <th style="width: 100px">
+                        {{ l("CheckList") }}
+                    </th>
+                    <th style="width: 100px" pSortableColumn="startDate">
+                        {{ l("General Attchment") }}
+                    </th>
+                    <th style="width: 80px">
+                        {{ l("Actions") }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body"
+                         let-record="$implicit">
+                <tr>
+                    <td style="width:80px">
+                        {{ record.title }}
+                    </td>
+
+                    <td style="width:100px">
+                        {{ record.datePrepared | momentFormat: "L" }}
+                    </td>
+                    <td style="width:100px">
+                        {{ record.link }}
+                    </td>
+                    <td style="width:100px">
+                        <a href="javascript:;" (click)="downloadAttachment(record.meetingAgendaCode)"> {{ record.meetingAgenda }} </a>
+                    </td>
+                    <td style="width:100px">
+                        <a href="javascript:;" (click)="downloadAttachment(record.mgmtChecklistCode)"> {{ record.mgmtChecklist}} </a>
+                    </td>
+                    <td style="width:100px">
+                        <a href="javascript:;" (click)="downloadAttachment(record.generalAttachmentCode)"> {{ record.generalAttachment}} </a>
+                    </td>
+                    <td style="width: 80px">
+                        <a (click)="workloadmodal.editWorkLoadPaper(record)">
+                            <i class="far fa-eye icon-font-size-1 kt-font-info kt-padding-r-20"></i>
+                        </a>
+                        <a (click)="deleteWorkPaper(record.id)">
+                            <i class="fas fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="primeng-no-data"
+             *ngIf="primengTableHelper.totalRecordsCount == 0 ">
+            {{ l("NoData") }}
+        </div>
+        <!--<div class="primeng-paging-container">
+        <p-paginator [rows]="workPaperTableHelper.defaultRecordsCountPerPage"
+                     #paginator
+                     (onPageChange)="getScheduledAssessments($event)"
+                     [totalRecords]="workPaperTableHelper.totalRecordsCount"
+                     [rowsPerPageOptions]="workPaperTableHelper.predefinedRecordsCountPerPage ">
+        </p-paginator>
+        <span class="total-records-count">
+            {{l("TotalRecordsCount", workPaperTableHelper.totalRecordsCount ) }}
+        </span>
+    </div>-->
+    </div>

@@ -1,0 +1,41 @@
+<div class="topMenuContainer">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto col-md-6">
+            <h3 class="m-subheader__title  ">
+                <a routerLink="/app/main/businessEntities/businessEntities">
+                    <button class="btn btn-default btn-icon-sm btn-sm btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </a>
+            </h3>
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 "
+                    style="width: 130px;margin-bottom:5px;">
+                Incidents
+            </button>
+
+            <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 "
+                    style="width: 130px;margin-bottom:5px;">
+                Business Risks
+            </button>
+
+            <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 "
+                    style="width: 130px;margin-bottom:5px;">
+                Exceptions
+            </button>
+
+            <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 "
+                    style="width: 130px;margin-bottom:5px;">
+                Contacts
+            </button>
+
+            <button class="btn btn-brand btn-icon-sm btn-sm border-radius-5 "
+                    style="width: 130px;margin-bottom:5px;"
+                    (click)="showBEProfile()">
+                Details
+            </button>           
+        </div>
+    </div>
+</div>
+<createOrEditBusinessEntityModal #createOrEditBusinessModal></createOrEditBusinessEntityModal>

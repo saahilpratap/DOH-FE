@@ -1,0 +1,61 @@
+<div bsModal
+     #createOrEditModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createOrEditModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #entityfeedbackForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        
+                        <span >
+                            {{l("Create Entity Feedback")}}
+                        </span>
+                    </h4>
+                    <button type="button"
+                            class="close"
+                            (click)="Close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="required">Feedback Name </label>
+                        <ng-select [items]="feedbacklist" [searchable]="true" bindLabel="title" [required]="true"
+                                   [(ngModel)]="feedbacklist.feedbackDetailId"
+                                   bindValue="id" placeholder="Select FeedBackName" (change)="changFeedbackEntity(feedbacklist.feedbackDetailId)"
+                                   class="kt-align-left"
+                                   name="ExternalAudit">
+                        </ng-select>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="Close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [disabled]="!entityfeedbackForm.form.valid"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Send") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

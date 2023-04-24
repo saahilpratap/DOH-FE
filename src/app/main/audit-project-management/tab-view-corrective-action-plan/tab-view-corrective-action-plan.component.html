@@ -1,0 +1,47 @@
+<div class="kt-portlet border-radius-5 kt-padding-10 shadow-none">
+    <div class="row kt-padding-t-10">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+                <label>{{l('License No')}}</label>
+                <input type="text" class="form-control" [(ngModel)]="entityPrimary.licenseNumber" disabled>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+                <label>{{l('Entity Name')}}</label>
+                <ng-select [items]="dropdownBusinessEntity" [searchable]="true" bindLabel="name"
+                           bindValue="id" (change)="onEntityChange()"
+                           [(ngModel)]="selectedPrimaryEntityId"
+                           name="Group Name">
+                </ng-select>
+            </div>
+        </div>
+
+    </div>
+    <div class="kt-portlet__body kt-padding-0">
+        <table class="table kt-margin-t-10 table-bordered">
+            <thead>
+                <tr class="tr-bg-color">
+                    <th class="kt-font-sm kt-align-center width-12 kt-font-light">{{l('Level of noncompliance (partial/ full)')}}</th>
+                    <th class="kt-font-sm kt-align-center width-12 kt-font-light">{{l('Noncompliance description')}}</th>
+                    <th class="kt-font-sm kt-align-center width-12 kt-font-light">{{l('Root Cause')}}</th>
+                    <th class="kt-font-sm kt-align-center width-12 kt-font-light">{{l('Corrective Action')}}</th>
+                    <th class="kt-font-sm kt-align-center width-12 kt-font-light">{{l('Responsible Person')}}</th>
+                    <th class="kt-font-sm kt-align-center width-12 kt-font-light">{{l('Target Date')}}</th>
+                    <th class="kt-font-sm kt-align-center width-20 kt-font-light">{{l('Accepted from CB /notes')}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ca of correctiveActionPlanList;let i = index">
+                    <td>{{ca.levelOfCompliance}}</td>
+                    <td>{{ca.description}}</td>
+                    <td>{{ca.rootCause}}</td>
+                    <td>{{ca.correctiveAction}}</td>
+                    <td>{{ca.responsiblePerson}}</td>
+                    <td>{{ca.targateDate}}</td>
+                    <td>{{ca.note}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<form #auditCertificationForm="ngForm" novalidate> 
+    <div class="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside">
+        <div class="kt-grid__item">
+            <div (click)="goToHome()" class="kt-align-right">
+                <img class="logo-img1" [src]="appRootUrl() +'assets/common/images/AAMENDoHlogin.svg'" alt="logo" height="130" width="320" />
+            </div>
+        </div>
+     
+        <div >
+            <div class="row p-4 border-bottom">
+                <div class="col-4"></div>
+                <div class="col-12"><h3>ADHICS COMPLIANCE CERTIFICATION</h3></div>
+                
+            </div>
+            <div class="row p-4 border-bottom  ">
+                <div class="col-6">Entity Name</div>
+                <div class="col-6">
+                    <span class="label label-lg label-light-success label-inline">{{entityCertificate.entityName}}</span>
+                </div>
+            </div>
+            <div class="row p-4 border-bottom">
+                <div class="col-6">License Number</div>
+                <div class="col-6">
+                    <span class="label label-lg label-light-success label-inline">{{entityCertificate.licenseNumber}}</span>
+                </div>
+            </div>
+            <div class="row p-4 border-bottom">
+                <div class="col-6">Issue Date</div>
+                <div class="col-6">
+                    <span class="label label-lg label-light-success label-inline">{{ entityCertificate.issueDate}}</span>
+                </div>
+            </div>
+            <div class="row p-4 border-bottom">
+                <div class="col-6">Expiry Date</div>
+                <div class="col-6">
+                    <span class="label label-lg label-light-success label-inline">{{ entityCertificate.expireDate}}</span>
+                </div>
+            </div>
+            <div class="row p-4 border-bottom">
+                <div class="col-6">Status</div>
+                <div class="col-6">                  
+                    <span class="label label-lg label-light-success label-inline">{{entityCertificate.status}}</span>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+        
+</form>

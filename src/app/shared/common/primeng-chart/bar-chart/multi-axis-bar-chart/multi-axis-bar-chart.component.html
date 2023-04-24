@@ -1,0 +1,51 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Monitoring Status (Overall)" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <!--<ng-select [items]="dataGroup" [searchable]="true" bindLabel="name"
+                       bindValue="id" placeholder="Select" name="name" [(ngModel)]="selectedValue" (change)="getData()">
+            </ng-select>-->
+        </div>
+    </div>
+    <div class="kt-portlet__body" [perfectScrollbar]="{wheelPropagation: false}"
+         [ngStyle]="{'max-width': '99%', 'position': 'relative'}">
+        <div>
+            <!--<div id="monitoringStatus"></div>-->
+            <div>
+                <div class="pl-2 pb-1" style="margin-left:2em">
+                    <div id="pChart" [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'max-width': '99%', 'position': 'relative'}" class="pb-4">
+                        <div class="border-bottom border-left" style="height:350px; padding-top: 0em;" [ngStyle]="{ width: widthDynamic + 'em'}">
+                            <div class="" *ngFor="let item of data; let i = index" style="height: 100%; width: 9em; float: left; margin-right: 5px;padding-left: 1em;">
+                                <div class="bg-light-info absolute" style="height: 100%; width: 3em; float: left; margin-right: 4px;">
+                                    <div class="" [ngStyle]="{height: 100 - ( (item.tValue* 100) / 2500 )+ '% '}"></div>
+                                    <div class="t-bar" [ngStyle]="{height: (item.tValue * 100) / 2500 + '% '}" [pTooltip]="item.tValue" tooltipPosition="top"></div>
+                                    <div class="text-horizontal kt-padding-5" align="center">{{item.tValue}}</div>
+                                </div>
+                                <div class="bg-light-info absolute" style="height: 100%; width: 3em; float: left; margin-right: 4px;">
+                                    <div class="" [ngStyle]="{height: 100 - (( item.mValue* 100) / 2500 ) + '% '}"></div>
+                                    <div class="m-bar " [ngStyle]="{height: (item.mValue * 100) / 2500 + '% '}"
+                                         [pTooltip]="item.name" tooltipPosition="bottom"></div>
+                                    <div class="text-horizontal kt-padding-5" align="center">{{item.mValue}}</div>
+                                </div>
+                                <div class="truncate kt-align-center" [pTooltip]="item.name" tooltipPosition="bottom">{{item.name}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-align-center w-100 font-weight-bolder">{{"Group" | localize}}</div>
+                <div class="kt-align-center">
+                    <span class="timeline-badge form-check-inline">
+                        <span class="mr-1" style="height: 13px; width: 13px; left: 0px; top: 0px; border-width: 0px; background-color: #55BCC9"></span>
+                        <span class="mr-5">{{'Total' | localize}}</span>
+                    </span>
+                    <span class="timeline-badge form-check-inline">
+                        <span class="mr-1" style="height: 13px; width: 13px; left: 0px; top: 0px; border-width: 0px; background-color: #B43E8F"></span>
+                        <span class="mr-5">{{'Monitored' | localize}}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

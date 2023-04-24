@@ -1,0 +1,1004 @@
+<p-overlayPanel #rv [style]="{'width': '300px'}" [dismissable]="true" [appendTo]="'body'">
+    <ng-template pTemplate>
+        <div style="min-height:100px">
+            <div *ngFor="let user of beUsers" class="kt-padding-5">
+                <span class="form-check-inline">
+                    <input type="radio" name="radiogroup" (change)="setPrimaryReviewerId(user.id)" [checked]="businessEntity.primaryReviewerId==user.id">
+                    <span class="kt-padding-l-5 kt-font-bold">{{ user.name }}</span>
+                </span>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel #av [style]="{'width': '300px'}" [dismissable]="true" [appendTo]="'body'">
+    <ng-template pTemplate>
+        <div style="min-height:100px">
+            <div *ngFor="let user of beUsers" class="kt-padding-5">
+                <span class="form-check-inline">
+                    <input type="radio" name="radiogroup" (change)="setPrimaryApproverId(user.id)" [checked]="businessEntity.primaryApproverId==user.id">
+                    <span class="kt-padding-l-5 kt-font-bold">{{ user.name }}</span>
+                </span>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{ l("Entities") }}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span *ngIf="businessEntity.id" class="kt-subheader__desc">{{l("Edit Entity")}}</span>
+                <span *ngIf="!businessEntity.id" class="kt-subheader__desc">{{l("Create new Entity")}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="kt-container kt-container--fluid kt-grid__item kt-grid__item--fluid">
+        <div class="body-container">
+
+            <form *ngIf="active" #businessEntityForm="ngForm"
+                  novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="kt-portlet kt-portlet--mobile">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                Entity Information
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm"
+                                    (click)="close()">
+                                <i class="fa fa-arrow-left"></i>Back
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                    [disabled]="
+                                                !businessEntityForm.form.valid
+                                            "
+                                    [buttonBusy]="saving"
+                                    [busyText]="l('SavingWithThreeDot')">
+                                <i class="fa fa-save"></i>
+                                <span>{{ l("Save") }}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-paddinf-t-10">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_EntityId">{{ l("Entity ID") }} </label>
+                                    <input type="text"
+                                           id="BusinessEntity_EntityId"
+                                           placeholder="System Generated"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.entityId"
+                                           name="entityId"
+                                           disabled />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_Name" class="required">{{ l("Company Name") }} </label>
+                                    <input type="text" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_Name"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.name"
+                                           name="Name"
+                                           required />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="businessEntity_Type" class="required">
+                                        {{l("Type")}}
+                                    </label>
+                                    <select class="form-control"
+                                            name="beType"
+                                            id="businessEntity_Type"
+                                            [(ngModel)]="businessEntity.entityType" (change)="businessentityChange(businessEntity.entityType)"
+                                            [disabled]="businessEntity.id">
+                                        <option value="0">
+                                            {{l("Healthcare Entity")}}
+                                        </option>
+                                        <option value="2">
+                                            {{l("Insurance Facilities")}}
+                                        </option>
+                                        <option value="1">
+                                            {{l("External Auditor")}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_IsCompanyLicensed" class="required">{{ l("Is Company Licensed") }} </label>
+                                    <input type="checkbox" [disabled]="businessEntity.id"
+                                           id="BusinessEntity_IsCompanyLicensed"
+                                           [(ngModel)]="businessEntity.isLicensed"
+                                           name="isCompanyLicensed"
+                                           class="form-control checkboxInput" />
+                                </div>
+                            </div>
+                            
+                            <div class="col-4 form-row" *ngIf="businessEntity.id > 0">
+                                <div style="padding-top:24px !important" class="col-12 text-color" *ngIf="showAuditstatusButton">
+                                    <p-inputSwitch style="margin: 10px !important;" name="isPreAssessmentQuestionaire" [(ngModel)]="businessEntity.isPreAssessmentQuestionaire" [disabled]="businessEntity.id && (!editEntityInfoPermission)"></p-inputSwitch>
+                                    <span>{{'Pre-assessment Questionnaire required' | localize}} </span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_LegalName" class="required">{{ l("Company Legal Name") }} </label>
+                                    <input type="text" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_LegalName"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.legalName"
+                                           name="legalName"
+                                           required />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_LicenseNumber" class="required">{{ l("License Number") }} </label>
+                                    <input type="text" [disabled]="businessEntity.id"
+                                           id="BusinessEntity_LicenseNumber"
+                                           [(ngModel)]="businessEntity.licenseNumber"
+                                           name="LicenseNumber"
+                                           class="form-control"
+                                           required />
+                                </div>
+                            </div>
+                           
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label class="required" for="BusinessEntity_numberOfYearsInBusiness">
+                                        {{l("Number Of Years In Business")}}
+                                    </label>
+                                    <input type="number" required [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_numberOfYearsInBusiness"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.numberOfYearsInBusiness"
+                                           name="numberOfYearsInBusiness" min="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_companyAddress">{{ l("Company Address") }} </label>
+                                    <input type="text" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_companyAddress"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.address"
+                                           name="CompanyAddress"
+                                           />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div>
+                                    <label class="required">Country</label>
+                                    <select class="form-control"
+                                            name="CountryId" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                            [(ngModel)]="businessEntity.countryId" required>
+                                        <option [ngValue]="undefined" selected disabled>Select Country</option>
+                                        <option *ngFor="let countryLookUp of countriesLookUp"
+                                                [ngValue]="countryLookUp.country.id">
+                                            {{ countryLookUp.country.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_cityOrDistrict">{{ l("District") }} </label>
+                                    <select class="form-control" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                            name="districtId" [(ngModel)]="businessEntity.districtId">
+                                        <option [ngValue]="dpList.id" *ngFor="let dpList of districtsDynamicParameter">
+                                            {{dpList.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_cityOrDistrict" class="required">{{ l("City") }} </label>
+                                    <input type="text" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_cityOrDistrict"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.cityOrDistrict"
+                                           name="CityOrDistrict"
+                                           required />
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_cityOrDistrict">{{ l("Postal Code") }} </label>
+                                    <input type="text" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_postalCode"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.postalCode"
+                                           name="PostalCode" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_IsSuspended">{{ l("Suspended") }} </label>
+                                    <input type="checkbox" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_IsSuspended"
+                                           [(ngModel)]="businessEntity.isSuspended"
+                                           name="isSuspended"
+                                           class="form-control checkboxInput" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="isActiveAdmin">{{ l("Is Active") }} </label>
+                                    <input type="checkbox" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="isActiveAdmin"
+                                           [(ngModel)]="businessEntity.isActive"
+                                           name="isActive"
+                                           class="form-control checkboxInput" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="BusinessEntity_IsGovernmentOwned">{{ l("Is Government Owned") }} </label>
+                                    <input type="checkbox" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_IsGovernmentOwned"
+                                           [(ngModel)]="businessEntity.isGovernmentOwned"
+                                           name="isGovernmentOwned"
+                                           class="form-control checkboxInput" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <div *ngIf="businessEntity.entityType=='0' || businessEntity.entityType=='2'">
+                                    <label class="required">Facility Type </label>
+
+                                    <div class="form-group">
+                                        <ng-select [items]="facilityTypesLookUp" [searchable]="true" bindLabel="name" [required]="true"
+                                                   bindValue="id" placeholder="Select Facility Type" (change)="checkFacilitySize()"
+                                                   [(ngModel)]="businessEntity.facilityTypeId" class="kt-align-left"
+                                                   name="FacilityTypes" [disabled]="businessEntity.id && (!editEntityInfoPermission)">
+                                        </ng-select>
+                                    </div>
+                                    <!--<select class="form-control"
+                        name="FacilityTypes" required
+                        [(ngModel)]="businessEntity.facilityTypeId" >
+                    <option [ngValue]="undefined" disabled selected>Select Facility Type</option>
+                    <option *ngFor="let facilityTypeLookup of facilityTypesLookUp"
+                            [ngValue]="facilityTypeLookup.facilityType.id ">
+                        {{ facilityTypeLookup.facilityType.name}}
+                    </option>
+                </select>-->
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div *ngIf="businessEntity.entityType=='0' || businessEntity.entityType=='2'">
+                                    <label for="businessEntLookUp" class="required">Facility Sub Type</label>
+                                    <div class="form-group">
+                                        <ng-select [items]="facilitySubType" [searchable]="true" bindLabel="facilitySubTypeName" [required]="true"
+                                                   bindValue="id" placeholder="Select Facility Sub Type"
+                                                   [(ngModel)]="businessEntity.facilitySubTypeId" class="kt-align-left"
+                                                   name="Sub-FacilityTypes" [disabled]="businessEntity.id && (!editEntityInfoPermission)">
+                                        </ng-select>
+                                    </div>
+
+                                    <!--<select class="form-control"
+                        name="Sub-FacilityTypes" required
+                        [(ngModel)]="businessEntity.facilitySubTypeId">
+                    <option [ngValue]="undefined" disabled selected>Select Facility Sub Type</option>
+                    <option *ngFor="let facilityTypeLookup of facilitySubType"
+                            [ngValue]="facilityTypeLookup.id ">
+                        {{facilityTypeLookup.facilitySubTypeName}}
+                    </option>
+                </select>-->
+
+                                </div>
+                            </div>
+                            <div class="col-4" *ngIf="showFsTypeSize">
+                                <div class="form-group kt-margin-b-10">
+                                    <label for="fsts">Facilty Type Size </label>
+                                    <input type="number" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="fsts"
+                                           class="form-control"
+                                           [(ngModel)]="businessEntity.facilityTypeSize" (change)="setControlType()"
+                                           name="fsts" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group" *ngIf="businessEntity.entityType=='0'">
+                                    <label for="ControlRequirement_ControlType" class="required">{{ l("Control Type") }}</label>
+                                    <select class="form-control" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                            name="ControlType"
+                                            required
+                                            id="ControlRequirement_ControlType" [ngValue]="businessEntity.complianceType"
+                                            [(ngModel)]="businessEntity.complianceType">
+                                        <option value="undefined" selected disabled>{{l("Select Control Type")}}</option>
+                                        <option value="0">{{l("Basic")}}</option>
+                                        <option value="1"> {{l("Transitional")}}</option>
+                                        <option value="2">{{l("Advanced")}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" *ngIf="businessEntity.entityType=='2'">
+                                    <label for="ControlRequirement_ControlType">{{ l("Control Type") }}</label>
+                                    <select class="form-control" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                            required
+                                            name="ControlTypes"
+                                            id="ControlRequirement_ControlTypes" [ngValue]="businessEntity.complianceType"
+                                            [(ngModel)]="businessEntity.complianceType">
+                                        <option value="undefined" selected disabled>{{l("Select Control Type")}}</option>
+                                        <option value="0">{{l("Basic")}}</option>
+                                        <option value="1"> {{l("Transitional")}}</option>
+                                        <option value="2">{{l("Advanced")}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="isBusinessEntityTypeSelected()">
+                            <div class="col-4">
+                                <div class="form-group" *ngIf="businessEntity.entityType !='1'">
+                                    <label for="BusinessEntity_isAuditableEntity">{{ l("Is Auditable Entity") }} </label>
+                                    <input type="checkbox" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_isAuditableEntity"
+                                           [(ngModel)]="businessEntity.isAuditable"
+                                           name="BusinessEntity_isAuditableEntity"
+                                           class="form-control checkboxInput" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group" *ngIf="businessEntity.entityType !='1'">
+                                    <label for="BusinessEntity_parentReportingEnabled">{{ l("Parent Reporting ") }} </label>
+                                    <input type="checkbox" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                           id="BusinessEntity_parentReportingEnabled"
+                                           [(ngModel)]="businessEntity.parentReportingEnabled"
+                                           name="BusinessEntity_parentReportingEnabled"
+                                           class="form-control checkboxInput" />
+                                </div>
+                            </div>
+                            <div class="col-4" *ngIf="businessEntity.entityType !='1'">
+                                <div>
+                                    <label>Parent Company </label>
+                                    <select [required]="businessEntity.parentReportingEnabled"
+                                            name="parentCompany" disabled
+                                            [(ngModel)]="businessEntity.parentOrganizationId"
+                                            class="form-control" *ngIf="businessEntity.entityType !='1'">
+                                        <option [ngValue]="undefined" selected disabled>Select Parent Company</option>
+                                        <option *ngFor="let businessEntityLookUp of businessEntitiesLookUp"
+                                                [ngValue]="businessEntityLookUp.businessEntity.organizationUnitId">
+                                            {{businessEntityLookUp.businessEntity.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="h5 border-bottom">
+                                BusinessEntity Logo
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 co-sm-12">
+                                    <div class="form-group">
+                                        <label>{{"Project Logo" | localize}}</label>
+                                        <div class="col-2">
+                                            <div class="form-group">
+                                                <div class="form-group m-form__group" (click)="fileimageUpload()">
+                                                    <div class="input-group m-input-group imgBorder">
+                                                        <img [src]="logo" id="projectlogo" class="ImageOnDialog imgUpload" height="100" width="150" onError="this.src='../../../../../assets/common/images/upload.svg';" alt="..." />
+                                                        <input hidden type="file" id="fileimageUpload" name="fileimageUpload" accept="{{accept}}">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="h5 border-bottom">
+                                Digital Threat Monitoring
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_WebsiteUrl">{{ l("Entity Website") }} </label>
+                                        <textarea type="text" class="form-control" placeholder="Entity Website" name="websiteUrl"
+                                                  data-toggle="tooltip" data-placement="top" title=" Public facing websites of the entity and other entities under your organization umbrella" [(ngModel)]="businessEntity.websiteUrl" style="height:100px !important"></textarea>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_Suppliers">{{ l("Suppliers") }} </label>
+                                        <textarea type="text" class="form-control" placeholder="Suppliers" name="BusinessEntity_Suppliers"
+                                                  data-toggle="tooltip" data-placement="top" title="Any unique technology used in your organization which in connected to network/internet and is prone to cyber attack."
+                                                  [(ngModel)]="businessEntity.suppliers" style="height:100px !important"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_publicIPAddress">{{ l("Entity Public IP") }} </label>
+                                        <textarea type="text" class="form-control" placeholder="Entity Public IP" name="BusinessEntity_publicIPAddress"
+                                                  data-toggle="tooltip" data-placement="top" title="Public IP address of the website mentioned."
+                                                  [(ngModel)]="businessEntity.publicIPAddress" style="height:100px !important"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_VIP">{{ l("VIP Users") }} </label>
+                                        <textarea type="text" class="form-control" placeholder="VIP Users" name="BusinessEntity_VIP"
+                                                  data-toggle="tooltip" data-placement="top" title="Email ids/Names/Social media handles of the top executives of your entity."
+                                                  [(ngModel)]="businessEntity.vipUsers" style="height:100px !important"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_MobileApp">{{ l("Mobile APP Name") }} </label>
+                                        <textarea type="text" class="form-control" placeholder="Mobile APP Name" name="websitBusinessEntity_MobileAppeUrl"
+                                                  data-toggle="tooltip" data-placement="top" title="Any Mobile App owner by your entity."
+                                                  [(ngModel)]="businessEntity.mobileAppName" style="height:100px !important"></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_WebsiteUrl">{{ l("Scanner Connectivity") }} </label>
+
+                                        <input type="checkbox" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                               id="isActiveAdminsds"
+                                               [(ngModel)]="businessEntity.scannerConnectivity"
+                                               name="scannerConnectivitys"
+                                               class="form-control checkboxInput" />
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="BusinessEntity_Suppliers">{{ l("Connectivity") }} </label>
+                                        <!--<ng-select [items]="connectivityDynamicParameter" [searchable]="true" bindLabel="dpList.name"
+               [disabled]="businessEntity.id && (!editEntityInfoPermission"
+               bindValue="dpList.id" placeholder="Select Connectivity "
+               [(ngModel)]="businessEntity.connectivityId"
+               name="connectivityId">
+    </ng-select>-->
+
+                                        <ng-select [items]="connectivityDynamicParameter" [searchable]="true" bindLabel="name" 
+                                                   bindValue="id" placeholder="Select Facility Type"
+                                                   [(ngModel)]="businessEntity.connectivityId" class="kt-align-left"
+                                                   name="connectivityId" [disabled]="businessEntity.id && (!editEntityInfoPermission)">
+                                        </ng-select>
+                                        <!--<select class="form-control" [disabled]="businessEntity.id && (!editEntityInfoPermission)"
+                                                name="connectivityId" [(ngModel)]="businessEntity.connectivityId">
+                                            <option value="undefined" selected disabled>{{l("Select Connectivity")}}</option>
+                                            <option [ngValue]="dpList.id" *ngFor="let dpList of connectivityDynamicParameter">
+                                                {{dpList.name}}
+                                            </option>
+                                        </select>-->
+                                    </div>
+                                </div>                              
+                             
+                            </div>
+                        </div>
+                            <div>
+                                <div class="h5 border-bottom">
+                                    {{"Primary & Backup Contact Information" | localize}}
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Primary Contact Name">{{l('Primary Contact Name')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.primaryContactName" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="primaryContactName" placeholder="Primary Contact Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Designation">{{l('Designation')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.designation" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="designation" placeholder="Designation" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Contact Number">{{l('Contact Number')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.contactNumber" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="contactNumber" placeholder="Contact Number" (keypress)="numberOnly($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Official email">{{l('Official Email')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.officialEmail" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="officialEmail" placeholder="Official Email" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row kt-margin-t-10">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Backup Contact Name">{{l('Backup Contact Name')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupContactName" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="backupContactName" placeholder="Backup Contact Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Designation">{{l('Designation')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupDesignation" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="backupDesignation" placeholder="Designation" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Contact Number">{{l('Contact Number')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupContactNumber" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="backupContactNumber" placeholder="Contact Number" (keypress)="numberOnly($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Official email">{{l('Official Email')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupOfficialEmail" [disabled]="businessEntity.id && (!editBackUpInfoPermission)"
+                                                   name="backupOfficialEmail" placeholder="Official Email" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="isAdminorAuditorFlag">
+                                <div class="h5 border-bottom">
+                                    Entity Contact Information
+                                </div>
+                                <div class="row" *ngIf="(businessEntity.entityType==0) || (businessEntity.entityType==2)">
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="owner_EN">Owner Name </label>
+                                            <input type="text" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="owner_EN"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.owner_EN"
+                                                   name="owner_EN" />
+                                        </div>
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="director_Incharge_EN">Director Incharge </label>
+                                            <input type="text" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="director_Incharge_EN"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.director_Incharge_EN"
+                                                   name="director_Incharge_EN" />
+                                        </div>
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="pro_EN">PRO Name </label>
+                                            <input type="text" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="pro_EN"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.pro_EN"
+                                                   name="pro_EN" />
+                                        </div>
+
+
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <div class="kt-checkbox-list">
+                                                <label for="sameForAdmin" class="kt-checkbox">
+                                                    <input id="sameForAdmin" type="checkbox" class="form-control" name="sameForAdmin" (change)="setAdminDetail()" [(ngModel)]="sameForAdmin" [disabled]="businessEntity.id && (!editContactInfoPermission)">
+                                                    Use Pro Details for Admin
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="owner_Email">Owner - Email </label>
+                                            <input type="email" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="owner_Email"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.owner_Email"
+                                                   name="owner_Email" #owner_EmailInput="ngModel" />
+                                            <validation-messages [formCtrl]="owner_EmailInput"></validation-messages>
+                                        </div>
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="director_Incharge_Email">Director Incharge - Email  </label>
+                                            <input type="email" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="director_Incharge_Email"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.director_Incharge_Email"
+                                                   name="director_Incharge_Email" #director_Incharge_EmailInput="ngModel" />
+                                            <validation-messages [formCtrl]="director_Incharge_EmailInput"></validation-messages>
+                                        </div>
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="pro_Email">PRO - Email </label>
+                                            <input type="email" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="pro_Email"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.pro_Email"
+                                                   name="pro_Email" #pro_EmailInput="ngModel" />
+                                            <validation-messages [formCtrl]="pro_EmailInput"></validation-messages>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="owner_Mobile">Owner Mobile </label>
+                                            <input type="text" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="owner_Mobile"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.owner_Mobile"
+                                                   name="owner_Mobile" (keypress)="numberOnly($event)" />
+                                        </div>
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="director_Incharge_Mobile">Director Incharge Mobile </label>
+                                            <input type="text" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="director_Incharge_Mobile"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.director_Incharge_Mobile"
+                                                   name="director_Incharge_Mobile" (keypress)="numberOnly($event)" />
+                                        </div>
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="pro_Mobile">PRO Mobile </label>
+                                            <input type="text" [disabled]="businessEntity.id && (!editContactInfoPermission)"
+                                                   id="pro_Mobile"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.pro_Mobile"
+                                                   name="pro_Mobile" (keypress)="numberOnly($event)" />
+                                        </div>
+                                       
+
+                                    </div>
+
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="facility_EN"> Facility Email </label>
+
+                                            <input id="facility_EN" #emailAddressInputs="ngModel" type="email" name="facility_EN" class="form-control" [(ngModel)]="businessEntity.facility_Email"  [disabled]="businessEntity.id && (!editContactInfoPermission)"  maxlength="256" email />
+                                            <validation-messages [formCtrl]="emailAddressInputs"></validation-messages>
+
+
+                                        </div>
+                                    </div>
+                                  
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="BusinessEntity_AdminName" class="required">{{ l("Admin Name") }} </label>
+                                                <input type="text"
+                                                       id="BusinessEntity_AdminName" [disabled]="businessEntity.id"
+                                                       class="form-control"
+                                                       [(ngModel)]="businessEntity.adminName"
+                                                       name="adminName"
+                                                       required />
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="BusinessEntity_AdminSurname" class="required">{{ l("Admin Surname") }} </label>
+                                                <input type="text"
+                                                       id="BusinessEntity_AdminSurname" [disabled]="businessEntity.id"
+                                                       class="form-control"
+                                                       [(ngModel)]="businessEntity.adminSurname"
+                                                       name="adminSurname"
+                                                       required />
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="BusinessEntity_AdminPosition">
+                                                    {{ l("Admin Position") }}
+                                                </label>
+                                                <input type="text"
+                                                       id="BusinessEntity_AdminPosition" [disabled]="businessEntity.id"
+                                                       class="form-control"
+                                                       [(ngModel)]="businessEntity.adminPosition"
+                                                       name="adminPosition" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="BusinessEntity_Email" class="required">{{ l("Admin Email") }} </label>
+
+                                                <input id="BusinessEntity_Email" #emailAddressInput="ngModel" type="email" name="adminEmail" class="form-control" [(ngModel)]="businessEntity.adminEmail" [disabled]="businessEntity.id" required maxlength="256" email />
+                                                <validation-messages [formCtrl]="emailAddressInput"></validation-messages>
+                                                <!--<input type="text"
+                id="BusinessEntity_Email" [disabled]="businessEntity.id"
+                class="form-control"
+                [(ngModel)]="businessEntity.adminEmail"
+                name="adminEmail"
+                required />-->
+                                            </div>
+
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="BusinessEntity_AdminMobile">
+                                                    {{ l("Admin Mobile") }}
+                                                </label>
+                                                <input type="text"
+                                                       id="BusinessEntity_AdminMobile" [disabled]="businessEntity.id"
+                                                       class="form-control"
+                                                       [(ngModel)]="businessEntity.adminMobile"
+                                                       name="adminMobile" />
+                                            </div>
+                                        </div>
+                                        <!--<div class="col-4">
+            <div class="form-group">
+                <div class="form-group kt-margin-b-10">
+                    <div class="kt-checkbox-list" style="padding-top: 25px !important">
+                        <label for="isActiveAdmin" class="kt-checkbox">
+                            <input id="isActiveAdmin" type="checkbox" class="form-control" name="isActive" [(ngModel)]="businessEntity.isActive">
+                            IsActive
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+                                    </div>
+                                </div>
+                            <div class="h5 border-bottom">
+                                Personnel Details
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="cISO_EN">CISO or CCISO </label>
+                                        <input type="text" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="cISO_EN"
+                                               class="form-control"
+                                               [(ngModel)]="businessEntity.cisO_EN"
+                                               name="cISO_EN" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="cISO_Email">CISO or CCISO - Email </label>
+                                        <input type="email" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="cISO_Email"
+                                               class="form-control"
+                                               [(ngModel)]="businessEntity.cisO_Email"
+                                               name="cISO_Email" #cISO_EmailInput="ngModel" />
+                                        <validation-messages [formCtrl]="cISO_EmailInput"></validation-messages>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="cISO_Mobile">CISO Mobile </label>
+                                        <input type="text" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="cISO_Mobile"
+                                               class="form-control"
+                                               [(ngModel)]="businessEntity.cisO_Mobile"
+                                               name="cISO_Mobile" (keypress)="numberOnly($event)" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="EntityGroup_Name" class="required">
+                                            {{
+                                        l(" Total Number Personnel")
+                                            }}
+                                        </label>
+                                        <input type="text" placeholder="Total Number Personnel" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="EntityGroup_totalPersonnel"
+                                               class="form-control"
+                                               [(ngModel)]="businessEntity.totalPersonnel" (keypress)="numberOnly($event)"
+                                               name="totalPersonnel" required />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="EntityGroup_Code" class="required">
+                                            {{
+                                        l("Number of Employees/Workers")
+                                            }}
+                                        </label>
+                                        <input type="text" placeholder="Number of Employees/Workers" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="EntityGroup_numberEmpWork"
+                                               class="form-control"
+                                               name="numberEmpWork" (keypress)="numberOnly($event)"
+                                               [(ngModel)]="businessEntity.numberEmpWork" required />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="EntityGroup_Name" class="required">
+                                            {{
+                                        l(" Total Number of IT Security Staff")
+                                            }}
+                                        </label>
+
+                                        <input type="text" placeholder="Number of IT Security Staff" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="EntityGroup_itSecurityStaff"
+                                               class="form-control"
+                                               name="itSecurityStaff" (keypress)="numberOnly($event)"
+                                               [(ngModel)]="businessEntity.itSecurityStaff" required />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="EntityGroup_Name" class="required">
+                                            {{
+                                        l("Number of Contractor Personnel")
+                                            }}
+                                        </label>
+
+                                        <input type="text" placeholder="Contractor Personnel" [disabled]="businessEntity.id && (!editEntityPersonalDetailsPermission)"
+                                               id="EntityGroup_contractPersonnel"
+                                               class="form-control"
+                                               name="contractPersonnel" (keypress)="numberOnly($event)"
+                                               [(ngModel)]="businessEntity.contractPersonnel" required />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="securityAdvisoryEmailList">Security Advisory Email List </label>
+                                        <input type="email" 
+                                               id="securityAdvisoryEmailList"
+                                               class="form-control"
+                                               [(ngModel)]="businessEntity.securityAdvisoryEmailList"
+                                               name="securityAdvisoryEmailList" #securityAdvisoryEmailListInput="ngModel" />
+                                        <validation-messages [formCtrl]="securityAdvisoryEmailListInput"></validation-messages>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="businessEntity.id">
+                                <h5>WorkFlow Fields</h5>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="Authoritys">
+                                            {{
+                                    l("Work Flow Name *")
+                                            }}
+                                        </label>
+                                        <select class="form-control"
+                                                name="workflow" disabled
+                                                [(ngModel)]="businessEntity.workFlowNameId" required>
+                                            <option value="" disabled selected>Select your option</option>
+                                            <option *ngFor="let workflows of workflow"
+                                                    [ngValue]="workflows.id" class="form-row">
+                                                {{ workflows.pageName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="Authoritys">
+                                            {{
+                                    l("Authorative Document *")
+                                            }}
+                                        </label>
+                                        <select class="form-control" [disabled]="businessEntity.id && (!editWorkFlowPermission)"
+                                                name="AuthorativeDocument"
+                                                [(ngModel)]="businessEntity.authoritativeDocumentId" required>
+                                            <option value="" disabled selected>Select your option</option>
+                                            <option *ngFor="let user of authoritavuieDocuments"
+                                                    [ngValue]="user.id" class="form-row">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="reviewers">
+                                            {{ l(" Reviewers")}}
+                                        </label>
+                                        <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5 btn-label-info" (click)="rv.toggle($event)"
+                                                style="border-radius: 7px;" for="setPrimaryKey" [disabled]="businessEntity.id && (!editWorkFlowPermission)">
+                                            {{ l(" Set Primary Key")}}
+                                        </button>
+                                        <select multiple
+                                                class="form-control" [disabled]="businessEntity.id && (!editWorkFlowPermission)"
+                                                name="reviewers"
+                                                [(ngModel)]="businessEntity.reviewerIds">
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id" class="form-row">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="approvers">
+                                            {{l(" Approvers")}}
+                                        </label>
+                                        <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5 btn-success" (click)="av.toggle($event)"
+                                                style="border-radius: 7px;" for="setPrimaryKey" [disabled]="businessEntity.id && (!editWorkFlowPermission)">
+                                            {{ l(" Set Primary Key")}}
+                                        </button>
+                                        <select multiple
+                                                class="form-control" [disabled]="businessEntity.id && (!editWorkFlowPermission)"
+                                                name="approvers"
+                                                [(ngModel)]="businessEntity.approverIds">
+                                            <option *ngFor="let user of beUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="Notifiers">
+                                            {{
+                                        l(" Notifiers")
+                                            }}
+                                        </label>
+                                        <select multiple
+                                                class="form-control" [disabled]="businessEntity.id && (!editWorkFlowPermission)"
+                                                name="Notifiers"
+                                                [(ngModel)]="businessEntity.notifierIds">
+                                            <option *ngFor="let user of notifiersEntitiesLookup"
+                                                    [ngValue]="user.contact.id">
+                                                {{ user.contact.email }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4" *ngIf="businessEntity.entityType=='1'">
+                                        <label for="Authoritys">
+                                            {{
+                                    l("Technical Committee")
+                                            }}
+                                        </label>
+                                        <select multiple
+                                                class="form-control" [disabled]="businessEntity.id && (!editWorkFlowPermission)"
+                                                name="Authoritys"
+                                                [(ngModel)]="businessEntity.authorityIds">
+                                            <option *ngFor="let user of authorityUsers"
+                                                    [ngValue]="user.id">
+                                                {{ user.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,170 @@
+<div bsModal #gridViewModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridViewModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form *ngIf="active" #gridViewForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{'Audit Log' | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row align-items-center">
+                        <div class="primeng-datatable-container col-12"
+                             [busyIf]="primengTableHelper.isLoading">
+                            <div>
+                                <p-table #dataTable
+                                         (onLazyLoad)="getFindinglog($event)"
+                                         [value]="primengTableHelper.records"
+                                         rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                         [rowsPerPageOptions]="[5,10,20]"
+                                         [lazy]="true"
+                                         [scrollable]="true"
+                                         ScrollWidth="100%"
+                                         [paginator]="true" [rows]="10"
+                                         [responsive]="primengTableHelper.isResponsive"
+                                         [resizableColumns]="primengTableHelper.resizableColumns"
+                                         [selection]="selectedRowData">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 80px">
+                                                {{l('FL ID')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('UserName')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Updated FieldName')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Finding Details')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update Finding Details')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Reference')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update Reference')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('CAP')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update CAP')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Actual Root Cause ')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update Actual Root Cause')}}
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                        <tr [pSelectableRow]="rowData">
+                                            <td style="width:80px">
+                                                {{ record.id }}
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.userName" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{record.userName}}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.updatedFieldName" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{ record.updatedFieldName }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_FindingDetails" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{ record.old_FindingDetails }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_FindingDetails" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{ record.new_FindingDetails }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_Reference" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{ record.old_Reference }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_Reference" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    <span *ngIf="record.new_Reference!='null'">{{ record.new_Reference }}</span>
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_CorrectiveActionResponse" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{ record.old_CorrectiveActionResponse }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_CorrectiveActionResponse" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    <span *ngIf="record.new_CorrectiveActionResponse!='null'">   {{ record.new_CorrectiveActionResponse }} </span>
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_ActualRootCause" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    {{ record.old_ActualRootCause }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_ActualRootCause" tooltipPosition="bottom" tooltipZIndex="fixed">
+                                                    <span *ngIf="record.new_ActualRootCause!='null'">{{ record.new_ActualRootCause }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <!--<div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                {{l('NoData')}}
+                            </div>-->
+                            <!--<div class="primeng-paging-container">
+                                <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                             #paginator
+                                             (onPageChange)="getFindinglog($event)"
+                                             [totalRecords]="primengTableHelper.totalRecordsCount"
+                                             [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                                </span>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{l("Cancel")}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,297 @@
+<div class="row w-100">
+    <div class="col-9 form-row kt-align-right" >
+        <select class="form-control kt-margin-r-5" style="width:30%"
+                name="CategoryType"
+                id="findingReport_Category"
+                [(ngModel)]="findingStageId"
+                (change)="stageChnage(findingStageId)">
+            <option [ngValue]="undefined" selected disabled>{{'Select Category' |localize}}</option>
+            <option [ngValue]="1">{{'Stage 1' |localize}}</option>
+            <option [ngValue]="2">{{'Stage 2' |localize}}</option>
+        </select>
+        <div [style.pointer-events]="reauditPermission?'none':'auto'">
+        <button type="button" class="btn btn-primary btn-sm kt-margin-r-5" [disabled]="primengTableHelper.totalRecordsCount==0" *ngIf="checkcapaValid && capaSubmit && ((appSession.user.type==1) || (appSession.user.type==4))" (click)="inviteSelectedItemes()">
+            <i class="fas fa- icon-font-size-1"></i>
+            {{l('Submit CAPA')}}
+        </button>
+        <button type="button" class="btn btn-primary btn-sm kt-margin-r-5" [disabled]="primengTableHelper.totalRecordsCount==0 || finalSubmitCAPA" *ngIf="checkfinialCappavalid && finialCapaSubmit &&((appSession.user.type==1) || (appSession.user.type==4))" (click)="finalCapaSubmitted()">
+            <i class="fa fa-spinner fa-spin" *ngIf="finalSubmitCAPA"></i>
+            {{l('Final Submit CAPA')}}
+        </button>
+        <button type="button" class="btn btn-warning btn-sm kt-margin-r-5" [disabled]="primengTableHelper.totalRecordsCount==0 || acceptCAPA" *ngIf="CAPAAccepted && appSession.user.type==2" (click)="CapaAcceptedItemes()">
+            <i class="fa fa-spinner fa-spin" *ngIf="acceptCAPA"></i>
+            {{l('Accept CAPA')}}
+        </button>
+        <button type="button" class="btn btn-info btn-sm kt-margin-r-5" [disabled]="primengTableHelper.totalRecordsCount==0 || approveCAPA" *ngIf="CAPAApproved && appSession.user.type==2 && closeCapaButton" (click)="CapaApprovedItemes()">
+            <i class="fa fa-spinner fa-spin" *ngIf="approveCAPA"></i>
+            {{l('Approve CAPA')}}
+        </button>
+   </div>
+
+    </div>
+    <div class="col-3 form-check-inline" align="right">
+        <div class="mr-1" align="right">
+            <div class="kt-header__topbar-item kt-header__topbar-item--user ng-star-inserted dropdown"
+                 dropdown
+                 placement="bottom-right">
+                <div class="kt-header__topbar-wrapper dropdown-toggle1"
+                     data-toggle="dropdown"
+                     aria-expanded="false"
+                     aria-haspopup="true"
+                     dropdownToggle>
+                    <div class="btn btn-brand btn-sm">
+                        <i class="fa fa-file-alt mr-1"></i>
+                        <span class="kt-header__topbar-username kt-hidden-mobile">
+                            {{l('Import')}}
+                        </span>
+                    </div>
+                </div>
+                <div *dropdownMenu
+                     class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-md"
+                     x-placement="bottom-right"
+                     style=" position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(1253px, 64px, 0px); ">
+                    <div class="p-3">
+                        <ng-container *ngIf="('Pages.AuditManagement.FindingReports.Import' | permission)">
+                            <button type="button" class="btn btn-info btn-sm kt-margin-r-10 kt-margin-b-5 ng-tns-c693-26 w-100" ng-reflect-ng-class="w-100" (click)="inputFile2.click()" [disabled]="reauditPermission && beforeJanPermission">Import Finding</button>
+                            <input name="file1"
+                                   id="file1"
+                                   (change)="uploadExcel($event)"
+                                   type="file"
+                                   #inputFile2
+                                   hidden />
+
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditManagement.FindingReports.Export' | permission)">
+                            <button type="button" class="btn btn-info btn-sm kt-margin-r-10 kt-margin-b-5 ng-tns-c693-26 w-100" ng-reflect-ng-class="w-100" (click)="exportToExcel()">Export Finding</button>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditManagement.FindingReports.ImportCaPA' | permission)">
+                            <button type="button" class="btn btn-info btn-sm kt-margin-r-10 kt-margin-b-5 ng-tns-c693-26 w-100 ml-0" ng-reflect-ng-class="w-100" (click)="inputFile.click()" [disabled]="reauditPermission && beforeJanPermission"> Import Capa</button>
+                            <input name="file"
+                                   id="file"
+                                   (change)="uploadCapaExcel($event)"
+                                   type="file"
+                                   #inputFile
+                                   hidden />
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditManagement.FindingReports.ExportCAPA'|permission)">
+                            <button type="button" class="btn btn-info btn-sm kt-margin-r-10 kt-margin-b-5 ng-tns-c693-26 w-100" ng-reflect-ng-class="w-100" (click)="exportToCapaExcel()"> Export Capa</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mr-1" align="right">
+            <div class="kt-header__topbar-item kt-header__topbar-item--user ng-star-inserted dropdown"
+                 dropdown
+                 placement="bottom-right">
+                <div class="kt-header__topbar-wrapper dropdown-toggle1"
+                     data-toggle="dropdown"
+                     aria-expanded="false"
+                     aria-haspopup="true"
+                     dropdownToggle>
+                    <div class="btn btn-brand btn-sm" *ngIf="showAuditstatusButton">
+                        <i class="fa fa-file-alt mr-1"></i>
+                        <span class="kt-header__topbar-username kt-hidden-mobile">
+                            {{l('Report')}}
+                        </span>
+                    </div>
+                </div>
+                <div *dropdownMenu
+                     class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-md"
+                     x-placement="bottom-right"
+                     style=" position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(1253px, 64px, 0px); ">
+                    <div class="p-4">
+                        <ng-container>
+                            <dev-express-report [btnName]="'Stage 1 & Stage 2 Finding Report'" *ngIf="showAuditstatusButton" [btnDisable]="primengTableHelper.totalRecordsCount" [reportName]="'Stage_1_and_Stage_2_Finding_Report'"
+                                                [ids]="auditProID" [class]="'W-100'"></dev-express-report>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.ReportTab.Stage1FindingReport' | permission)" class="w-100">
+                            <dev-express-report *ngIf="findingStageId == 1 && showAuditstatusButton" [btnDisable]="primengTableHelper.totalRecordsCount" [btnName]="'Generate Stage 1-Audit Finding'"
+                                                [reportName]="'Stage_1_Audit_Finding_Report'"
+                                                [ids]="auditProID" [class]="'W-100'"></dev-express-report>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.ReportTab.Stage2FindingReport' | permission)">
+                            <dev-express-report *ngIf="findingStageId == 2 && showAuditstatusButton" [btnDisable]="primengTableHelper.totalRecordsCount" [btnName]="'Generate Stage 2-Audit Finding'"
+                                                [reportName]="'Stage_2_Audit_Finding_Report'"
+                                                [ids]="auditProID" [class]="'W-100'"></dev-express-report>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.ReportTab.Stage1CAPAReport' | permission)">
+                            <dev-express-report *ngIf="findingStageId == 1 && showAuditstatusButton" [btnDisable]="primengTableHelper.totalRecordsCount" [btnName]="'Generate Stage 1 CAPA Report'"
+                                                [reportName]="'Stage_1_CAPA_Report'"
+                                                [ids]="auditProID" [class]="'W-100'"></dev-express-report>
+                        </ng-container>
+                        <ng-container *ngIf="('Pages.AuditProject.ReportTab.Stage2CAPAReport' | permission)">
+                            <dev-express-report *ngIf="findingStageId == 2 && showAuditstatusButton" [btnDisable]="primengTableHelper.totalRecordsCount" [btnName]="'Generate Stage 2 CAPA Report'"
+                                                [reportName]="'Stage_2_CAPA_Report'"
+                                                [ids]="auditProID" [class]="'W-100'"></dev-express-report>
+                        </ng-container>
+                        <ng-container>
+                            <dev-express-report [btnName]="'Capa 1 and Capa 2 Report'" [btnDisable]="primengTableHelper.totalRecordsCount" *ngIf="findingStageId == 2 && showAuditstatusButton" reportName]="'Capa_1_and_Capa_2_Report'"
+                                                [ids]="auditProID" [class]="'W-100'"></dev-express-report>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mr-1" align="right">
+            <button type="button" class="btn btn-brand btn-sm p-2" (click)="findingLog.show(auditProID)" *ngIf="('Pages.AuditManagement.FindingReports.AuditLog' | permission)">
+                <i class="fas fa- icon-font-size-1"></i>
+                {{l('Audit Log')}}
+            </button>
+        </div>
+    </div>
+   
+</div>
+
+<div class="row align-items-center kt-padding-t-10">
+    <div class="primeng-datatable-container col-12"
+         [busyIf]="primengTableHelper.isLoading">
+        <p-table #dataTable
+                 (onLazyLoad)="getFindingReports($event)"
+                 [value]="primengTableHelper.records"
+                 rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                 [paginator]="false"
+                 [lazy]="true"
+                 [scrollable]="true"
+                 ScrollWidth="100%"
+                 frozenWidth="150px"
+                 frozenheight="100px"
+                 [responsive]="primengTableHelper.isResponsive"
+                 [resizableColumns]="primengTableHelper.resizableColumns"
+                 [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+            <ng-template pTemplate="frozenheader">
+                <tr>
+                    <th style="width: 30px !important;">
+                        <p-tableHeaderCheckbox id="selectAllRows"></p-tableHeaderCheckbox>
+                    </th>
+                    <th style="width: 150px;" class="kt-align-center">
+                        {{'Action' |localize}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="frozenbody" let-record let-rowData>
+                <tr [pSelectableRow]="rowData">
+                    <td style="width: 30px !important;">
+                        <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                    </td>
+                    <td style="width: 150px;" [style.height]="frozeheight" class="kt-align-center">
+                        <a class="kt-padding-r-20" (click)="createOrEditfindingReportModal.show1(record.id,1,reauditPermission)"
+                           *ngIf="permission.isGranted('Pages.AuditManagement.FindingReports.View')">
+                            <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                        </a>
+                        <a class="kt-padding-r-20" (click)="createOrEditfindingReportModal.show1(record.id)" [style.pointer-events]="reauditPermission?'none':'auto'"
+                           *ngIf="permission.isGranted('Pages.AuditManagement.FindingReports.Edit')" >
+                            <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info" ></i>
+                        </a>
+                        <a class="kt-padding-r-20" *ngIf="permission.isGranted('Pages.AuditManagement.FindingReports.Delete')" [style.pointer-events]="reauditPermission ?'none':'auto'"
+                           (click)="deleteFinding(record.id)" >
+                            <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                        </a>
+
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 120px;" *ngIf="appSession.user.type==2 || appSession.user.type==0">
+                        {{ l("Finding Status") }}
+                    </th>
+                    <th style="width: 120px;"
+                        pSortableColumn="code">
+                        {{ l("Finding ID") }}
+                        <p-sortIcon field="findingReport.code"></p-sortIcon>
+                    </th>
+                    <th style="width: 120px;"
+                        pSortableColumn="title">
+                        {{ l("Title") }}
+                        <p-sortIcon field="findingReport.title"></p-sortIcon>
+                    </th>
+                    <th style="width: 120px;"
+                        pSortableColumn="title">
+                        {{ l("CAPA Update Required") }}
+                        <p-sortIcon field="findingReport.capaUpdateRequired"></p-sortIcon>
+                    </th>
+                    <th style="width: 120px;">
+                        {{ l("Status") }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                <tr [pSelectableRow]="rowData">
+                    <td style="width: 120px;" *ngIf="appSession.user.type==2 || appSession.user.type==0">
+                        <select class="form-control"
+                                name="CategoryType"
+                                id="findingReport_Category"
+                                [disabled]="record.status==8 || reauditPermission"
+                                [(ngModel)]="record.findingCAPAStatus"
+                                (change)="onChange($event.target.value,record.id)">
+                            <option value="null" selected disabled>{{'Select Status' |localize}}</option>
+                            <option value="5">{{'Open' |localize}}</option>
+                            <option value="7">{{'Close' |localize}}</option>
+                        </select>
+                    </td>
+                    <td style="width: 120px;">
+                        <span class="ui-column-title">
+                            {{ l("Code") }}
+                        </span>
+                        {{ record.code }}
+                    </td>
+                    <td style="width: 120px;">
+                        <div style=" overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                                        -webkit-box-orient: vertical;-webkit-line-clamp: 1;"
+                             [pTooltip]="record.title" tooltipPosition="bottom">
+                            {{ record.title }}
+                        </div>
+                    </td>
+                    <td style="width: 120px;">
+                        <span class="ui-column-title">
+                            {{ l("CAPA Update Required") }}
+                        </span>
+                        <span *ngIf="record.capaUpdateRequired == false">{{'No'}}</span>
+                        <span *ngIf="record.capaUpdateRequired == true">{{'Yes'}}</span>
+                    </td>
+                    <td style="width: 120px;">
+                        <span *ngIf="findingStatus[record.status]=='New'"
+                              class="table-text-wrap text-primary font-12 font-weight-bolder">{{'New' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='CapaSubmitted'"
+                              class="table-text-wrap text-primary font-12 font-weight-bolder">{{'CAPA Submitted' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='ClarificationRequested'"
+                              class="table-text-wrap text-warning font-12 font-weight-bolder">{{'Clarification Requested' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='CapaAccepted'" class="table-text-wrap text-info font-12 font-weight-bolder">
+                            CAPA Accepted
+                        </span>
+                        <span *ngIf="findingStatus[record.status]=='NeedsClarification'"
+                              class="table-text-wrap text-warning font-12 font-weight-bolder">{{'Needs Clarification' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='CapaOpen'"
+                              class="table-text-wrap text-info font-12 font-weight-bolder">{{'Open' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='WorkinProgress'"
+                              class="table-text-wrap text-info font-12 font-weight-bolder">{{'Work Inprogress' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='CapaClosed'"
+                              class="table-text-wrap text-warning font-12 font-weight-bolder">{{'Close' | localize}}</span>
+                        <span *ngIf="findingStatus[record.status]=='CapaApproved'"
+                              class="table-text-wrap text-success font-12 font-weight-bolder">{{'CAPA Approved' | localize}}</span>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="primeng-no-data"
+             *ngIf="primengTableHelper.totalRecordsCount == 0 ">
+            {{ l("NoData") }}
+        </div>
+        <div class="primeng-paging-container">
+            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                         #paginator
+                         (onPageChange)="getFindingReports($event)"
+                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+            </p-paginator>
+            <span class="total-records-count">
+                {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount)}}
+            </span>
+        </div>
+    </div>
+</div>
+<viewFindingReportModals #viewFindingReportModals></viewFindingReportModals>
+<createOrEditfindingReportModal #createOrEditfindingReportModal (modalSave)="getFindingReports($event)"></createOrEditfindingReportModal>
+<findingLogModal #findingLog></findingLogModal>
+<findingCAPAListModals #findingCAPAListModals></findingCAPAListModals>

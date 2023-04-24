@@ -1,0 +1,208 @@
+<div bsModal
+     #updateProfileModal="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="updateProfileModal"
+     aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form #updateEntityProfileModalForm="ngForm" (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>
+                            {{l("Update Entity Profile")}}
+                        </span>
+                    </h4>
+
+                    <button type="button"
+                            class="close"
+                            (click)="close()"
+                            aria-label="Close"
+                            [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <br />
+
+                        <div class="row">
+                            <div>
+                                <div class="h5 border-bottom">
+                                    {{"Primary & Backup Contact Information" | localize}}
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Primary Contact Name">{{l('Primary Contact Name')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.primaryContactName" 
+                                                   name="primaryContactName" placeholder="Primary Contact Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Designation">{{l('Designation')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.designation" 
+                                                   name="designation" placeholder="Designation" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Contact Number">{{l('Contact Number')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.contactNumber" 
+                                                   name="contactNumber" placeholder="Contact Number" (keypress)="numberOnly($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Official email">{{l('Official Email')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.officialEmail" 
+                                                   name="officialEmail" placeholder="Official Email" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Backup Contact Name">{{l('Backup Contact Name')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupContactName" 
+                                                   name="backupContactName" placeholder="Backup Contact Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Designation">{{l('Designation')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupDesignation" 
+                                                   name="backupDesignation" placeholder="Designation" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Contact Number">{{l('Contact Number')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupContactNumber" 
+                                                   name="backupContactNumber" placeholder="Contact Number" (keypress)="numberOnly($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="Official email">{{l('Official Email')}}</label>
+                                            <input type="text" class="form-control" [(ngModel)]="businessEntity.backupOfficialEmail" 
+                                                   name="backupOfficialEmail" placeholder="Official Email" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div>
+                                <div class="h5 border-bottom">
+                                    Personnel Details
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="cISO_EN">CISO or CCISO </label>
+                                            <input type="text" id="cISO_EN" class="form-control"
+                                                   [(ngModel)]="businessEntity.cisO_EN" name="cISO_EN" />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="cISO_Email">CISO or CCISO - Email </label>
+                                            <input type="email" id="cISO_Email" class="form-control"
+                                                   [(ngModel)]="businessEntity.cisO_Email"
+                                                   name="cISO_Email" #cISO_EmailInput="ngModel" />
+                                            <validation-messages [formCtrl]="cISO_EmailInput"></validation-messages>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="cISO_Mobile">CISO Mobile </label>
+                                            <input type="text" id="cISO_Mobile" class="form-control"
+                                                   [(ngModel)]="businessEntity.cisO_Mobile"
+                                                   name="cISO_Mobile" (keypress)="numberOnly($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="EntityGroup_Name" >
+                                                {{l(" Total Number Personnel")}}
+                                            </label>
+                                            <input type="number" placeholder="Total Number Personnel" id="EntityGroup_totalPersonnel"
+                                                   class="form-control"
+                                                   [(ngModel)]="businessEntity.totalPersonnel" (keypress)="numberOnly($event)"
+                                                   name="totalPersonnel" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="EntityGroup_Code" >
+                                                {{l("Number of Employees/Workers")}}
+                                            </label>
+                                            <input type="number" placeholder="Number of Employees/Workers" id="EntityGroup_numberEmpWork"
+                                                   class="form-control" name="numberEmpWork" (keypress)="numberOnly($event)"
+                                                   [(ngModel)]="businessEntity.numberEmpWork" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="EntityGroup_Name" >
+                                                {{l(" Total Number of IT Security Staff")}}
+                                            </label>
+
+                                            <input type="number" placeholder="Number of IT Security Staff"
+                                                   id="EntityGroup_itSecurityStaff" class="form-control"
+                                                   name="itSecurityStaff" (keypress)="numberOnly($event)"
+                                                   [(ngModel)]="businessEntity.itSecurityStaff" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="EntityGroup_Name" >
+                                                {{l("Number of Contractor Personnel")}}
+                                            </label>
+                                            <input type="number" placeholder="Contractor Personnel"
+                                                   id="EntityGroup_contractPersonnel" class="form-control"
+                                                   name="contractPersonnel" (keypress)="numberOnly($event)"
+                                                   [(ngModel)]="businessEntity.contractPersonnel" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group kt-margin-b-10">
+                                            <label for="securityAdvisoryEmailList">Security Advisory Email List </label>
+                                            <input type="email" id="securityAdvisoryEmailList" class="form-control"
+                                                   [(ngModel)]="businessEntity.securityAdvisoryEmailList"
+                                                   name="securityAdvisoryEmailList" #securityAdvisoryEmailListInput="ngModel" />
+                                            <validation-messages [formCtrl]="securityAdvisoryEmailListInput"></validation-messages>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                            type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                            [buttonBusy]="saving"
+                            [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

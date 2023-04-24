@@ -1,0 +1,12 @@
+<button type="button" [disabled]="btnDisable == 0" [ngClass]="class == 'W-100' ? 'w-100' : 'my_class2'"
+        class="btn btn-info btn-sm kt-margin-r-10 kt-margin-b-5" (click)="reportGenerate(ids)">{{btnName}}</button>
+
+<div class="=col-sm-12" style="display:none">
+    <div>
+        <dx-report-viewer [reportUrl]="reportUrl" height="50px">
+            <dxrv-request-options [invokeAction]="invokeAction" [host]="hostUrl"></dxrv-request-options>
+            <dxrv-callbacks (CustomizeExportOptions)="OnCustomizeExportOptions($event)">
+            </dxrv-callbacks>
+        </dx-report-viewer>       
+    </div>
+</div>

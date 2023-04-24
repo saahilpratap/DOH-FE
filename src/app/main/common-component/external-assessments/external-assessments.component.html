@@ -1,0 +1,81 @@
+<div class="row align-items-center no-margin">
+    <div class="primeng-datatable-container"
+         [busyIf]="primengTableHelper.isLoading">
+        <div>
+            <p-table #dataTable
+                     (onLazyLoad)="getExternalAssessments($event)"
+                     [value]="primengTableHelper.records"
+                     [lazy]="true"
+                     [scrollable]="true"
+                     ScrollWidth="100%"
+                     [responsive]="primengTableHelper.isResponsive"
+                     [resizableColumns]="primengTableHelper.resizableColumns">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 200px;">
+                            {{'Health Care Entity' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'Name' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'Start Date' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'End Date' |localize}}
+                        </th>
+                        <th style="width: 200px;">
+                            {{'Type' |localize}}
+                        </th>
+                        <th style="width: 150px">
+                            {{'Questionnaire' |localize}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                    <tr>
+                        <td style="width: 200px;">
+                            {{record.businessEntityName}}
+                        </td>
+                        <td style="width: 200px;">
+                            {{record.name}}
+                        </td>
+                        <th style="width: 200px;">
+                            {{record.startDate | momentFormat:'L'}}
+                        </th>
+                        <td style="width: 200px;">
+                            {{record.endDate | momentFormat:'L'}}
+                        </td>
+                        <td style="width: 200px;">
+                            {{l(externalAssessmentType[record.type])}}
+                        </td>
+                        <td style="width:150px">
+                            <a style="color:#007ad9 !important" href="javascript:;" *ngIf="!record.hasQuestionaireGenerated"
+                               (click)="generateQuestionaire(record.id)">
+                                {{l("Generate Questionaire")}}
+                            </a>
+                            <a style="color:#007ad9 !important" routerLink="/app/main/externalAssessments/externalAssessments/{{record.id}}/compliance-questionaire"
+                               *ngIf="record.hasQuestionaireGenerated">
+                                {{'Questionnaire' |localize}}
+                            </a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+            {{ l("NoData") }}
+        </div>
+        <div class="primeng-paging-container mt-2">
+            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                         #paginator
+                         (onPageChange)="getExternalAssessments($event)"
+                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage ">
+            </p-paginator>
+            <span class="total-records-count">
+                {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount ) }}
+            </span>
+        </div>
+    </div>
+</div>

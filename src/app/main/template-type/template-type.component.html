@@ -1,0 +1,51 @@
+<div [@routerTransition]>
+  <div
+    class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
+  >
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+          <div class="kt-subheader__main">
+              <h3 class="kt-subheader__title">
+                  <span>{{"Template & Checklists" | localize}}</span>
+              </h3>
+              <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+              <span class="kt-subheader__desc">
+                  {{"All Template & Checklists" | localize}}
+              </span>
+          </div>
+      </div>
+    </div>
+
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+      <div class="kt-portlet">
+        <div class="kt-portlet kt-portlet--mobile">
+          <div class="kt-portlet__head">
+              <div class="kt-portlet__head-label">
+                  <h3 class="kt-portlet__head-title">
+                      {{"Template & Checklists" | localize}}
+                  </h3>                 
+              </div>
+            <div class="kt-portlet__head-toolbar">
+              <button *ngIf="'Pages.TemplatesAndCheckLists.Create' | permission"
+                type="button"
+                class="btn btn-brand btn-sm"
+                (click)="createEditTemplateTypeModals.show()"
+              >
+                <i class="fa fa-plus"></i>
+                {{l('Add New')}}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="kt-portlet__body kt-padding-t-0">
+          <grid-template-type [selectedItem]="teamplateTypeId"></grid-template-type>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<createEditTemplateTypeModals
+  #createEditTemplateTypeModals
+                              (modalSave)="getAllData()"
+></createEditTemplateTypeModals>

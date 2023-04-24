@@ -1,0 +1,430 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{l("Incidents")}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{l("Create New Incident")}}
+                </span>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Incidents Status" | localize}}
+                </span>
+                <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5" style="min-width: 100px" *ngIf="incident.status">
+                    {{l(incidentStatus[incident.status])}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-wizard-v4__content bg-white"
+             data-ktwizard-type="step-content"
+             data-ktwizard-state="current"
+             id="Tab1data">
+            <form #incidentForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="kt-portlet shadow-none">
+                    <div class="kt-portlet__head kt-portlet__head--lg kt-padding-5"
+                         style="border-bottom: 1px solid #ebedf2;">
+                        <div class="kt-portlet__head-label">
+                            <h5 class="kt-portlet__head-title">
+                                <span *ngIf="incident.id">
+                                    {{l("EditIncident")}}
+                                </span>
+                                <span *ngIf="!incident.id">
+                                    {{l("CreateNewIncident")}}
+                                </span>
+                            </h5>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <button type="button"
+                                    (click)="close()"
+                                    class="btn btn-outline-danger btn-icon-sm btn-sm btn-sm">
+                                <i class="fa fa-arrow-left"></i>Back
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                    [disabled]="!incidentForm.form.valid"
+                                    [buttonBusy]="saving"
+                                    [busyText]="l('SavingWithThreeDot')">
+                                <i class="fa fa-save"></i>
+                                <span>{{ l("Save") }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-wizard-v4__form">
+                        <div class="kt-section__body">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_code">
+                                                {{l("Incident ID")}}*
+                                            </label>
+                                            <input type="text"
+                                                   id="Incident_code"
+                                                   class="form-control"
+                                                   placeholder="System Generated"
+                                                   [(ngModel)]=" incident.code"
+                                                   name="code"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Title" class="required">
+                                                {{l("Title")}}
+                                            </label>
+                                            <input type="text"
+                                                   id="Incident_Title"
+                                                   class="form-control"
+                                                   [(ngModel)]="incident.title"
+                                                   name="title" #Title="ngModel"
+                                                   required />
+                                            <validation-messages [formCtrl]="Title"></validation-messages>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <!-- || isBusinessEntityUser() -->
+                                            <label for="businessEntLookUp" class="required">
+                                                HealthCare Entity
+                                            </label>
+                                            <ng-select [items]="BusinessEntity" [searchable]="true" bindLabel="name" [disabled]="incident.id" [required]="true"
+                                                       bindValue="id" placeholder="Select HealthCare Entity " (change)="initializeBeLookUpFields(incident.businessEntityId)"
+                                                       [(ngModel)]="incident.businessEntityId" class="kt-align-left"
+                                                       name="businessEntityId" #businessEntLookUp="ngModel">
+                                            </ng-select>
+                                            <validation-messages [formCtrl]="businessEntLookUp"></validation-messages>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="incident_detectionDate" class="required">{{ l("Detection Datetime") }} </label>
+                                            <div id="startDate" class="kt-input-icon">
+                                                <input id="incident_detectionDate"
+                                                       type="datetime"
+                                                       #incident_detectionDate="ngModel"
+                                                       name="detectionDateTime"
+                                                       class="form-control"
+                                                       bsDatepicker required
+                                                       datePickerMomentModifier
+                                                       [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                                       [(date)]="incident.detectionDateTime"
+                                                       [(ngModel)]="incident.detectionDateTime"
+                                                       autocomplete="off" />
+                                                <span class="position-absolute"
+                                                      style="top: 25%; right: 20px; font-size: 18px;">
+                                                    <span><i class="flaticon-calendar-1"></i></span>
+                                                </span>
+                                                <validation-messages [formCtrl]="incident_detectionDate"></validation-messages>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Type" class="required">{{ l("Type") }} </label>
+                                            <ng-select [items]="incidentTypeLookUp"
+                                                       [searchable]="false"
+                                                       bindLabel="name"
+                                                       bindValue="id"
+                                                       [required]="true"
+                                                       [(ngModel)]="incident.incidentTypeId"
+                                                       name="incidentTypeId"
+                                                       placeholder="Not Selected" #Incident_Type="ngModel">
+                                            </ng-select>
+                                            <validation-messages [formCtrl]="Incident_Type"></validation-messages>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Description">
+                                                {{l("Description")}}
+                                            </label>
+                                            <textarea [(ngModel)]="incident.description"
+                                                      name="description"
+                                                      class="form-control"
+                                                      id="Incident_Description"
+                                                      rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-4"
+                                         *ngIf="incident.id">
+                                        <div class="form-group">
+                                            <label for="incident_closedBy" class="required">
+                                                {{
+                                                            l("Closed By")
+                                                }}
+                                            </label>
+                                            <ng-select [items]="beUsersClosedBy"
+                                                       [searchable]="false"
+                                                       bindLabel="name"
+                                                       bindValue="id"
+                                                       [(ngModel)]="
+                                                            incident.closedByUserId
+                                                        "
+                                                       name="closedByUserId"
+                                                       placeholder="Not Selected">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="incident_closeDatetime">{{ l("Close Datetime") }}</label>
+                                            <div id="incident_closeDatetime" class="kt-input-icon">
+                                                <input id="incident_closeDatetime" required
+                                                       type="datetime"
+                                                       #incident_closeDatetime
+                                                       name="closeDate"
+                                                       class="form-control input-group date"
+                                                       bsDatepicker
+                                                       datePickerMomentModifier
+                                                       [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                                       [(date)]="incident.closeDate"
+                                                       autocomplete="off" />
+                                                <span class="position-absolute"
+                                                      style="top: 25%; right: 20px; font-size: 18px;">
+                                                    <span><i class="flaticon-calendar-1"></i></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="kt-portlet__head kt-portlet__head--lg kt-padding-b-5 kt-margin-b-10"
+                                     style="border-bottom: 1px solid #ebedf2;">
+                                    <div class="kt-portlet__head-label">
+                                        <h5 class="kt-portlet__head-title">
+                                            <span>
+                                                Incident Classification & Analysis
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Impact" class="required">
+                                                {{l("Impact")}}
+                                            </label>
+                                            <ng-select [items]="incidentImpactLookUp"
+                                                       [searchable]="false"
+                                                       bindLabel="name"
+                                                       bindValue="id" [required]="true"
+                                                       [(ngModel)]="incident.incidentImpactId"
+                                                       name="incidentImpactId"
+                                                       placeholder="Not Selected" #Impact="ngModel">
+                                            </ng-select>
+                                            <validation-messages [formCtrl]="Impact"></validation-messages>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Priority">
+                                                {{l("Priority")}}
+                                            </label>
+                                            <ng-select [items]="priorities"
+                                                       [searchable]="false"
+                                                       bindLabel="name"
+                                                       bindValue="id"
+                                                       [(ngModel)]="incident.priority"
+                                                       name="priority"
+                                                       placeholder="Not Selected">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Severity">
+                                                {{l("Severity")}}
+                                            </label>
+                                            <ng-select [items]="priorities"
+                                                       [searchable]="false"
+                                                       bindLabel="name"
+                                                       bindValue="id"
+                                                       [(ngModel)]="incident.severity"
+                                                       name="severity"
+                                                       placeholder="Not Selected">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="kt-portlet__head kt-portlet__head--lg"
+                                     style="border-bottom: 1px solid #ebedf2;">
+                                    <div class="kt-portlet__head-label">
+                                        <h5 class="kt-portlet__head-title">
+                                            <span>
+                                                Incident Response &
+                                                Mitigation
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="row kt-margin-t-20">
+                                    <div [ngClass]="
+                                                    incident.id
+                                                        ? 'col-4'
+                                                        : 'col-6'
+                                                ">
+                                        <div class="form-group">
+                                            <label for="Incident_RootCause">
+                                                {{
+                                                            l("Root Cause")
+                                                }}
+                                            </label>
+                                            <textarea [(ngModel)]="
+                                                            incident.rootCause
+                                                        "
+                                                      name="rootCause"
+                                                      class="form-control"
+                                                      id="Incident_RootCause"
+                                                      rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div [ngClass]="
+                                                    incident.id
+                                                        ? 'col-4'
+                                                        : 'col-6'
+                                                ">
+                                        <div class="form-group">
+                                            <label for="Incident_Remediation">
+                                                {{
+                                                            l(
+                                                                "Eradication / Remediation"
+                                                            )
+                                                }}
+                                            </label>
+                                            <textarea [(ngModel)]="
+                                                            incident.remediation
+                                                        "
+                                                      name="remediation"
+                                                      class="form-control"
+                                                      id="Incident_remediation"
+                                                      rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Correction">
+                                                {{
+                                                            l("Correction")
+                                                }}
+                                            </label>
+                                            <textarea [(ngModel)]="
+                                                            incident.correction
+                                                        "
+                                                      name="correction"
+                                                      class="form-control"
+                                                      id="Incident_Correction"
+                                                      rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Prevention">
+                                                {{
+                                                            l("Prevention")
+                                                }}
+                                            </label>
+                                            <textarea [(ngModel)]="
+                                                            incident.prevention
+                                                        "
+                                                      name="prevention"
+                                                      class="form-control"
+                                                      id="Incident_Prevention"
+                                                      rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Incident_Comment">
+                                                {{
+                                                            l("Comment")
+                                                }}
+                                            </label>
+                                            <textarea [(ngModel)]="
+                                                            incident.comment
+                                                        "
+                                                      name="comment"
+                                                      class="form-control"
+                                                      id="Incident_Comment"
+                                                      rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="kt-portlet__head kt-portlet__head--lg kt-padding-b-5 kt-margin-b-10"
+                                     style="border-bottom: 1px solid #ebedf2;">
+                                    <div class="kt-portlet__head-label">
+                                        <h5 class="kt-portlet__head-title">
+                                            <span>
+                                                IRM Information
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Business_Risk">
+                                                {{l("Business Risk")}}
+                                            </label>
+                                            <p-multiSelect name="bsrlookup" [options]="businessRisksLookUp" placeholder="Select Business Risk" optionLabel="title" [(ngModel)]="selectedBusinessRisks" [style]="{'width': '100%'}"></p-multiSelect>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Exception">
+                                                {{l("Exception")}}
+                                            </label>
+                                            <p-multiSelect name="exlookup" [options]="exceptionsLookUp" placeholder="Select Exception" optionLabel="title" [(ngModel)]="selectedExceptions" [style]="{'width': '100%'}"></p-multiSelect>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p-accordion>
+                                    <p-accordionTab header="Attachments">
+                                        <div class="w-100">
+                                            <file-upload [name]="'Incident'"
+                                                         [attachedFile]="attachedFileCodes"
+                                                         [multiple]="true"
+                                                         [attachedfileSize]="2097150"
+                                                         [noFileUpload]="100"
+                                                         (attachmentData)="getAttachment($event)"
+                                                         (attachmentDelete)="deleteAttachmentInput($event)"></file-upload>
+                                        </div>
+                                    </p-accordionTab>
+                                    <div class="kt-portlet__head kt-portlet__head--lg kt-padding-b-5 kt-margin-b-10"
+                                         style="border-bottom: 1px solid #ebedf2;" *ngIf="isEdit">
+                                        <div class="kt-portlet__head-label">
+                                            <h5 class="kt-portlet__head-title">
+                                                <span>
+                                                    Review and Approvals
+                                                </span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <p-accordionTab header="Entity Review & Approval" *ngIf="isEdit">
+                                        <entity-review-approval *ngIf="beUsers.length > 0" [entityReviewers]="beUsers" [entityApprovers]="beUsers" [irm]="incident.entityIRMRelations" [entityUserSignaturePad]="entityUserSignaturePad" [primaryReviewerId]="primarReviwerId" [primaryApproverId]="primaryApproverId" [isEdit]="isEdit" [recordId]="recordId" [pageId]="pageId"></entity-review-approval>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Authority Review & Approval" *ngIf="isEdit">
+                                        <authority-review-approval *ngIf="authorityUsers.length > 0" [authorityReviewers]="authorityUsers" [authorityApprovers]="authorityUsers" [irm]="incident.authorityIRMRelations" [authorityUserSignaturePad]="authorityUserSignaturePad" [isEdit]="isEdit" [recordId]="recordId" [pageId]="pageId"></authority-review-approval>
+                                    </p-accordionTab>
+                                </p-accordion>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

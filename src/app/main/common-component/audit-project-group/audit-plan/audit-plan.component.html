@@ -1,0 +1,286 @@
+<div class="div-read-only">
+    <div class="kt-portlet border-radius-5" style="background-color:#f3f6f9 !important">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+                <h5 class="kt-portlet__head-title kt-font-md">
+                    {{l('ADHICS Audit Plan N.XYZ123')}}
+                </h5>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+            </div>
+        </div>
+        <div class="kt-portlet__body kt-padding-t-15" *ngIf="auditproject">
+            <div class="row">
+                <div class="col-2">
+                    <span class="kt-font-md kt-font-bolder">{{l('Stage 1')}}</span>
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="kt-font-bold kt-font-md">{{l('Start Date')}}</label>
+                                </div>
+                                <div class="col-6">
+                                    <span class="kt-font-md kt-font-skype">{{auditproject.startDate |date}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="kt-font-bold kt-font-md">{{l('End Date')}}</label>
+                                </div>
+                                <div class="col-6">
+                                    <span class="kt-font-md kt-font-skype">{{auditproject.endDate | date}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row kt-padding-t-15">
+                <div class="col-2">
+                    <span class="kt-font-md kt-font-bolder">{{l('Stage 2')}}</span>
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="kt-font-bold kt-font-md">{{l('Start Date')}}</label>
+                                </div>
+                                <div class="col-6">
+                                    <span class="kt-font-md kt-font-skype">{{auditproject.stageStartDate | date}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="kt-font-bold kt-font-md">{{l('End Date')}}</label>
+                                </div>
+                                <div class="col-6">
+                                    <span class="kt-font-md kt-font-skype">{{auditproject.stageEndDate | date }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row kt-padding-t-15">
+                <div class="col-2">
+                    <span class="kt-font-md kt-font-bolder">{{l('Audit Type')}}</span>
+                </div>
+                <div class="col-10">
+                    <label class="kt-font-md kt-font-bold">{{"Select the applicable audit type" | localize}}</label>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group row kt-padding-b-5">
+                                        <div class="radio-list col-4" *ngFor="let item of auditType; let i = index">
+                                            <label class="radio disabled" [readonly]="true">
+                                                <input type="radio" name="name" style="position:absolute; top:4px">
+                                                <span></span> <span class="kt-font-md kt-margin-l-15">{{item.name}}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row kt-padding-t-15">
+                <div class="col-2">
+                    <span class="kt-font-md kt-font-bolder">{{l('Scope and Criteria')}}</span>
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="kt-font-md kt-font-skype">
+                                {{auditproject.auditScope}}
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p class="kt-font-md kt-font-skype">
+                                {{auditproject.auditCriteria}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="kt-portlet shadow-none">
+        <div class="kt-portlet__body kt-padding-0">
+            <div>
+                <div class="row kt-padding-t-10">
+                    <div class="col-1">
+                        <span class="kt-font-md kt-font-skype">{{"No" | localize}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span class="kt-font-md kt-font-skype">{{"Facility " | localize}}</span>
+                    </div>
+                    <div class="col-3">
+                        <span class="kt-font-md kt-font-skype">{{"Location Details" | localize}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span class="kt-font-md kt-font-skype">{{"Mobile" | localize}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span class="kt-font-md kt-font-skype">{{"Email" | localize}}</span>
+                    </div>
+                </div>
+                <div class="row kt-padding-t-10" *ngFor="let item of businessEntity;let i = index">
+                    <div class="col-1">
+                        <span class="kt-font-md kt-font-skype">{{i+1}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span class="kt-font-md kt-font-skype">{{item.name}}</span>
+                    </div>
+                    <div class="col-3">
+                        <span class="kt-font-md kt-font-skype">{{item.address}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span class="kt-font-md kt-font-skype">{{item.owner_Mobile}}</span>
+                    </div>
+                    <div class="col-2">
+                        <span class="kt-font-md kt-font-skype">{{item.owner_Email}}</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="w-100 bg-primary kt-font-md kt-font-light kt-padding-l-10 kt-margin-t-20 kt-font-bold">{{l('STAGE 1')}}</div>
+                <div>
+                    <div class="w-100 bg-skype kt-font-md kt-font-light kt-padding-l-10 kt-margin-t-5 kt-font-bold">{{l('Desktop Audit dates')}}</div>
+                    <table class="table kt-margin-t-10">
+                        <thead>
+                            <tr class="tr-bg-color">
+                                <th class="kt-font-boldest kt-font-md width-20">{{l('Activity')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Certification Domains')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('From')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('TO')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Processes/ Aspects/ Documents')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('Auditee')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="w-100 bg-skype kt-font-md kt-font-light kt-padding-l-10 kt-margin-t-5 kt-font-bold">{{l('Remote/onsite audit dates start/end ')}}</div>
+                    <table class="table kt-margin-t-10">
+                        <thead>
+                            <tr class="tr-bg-color">
+                                <th class="kt-font-boldest kt-font-md width-20">{{l('Activity')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Certification Domains')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('From')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('TO')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Process / Aspects')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('Auditee')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div>
+                <div class="w-100 bg-primary kt-font-md kt-font-light kt-padding-l-10 kt-margin-t-20 kt-font-bold">{{l('STAGE 2')}}</div>
+                <div>
+                    <div class="w-100 bg-skype kt-font-md kt-font-light kt-padding-l-10 kt-margin-t-5 kt-font-bold">{{l('Desktop Audit dates')}}</div>
+                    <table class="table kt-margin-t-10">
+                        <thead>
+                            <tr class="tr-bg-color">
+                                <th class="kt-font-boldest kt-font-md width-20">{{l('Activity')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Certification Domains')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('From')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('TO')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Processes/ Aspects/ Documents')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('Auditee')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <div class="w-100 bg-skype kt-font-md kt-font-light kt-padding-l-10 kt-margin-t-5 kt-font-bold">{{l('Remote/onsite audit dates start/end ')}}</div>
+                    <table class="table kt-margin-t-10">
+                        <thead>
+                            <tr class="tr-bg-color">
+                                <th class="kt-font-boldest kt-font-md width-20">{{l('No')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Certification Domains')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('From')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('TO')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Process / Aspects')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('Auditee')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table kt-margin-t-10">
+                        <thead>
+                            <tr class="tr-bg-color">
+                                <th class="kt-font-boldest kt-font-md width-20">{{l('No')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Certification Domains')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('From')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('TO')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-25">{{l('Process / Aspects')}}</th>
+                                <th class="kt-font-boldest kt-font-md width-10">{{l('Auditee')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

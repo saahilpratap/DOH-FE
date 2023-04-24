@@ -1,0 +1,475 @@
+<div appBsModal #editPreEntityProcessModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="registerClientProcessModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-dialog-centered modal-xl" id="entityModal">
+        <div class="modal-content">
+            <form *ngIf="active" #editPreEntityProcessModalForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h6 class="modal-title" *ngIf="preRegisterBusinessEntity.entityType==0">{{"Edit HealthCare Entity Pre Registration Data" |localize}}</h6>
+                    <h6 class="modal-title" *ngIf="preRegisterBusinessEntity.entityType==1">{{"Edit Third Party Pre Registration Data" |localize}}</h6>
+
+                    <button type="button" class="close" (click)="close()" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="kt-section kt-section--first">
+                        <div class="kt-section__body">
+                            <h6 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-5">{{"Entity Information" | localize}}</h6>
+                            <div class="row" *ngIf="preRegisterBusinessEntity.entityType==0">
+                                <div class="col-6">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_Name" class="required">Entity Name  </label>
+                                        <input type="text"
+                                               id="BusinessEntity_Name"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.name"
+                                               name="name"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_LegalName">
+                                            Company (Legal Name) *
+                                        </label>
+                                        <input type="text"
+                                               id="BusinessEntity_LegalName"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.name"
+                                               name="legalName"
+                                                />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="facility_EN" class="required">Facility EN  </label>
+                                        <input type="text"
+                                               id="facility_EN"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.facility_EN"
+                                               name="facility_EN"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label class="required">Facility Type </label>
+                                        <select class="form-control"
+                                                name="facilityTypeId" [(ngModel)]="preRegisterBusinessEntity.facilityTypeId" (change)="checkFacilitySize()">
+                                            <option [value]="facilityType.id" *ngFor="let facilityType of facilityTypesLookUp">
+                                                {{ facilityType.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label class="required">License Status </label>
+                                        <div class="kt-radio-inline form-control" style="border:none">
+                                            <label class="kt-radio">
+                                                <input type="radio"
+                                                       name="radioEntity1" value="true"
+                                                       class="toggle1" [value]="true" [(ngModel)]="preRegisterBusinessEntity.isActive"> Active
+                                                <span></span>
+                                            </label>
+                                            <label class="kt-radio">
+                                                <input type="radio" value="false"
+                                                       name="radioEntity1" [value]="false" class="toggle" [(ngModel)]="preRegisterBusinessEntity.isActive"> Expired
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label class="required">District </label>
+                                        <select class="form-control"
+                                                name="districtId" [(ngModel)]="preRegisterBusinessEntity.districtId">
+                                            <option [ngValue]="dpList.id" *ngFor="let dpList of districtsDynamicParameter">
+                                                {{dpList.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_Name" class="required">HFL Name  </label>
+                                        <input type="text"
+                                               id="BusinessEntity_HFLName"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.hflName"
+                                               name="hflName"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="License" class="required">
+                                            License Number 
+                                        </label>
+                                        <input type="text"
+                                               id="License"
+                                               class="form-control" disabled
+                                               [(ngModel)]="preRegisterBusinessEntity.licenseNumber"
+                                               name="license"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_Email" class="required">Facility Email </label>
+                                        <input type="email"
+                                               id="facility_Email"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.facility_Email"
+                                               name="facility_Email" #facility_EmailInput="ngModel"
+                                               required email />
+                                        <validation-messages [formCtrl]="facility_EmailInput"></validation-messages>
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label class="required">Facility SubType </label>
+                                       
+                                        <select class="form-control"
+                                                name="Sub-FacilityTypes" required
+                                                [(ngModel)]="preRegisterBusinessEntity.facilitySubTypeId">
+                                            <option [ngValue]="undefined" disabled selected>Select Facility Sub Type</option>
+                                            <option *ngFor="let facilityTypeLookup of facilitySubType"
+                                                    [ngValue]="facilityTypeLookup.id ">
+                                                {{ facilityTypeLookup.facilitySubTypeName}}
+                                            </option>
+                                        </select>
+                                        
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label class="required">Entity Type </label>
+                                        <div class="kt-radio-inline form-control" style="border:none">
+                                            <label class="kt-radio">
+                                                <input type="radio"
+                                                       name="radioEntity2" value="true"
+                                                       class="toggle" [value]="true" [(ngModel)]="preRegisterBusinessEntity.isPublic"> Public
+                                                <span></span>
+                                            </label>
+                                            <label class="kt-radio">
+                                                <input type="radio" value="false"
+                                                       name="radioEntity2" [value]="false" class="toggle" [(ngModel)]="preRegisterBusinessEntity.isPublic"> Private
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row" *ngIf="preRegisterBusinessEntity.entityType==1">
+                                <div class="col-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_Name" class="required">Entity Name </label>
+                                        <input type="text"
+                                               id="BusinessEntity_Name"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.name"
+                                               name="name"
+                                               required />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_LegalName" class="required">
+                                            Company (Legal Name)
+                                        </label>
+                                        <input type="text"
+                                               id="BusinessEntity_LegalName"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.companyName"
+                                               name="legalName"
+                                               required />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="License">
+                                            License Number *
+                                        </label>
+                                        <input type="text"
+                                               id="License"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.licenseNumber"
+                                               name="license"
+                                               required />
+                                    </div>
+                                </div>
+
+                                <div class="col-12" *ngIf="preRegisterBusinessEntity.entityType">
+                                    <label>Thirdparty Type</label>
+                                    <select class="form-control"
+                                            name="selectedResponseType" [(ngModel)]="preRegisterBusinessEntity.thirdPartyId">
+                                        <option [ngValue]="dpList.id" *ngFor="let dpList of thirdPartyDynamicParameter">
+                                            {{dpList.name}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-section kt-section--first">
+                        <div class="kt-section__body">
+                            <h6 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-5">{{"Primary & Backup Contact Information" | localize}}</h6>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Primary Contact Name">{{l('Primary Contact Name')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.primaryContactName"
+                                               name="primaryContactName" placeholder="Primary Contact Name" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Designation">{{l('Designation')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.designation"
+                                               name="designation" placeholder="Designation" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Contact Number">{{l('Contact Number')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.contactNumber"
+                                               name="contactNumber" placeholder="Contact Number" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Official email">{{l('Official Email')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.officialEmail"
+                                               name="officialEmail" placeholder="Official Email" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Backup Contact Name">{{l('Backup Contact Name')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.backupContactName"
+                                               name="backupContactName" placeholder="Backup Contact Name" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Designation">{{l('Designation')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.backupDesignation"
+                                               name="backupDesignation" placeholder="Designation" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Contact Number">{{l('Contact Number')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.backupContactNumber"
+                                               name="backupContactNumber" placeholder="Contact Number" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="Official email">{{l('Official Email')}}</label>
+                                        <input type="text" class="form-control" [(ngModel)]="preRegisterBusinessEntity.backupOfficialEmail"
+                                               name="backupOfficialEmail" placeholder="Official Email" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-section kt-section--first">
+                        <div class="kt-section__body">
+                            <h6 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-5">{{"Admin Information" | localize}}</h6>
+
+                            <div class="row" *ngIf="preRegisterBusinessEntity.entityType==0">
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="owner_EN" class="required">Owner EN </label>
+                                        <input type="text"
+                                               id="owner_EN"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.owner_EN"
+                                               name="owner_EN"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="director_Incharge_EN" class="required">Director Incharge EN </label>
+                                        <input type="text"
+                                               id="director_Incharge_EN"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.director_Incharge_EN"
+                                               name="director_Incharge_EN"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="pro_EN" class="required">Pro EN  </label>
+                                        <input type="text"
+                                               id="pro_EN"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.pro_EN"
+                                               name="pro_EN"
+                                               required />
+                                    </div>
+
+                                    <!--<div class="form-group kt-margin-b-10">
+                                        <label for="cISO_EN" class="required">CISO EN  </label>
+                                        <input type="text"
+                                               id="cISO_EN"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.cisO_EN"
+                                               name="cISO_EN"
+                                               required />
+                                    </div>-->
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <div class="kt-checkbox-list">
+                                            <label for="sameForAdmin" class="kt-checkbox">
+                                                <input id="sameForAdmin" type="checkbox" class="form-control" name="sameForAdmin" (change)="setAdminDetail()" [(ngModel)]="sameForAdmin">
+                                                Use Pro Details for Admin
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="owner_Email" class="required">Owner Email  </label>
+                                        <input type="email"
+                                               id="owner_Email"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.owner_Email"
+                                               name="owner_Email" #owner_EmailInput="ngModel"
+                                               required email />
+                                        <validation-messages [formCtrl]="owner_EmailInput"></validation-messages>
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="director_Incharge_Email" class="required">Director Incharge Email  </label>
+                                        <input type="email"
+                                               id="director_Incharge_Email"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.director_Incharge_Email"
+                                               name="director_Incharge_Email" #director_Incharge_EmailInput="ngModel"
+                                               required email />
+                                        <validation-messages [formCtrl]="director_Incharge_EmailInput"></validation-messages>
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="pro_Email" class="required">Pro Email  </label>
+                                        <input type="email"
+                                               id="pro_Email"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.pro_Email"
+                                               name="pro_Email" #pro_EmailInput="ngModel"
+                                               required email />
+                                        <validation-messages [formCtrl]="pro_EmailInput"></validation-messages>
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="adminname" class="required">Admin Name </label>
+                                        <input type="email"
+                                               id="adminname"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.adminName"
+                                               name="cISO_Email" #cISO_EmailInput="ngModel"
+                                               required  />
+                                       
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_Email" class="required">Admin Email </label>
+                                        <input type="email"
+                                               id="BusinessEntity_Email"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.adminEmail"
+                                               name="adminEmail" #emailAddressInput="ngModel"
+                                               required email />
+                                        <validation-messages [formCtrl]="emailAddressInput"></validation-messages>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="owner_Mobile" class="required">Owner Mobile  </label>
+                                        <input type="text"
+                                               id="owner_Mobile"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.owner_Mobile"
+                                               name="owner_Mobile"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="director_Incharge_Mobile" class="required">Director Incharge Mobile  </label>
+                                        <input type="text"
+                                               id="director_Incharge_Mobile"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.director_Incharge_Mobile"
+                                               name="director_Incharge_Mobile"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="pro_Mobile" class="required">Pro Mobile </label>
+                                        <input type="text"
+                                               id="pro_Mobile"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.pro_Mobile"
+                                               name="pro_Mobile"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="adminSurname" class="required"> Admin Surname   </label>
+                                        <input type="text"
+                                               id="adminSurname"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.adminSurname"
+                                               name="adminSurname"
+                                               required />
+                                    </div>
+
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_AdminMobile">Admin Mobile</label>
+                                        <input type="text"
+                                               id="BusinessEntity_AdminMobile"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.adminMobile"
+                                               name="adminMobile"  />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!--<div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_Email" class="required">Admin Email </label>
+                                        <input type="email"
+                                               id="BusinessEntity_Email"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.adminEmail"
+                                               name="adminEmail" #emailAddressInput="ngModel"
+                                               required email />
+                                        <validation-messages [formCtrl]="emailAddressInput"></validation-messages>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group kt-margin-b-10">
+                                        <label for="BusinessEntity_AdminMobile">Admin Mobile</label>
+                                        <input type="text"
+                                               id="BusinessEntity_AdminMobile"
+                                               class="form-control"
+                                               [(ngModel)]="preRegisterBusinessEntity.adminMobile"
+                                               name="adminMobile" required />
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()" data-dismiss="modal">{{"Close" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!editPreEntityProcessModalForm.form.valid || saving">{{"Save" | localize}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,509 @@
+<div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{ l("Assessments") }}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{ l("Assessment Information") }}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+                    <button class="btn btn-outline-success"
+                            *ngIf="'Pages.HealthCareEntities.Assessments.Export' | permission" (click)="exportToExcel()">
+                        <i class="fa fa-file-excel"></i>
+                        {{ l("ExportToExcel") }}
+                    </button>
+                    <button *ngIf="('Pages.HealthCareEntities.Assessments.Create' | permission)"
+                            (click)="createAssessment()" class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                        <i class="fa fa-plus"></i>
+                        {{ l("Create New Assessment") }}
+                    </button>
+                    <button (click)="createScheduleModals.show()" *ngIf="('Pages.HealthCareEntities.Assessments.Schedule.Create' | permission) && appSession.user.type == 0 || appSession.user.type==3"
+                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                        <i class="fa fa-plus"></i>
+                        {{ l("Create New Schedule") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid mb-2'">
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="clickable-item text-muted" (click)="showChart = !showChart">
+                    <i class="fa fa-angle-up" *ngIf="!showChart"></i>
+                    <i class="fa fa-angle-down" *ngIf="showChart"></i>
+                    {{ l("Assessment Summary Charts") }}
+                </span>
+            </div>
+        </div>
+        <div class="row" *ngIf="showChart">
+            <div class="col-12 col-md-12 col-xl-12">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{'Date Filter' | localize}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+                            <input id="StartEndRange" [disabled]="readonly"
+                                   type="datetime"
+                                   #startDatePicker
+                                   name="StartEndRange"
+                                   class="form-control"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY'  }"
+                                   autocomplete="off"
+                                   [(ngModel)]="startDate" />
+                            &nbsp;
+                            <input id="StartEndRange" [disabled]="readonly"
+                                   type="datetime"
+                                   #startDatePicker
+                                   name="StartEndRange"
+                                   class="form-control"
+                                   bsDatepicker
+                                   datePickerMomentModifier
+                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY'  }"
+                                   autocomplete="off"
+                                   [(ngModel)]="endDate" />
+                            <span class="input-group-btn margin-left--5">
+                                <button (click)="getDate()" class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                            &nbsp; &nbsp; &nbsp;
+                            <span class="input-group-btn margin-left--5">
+                                <button (click)="refreshDate()" class="btn btn-primary" type="submit"><i class="fa fa-redo-alt"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="showChart">
+            <div class="col-sm-12 col-md-12 col-xl-4">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{'Control Self Assessment' | localize}} <small>{{'Results Summary' | localize}}</small>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <ngx-charts-gauge [view]="assesmentChartView" [scheme]="colorScheme" [showAxis]="false"
+                                                  [startAngle]="-90" [angleSpan]="180" [results]="percentageAssessment"
+                                                  [legend]="false" [legendPosition]="'below'" [valueFormatting]="format">
+                                </ngx-charts-gauge>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 p-0">
+                                <div class="row mb-4">
+                                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 pl-0">
+                                        <i class="fa fa-chart-area fon-16 p-3 bg-icon-chart radius-50p"></i>
+                                    </div>
+                                    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 pl-0">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <span class="font-14 font-weight-bold kt-portlet__head-title">{{totalAssessmentCount}}</span>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <span class="text-muted font-12 text-capitalize">
+                                                    {{'Total control self assessment' | localize}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 pl-0">
+                                        <i class="fa fa-chart-pie fon-16 p-3 bg-icon-chart radius-50p"></i>
+                                    </div>
+                                    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 pl-0">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <span class="font-14 font-weight-bold kt-portlet__head-title">{{sumitedAssessmentCount}}</span>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <span class="text-muted font-12 text-capitalize">
+                                                    {{'Total assessment submitted' | localize}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 pl-0">
+                                        <i class="fa fa-dice-d6 fon-16 p-3 bg-icon-chart radius-50p"></i>
+                                    </div>
+                                    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 pl-0">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <span class="font-14 font-weight-bold kt-portlet__head-title">{{pendingAssessmentCount}}</span>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <span class="text-muted font-12 text-capitalize">
+                                                    {{'CSA pending submission' | localize}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-xl-4">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{"Assessment Submission Status" | localize}}
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-xl-12 col-lg-12">
+                                <ngx-charts-pie-chart [view]="pieView" [scheme]="colorScheme2" [results]="pie1Count"
+                                                      [gradient]="gradient" [legend]="showLegend" [legendPosition]="legendPosition"
+                                                      [labels]="false" [doughnut]="false" [trimLabels]="false">
+                                </ngx-charts-pie-chart>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-xl-4">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title text-nowrap">
+                                {{"CSA Summary Facilitywise" | localize}}
+                            </h3>
+                        </div>
+                        &nbsp;
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <select class="form-control" name="facilityTypeId" [(ngModel)]="facilityTypeFilter"
+                                    (change)="ontypeChange(facilityTypeFilter)">
+                                <option value="0">{{'Facility Type' | localize}}</option>
+                                <option [ngValue]="facilityTypeLookups.facilityType.id"
+                                        *ngFor="let facilityTypeLookups of facilityTypesLookUp">
+                                    {{ facilityTypeLookups.facilityType.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-xl-12 col-lg-12">
+                                <ngx-charts-pie-chart [view]="pieView" [scheme]="colorScheme2" [results]="pie2Count"
+                                                      [gradient]="gradient" [legend]="showLegend" [legendPosition]="legendPosition"
+                                                      [labels]="false" [doughnut]="false" [trimLabels]="false">
+                                </ngx-charts-pie-chart>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="showChart">
+            <div class="col-sm-12">
+                <span *ngIf="showMoreChart" class="clickable-item text-muted" (click)="showMoreChart = !showMoreChart ">
+                    <i class="fa fa-angle-down"></i>
+                    {{ l(" Hide More Charts") }}
+                </span>
+                <span class="clickable-item text-muted" (click)="showMoreChart = !showMoreChart "
+                      *ngIf="!showMoreChart">
+                    <i class="fa fa-angle-down"></i>
+                    {{ l("Show More Charts") }}
+                </span>
+            </div>
+        </div>
+        <div class="row mt-3" *ngIf="showMoreChart && showChart">
+            <div class="col-6 col-md-6 col-xl-6">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{"CSA Submission - Facilitywise" | localize}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <select class="form-control" name="districtId" [(ngModel)]="districtId1"
+                                    (change)="onDistrictChange1(districtId1)">
+                                <option value="0">{{'All District' | localize}}</option>
+                                <option [ngValue]="dpList1.id" *ngFor="let dpList1 of districtsDynamicParameter">
+                                    {{dpList1.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-xl-12 col-lg-12">
+                                <ngx-charts-bar-horizontal [view]="hview" [scheme]="colorScheme" [results]="bar1Count"
+                                                           [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                                           [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="false"
+                                                           [xAxisLabel]="showXAxisLabelHorizontalSubmission" [yAxisLabel]="yAxisLabel"
+                                                           [barPadding]="20" [showDataLabel]="true"></ngx-charts-bar-horizontal>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-6 col-xl-6">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{"CSA  - Facilitywise Summary" | localize}}
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <select class="form-control" name="districtId" [(ngModel)]="districtId2"
+                                    (change)="onDistrictChange2(districtId2)">
+                                <option value="0">{{'All District' | localize}}</option>
+                                <option [ngValue]="dpList2.id" *ngFor="let dpList2 of districtsDynamicParameter">
+                                    {{dpList2.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-xl-12 col-lg-12">
+                                <ngx-charts-bar-horizontal-2d [view]="view" [scheme]="colorScheme3"
+                                                              [results]="bar2Count" [gradient]="gradient"
+                                                              [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                                              [legendPosition]="legendPosition" [showXAxisLabel]="true" [showYAxisLabel]="false"
+                                                              [xAxisLabel]="showXAxisLabelHorizontal" [yAxisLabel]="null" [showDataLabel]="true">
+                                </ngx-charts-bar-horizontal-2d>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="showMoreChart && showChart">
+            <div class="col-6 col-md-6 col-xl-6">
+                <div class="kt-portlet kt-portlet--height-fluid recent-tenants">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{'Entity Assesment' | localize}}<small>{{'(by control category)' | localize}}</small>
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <ng-select [items]="entityList" bindLabel="name"
+                                       bindValue="id" placeholder="Select HealthCare Entity " (change)="onEntityChange(entityId)"
+                                       [(ngModel)]="entityId" class="kt-align-left"
+                                       name="BusinessEntityIds">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                    <ngx-charts-bar-vertical [view]="view2"
+                                                             [scheme]="colorScheme4"
+                                                             [results]="controlTypeResult"
+                                                             [gradient]="false"
+                                                             [xAxis]="true"
+                                                             [yAxis]="true"
+                                                             [legend]="true"
+                                                             [legendPosition]="legendPosition"
+                                                             [showXAxisLabel]="true"
+                                                             [showYAxisLabel]="true"
+                                                             [xAxisLabel]="'Overall Compliance %'"
+                                                             [yAxisLabel]="''"
+                                                             [barPadding]="30"
+                                                             [yScaleMax]="120.00">
+                                    </ngx-charts-bar-vertical>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-6 col-xl-6">
+                <div class="kt-portlet kt-portlet--height-fluid recent-tenants">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                {{'Entity Assesment' | localize}} <small> {{'HIE Control Compliance' | localize}}</small>
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar" style="width:43% !important;">
+                            <ng-select [items]="entityList" bindLabel="name"
+                                       bindValue="id" placeholder="Select HealthCare Entity " (change)="onEntityChange2(entityId2)"
+                                       [(ngModel)]="entityId2" class="kt-align-left"
+                                       name="BusinessEntityIds">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body" [perfectScrollbar] style="margin:0 auto !important;">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div *ngIf="pieChartCount.length!=0">
+                                        <ngx-charts-pie-chart [view]="pieView"
+                                                              [scheme]="colorScheme2"
+                                                              [results]="pieChartCount"
+                                                              [gradient]="gradient"
+                                                              [legend]="showLegend"
+                                                              [legendPosition]="legendPosition"
+                                                              [labels]="showLabels"
+                                                              [doughnut]="isDoughnut">
+                                        </ngx-charts-pie-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'" class="p-0">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{ l("Scheduled Assessment") }}
+                        </h3>
+                    </div>
+
+                    <div class="kt-portlet__head-toolbar">
+                        <div class="form-check-inline" *ngIf="allAssessmentSearchBox">
+
+                            <select style="width:50% !important;" class="form-control kt-padding-r-5" name="selectedResponseType"
+                                    [(ngModel)]="selectedAssessmentStatusFilter " (change)="globalSearch($event)">
+                                <option [ngValue]="0">{{'All' | localize}}</option>
+                                <option [ngValue]="1">{{'Initialized' | localize}}</option>
+                                <option [ngValue]="2">{{'In Review' | localize}} </option>
+                                <option [ngValue]="3">{{'BE Admin Review' | localize}} </option>
+                                <option [ngValue]="4">{{'Entity Group Admin review' | localize}}  </option>
+                                <option [ngValue]="5">{{'Sent To Authority' | localize}}</option>
+                                <option [ngValue]="6">{{'Approved' | localize}}</option>
+                                <option [ngValue]="7">{{'Clarification Needed' | localize}}</option>
+                                <option [ngValue]="9">{{'Not Submitted' | localize}}</option>
+                                <option *ngIf="isAdminFlag" [ngValue]="10">{{'ON' | localize}}</option>
+                                <option *ngIf="isAdminFlag" [ngValue]="11">{{'OFF' | localize}}</option>
+                            </select>
+                            <div class="form-group m-form__group align-items-center kt-margin-b-0 w-100 kt-padding-l-5">
+                                <div class="input-group">
+                                    <input id="StartEndRange" [disabled]="readonly"
+                                           type="datetime"
+                                           #startDatePicker
+                                           name="StartEndRange1"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY'  }"
+                                           autocomplete="off"
+                                           [(ngModel)]="startDate1" />
+                                    &nbsp;
+                                    <input id="StartEndRange" [disabled]="readonly"
+                                           type="datetime"
+                                           #startDatePicker
+                                           name="StartEndRange1"
+                                           class="form-control"
+                                           bsDatepicker
+                                           datePickerMomentModifier
+                                           [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY'  }"
+                                           autocomplete="off"
+                                           [(ngModel)]="endDate1" /> &nbsp;
+                                    <input autofocus [(ngModel)]="filter" class="form-control m-input" [placeholder]="l('SearchWithThreeDot')"
+                                           type="text" />
+                                    <span class="input-group-btn margin-left--5">
+                                        <button (click)="globalSearch($event)" class="btn btn-primary" type="submit">
+                                            <i class="flaticon-search-1"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <button (click)="showAllSchedules()" style="float: right;" *ngIf="assessmentsScheduleBackButton"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            {{'Back to Schedules' | localize}}
+                        </button>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-5">
+                    <div>
+                        <div class="row">
+                            <ul id="tab-nav"
+                                class="w-100 nav nav-tabs nav-tabs-line nav-tabs-line-info nav-tabs-line-2x nav-tabs-line-left"
+                                role="tablist">
+                                <li class="nav-item" [ngClass]="{ 'selectedTab': 1 == selectedItem }"
+                                    *ngIf="('Pages.HealthCareEntities.Assessments.Schedule' | permission)"
+                                    (click)="selectTab(1)">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="hideAllAssessment()">
+                                        {{'Assessments Schedule' | localize}}
+                                    </a>
+                                </li>
+                                <li class="nav-item" (click)="selectTab(2)"
+                                    [ngClass]="{ 'selectedTab': 2 == selectedItem }">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="hideAllAssessment()">
+                                        {{'Schedule Calendar' | localize}}
+                                    </a>
+                                </li>
+                                <li class="nav-item" (click)="selectTab(3)"
+                                    [ngClass]="{ 'selectedTab': 3 == selectedItem }">
+                                    <a class="nav-link kt-padding-l-10 kt-padding-r-10" (click)="ShowAllAssessment()">
+                                        {{'All Assessments' | localize}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="w-100">
+                            <div *ngIf="('Pages.HealthCareEntities.Assessments.Schedule' | permission) && selectedItem == 1">
+                                <div class="row align-items-center" [hidden]="isScheduledDetails">
+                                    <ng-container>
+                                        <grid-assessments-schedule class="w-100"
+                                                                    (modalScheduleSave)="reloadPage()()"
+                                                                   (showSchedules)="showAllSchedulesDetails($event)">
+                                        </grid-assessments-schedule>
+                                    </ng-container>
+                                </div>
+                                <div class="w-100 align-items-center" [hidden]="!isScheduledDetails">
+                                    <ng-container>
+                                        <grid-schedule-detail [scheduleId]="scheduleId"></grid-schedule-detail>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div *ngIf="('Pages.HealthCareEntities.Assessments.ScheduleCalender' | permission) && selectedItem == 2">
+                                <div>
+                                    <angular-calendar-year-view [themecolor]="themecolor" [events]="events"
+                                                                [viewDate]="viewDate" [nothingToshowText]="nothingToshowText"
+                                                                (eventClicked)="eventClicked($event)" (actionClicked)="actionClicked($event)">
+                                    </angular-calendar-year-view>
+                                </div>
+                            </div>
+                            <div *ngIf="selectedItem == 3">
+                                <div class="kt-align-right" *ngIf="isAdminFlag">
+                                    <button (click)="sendNonSubmitted()" *ngIf="allAssessmentSearchBox" style="top:70em; right:3em"
+                                            class="btn btn-brand btn-icon-sm btn-sm border-radius-5 position-absolute kt-padding-r-1">
+                                        {{'Not Submitted' | localize}}
+                                    </button>
+                                </div>
+                                <all-assessments-view #allAssessmentsView></all-assessments-view>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<createScheduleModals #createScheduleModal (modalSave)="loadAllTables()"></createScheduleModals>

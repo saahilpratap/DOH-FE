@@ -1,0 +1,66 @@
+<div appBsModal #CopyToChildModal="bs-modal" id="popup_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CopyToChildModal" aria-hidden="true"
+     [config]="{backdrop: 'static', keyboard: !saving}" style="z-index: auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form *ngIf="active" #copyToChildForm="ngForm" novalidate>
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('Copy To Child')}}
+                    </h4>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div >
+                        <!--<button style="float:right" type="submit"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                                (click)="funcCopyToChild()"
+                                [disabled]="!btncopyToChild"><i class="fa fa-copy"></i> <span>
+                            {{"Copy To Child All" | localize}}</span>
+                        </button>
+                        <br />-->
+                        <br />
+                        <p-progressBar style="width:100% !important; color: #fff" [value]="progressValue"></p-progressBar>
+                        {{progressLabel}}
+                        <br /><br />
+                              <div style="height:60vh" [perfectScrollbar]="{wheelPropagation: false}"
+                                   [ngStyle]="{'min-height': '200px !important', 'position': 'relative'}">
+                                  <p-table                                           
+                                           [paginator]="true" [rows]="10"
+                                           [value]="copyToChildBusinessEntity" [(selection)]="selectedCopyToChildBusinessEntity"
+                                           dataKey="assessementId"
+                                           [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)"
+                                           [rowsPerPageOptions]="[10,25,50,100,200,500]">
+                                      <ng-template pTemplate="header">
+                                          <tr>
+                                              <th style="width: 3rem">
+                                                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                              </th>
+                                              <th hidden>Assessement Id</th>
+                                              <th hidden>Business Entity Id</th>
+                                              <th>Business Entity Name</th>
+                                          </tr>
+                                      </ng-template>
+                                      <ng-template pTemplate="body" let-product>
+                                          <tr>
+                                              <td>
+                                                  <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                                              </td>
+                                              <td hidden>{{product.assessementId}}</td>
+                                              <td hidden>{{product.businessEntityId}}</td>
+                                              <td>{{product.businessEntityName}}</td>
+                                          </tr>
+                                      </ng-template>
+                                  </p-table>
+                              </div>                       
+                    </div>                   
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Close" | localize}}</button>
+                    <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [ngClass]="{ 'no-drop' : !btnCopy }" [disabled]="!btnCopy" (click)="funcCopyToChild()"><i class="fa fa-copy"></i> <span>{{"Copy" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

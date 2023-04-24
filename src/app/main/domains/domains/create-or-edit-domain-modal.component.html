@@ -1,0 +1,87 @@
+<div
+    bsModal
+    #createOrEditModal="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="createOrEditModal"
+    aria-hidden="true"
+    [config]="{ backdrop: 'static' }"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active"
+                #domainForm="ngForm"
+                novalidate
+                (ngSubmit)="save()"
+                autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="domain.id && isReadOnly==0">{{ l("EditDomain") }}</span>
+                        <span *ngIf="domain.id && isReadOnly==1">{{ l("View Domain") }}</span>
+                        <span *ngIf="!domain.id && isReadOnly==0">{{l("CreateNewDomain")}}</span>
+                    </h4>
+                    <button type="button"
+                        class="close"
+                        (click)="close()"
+                        aria-label="Close"
+                        [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [ngClass]=" isReadOnly==1 ? 'pointerNone' : 'pointerAuto'">
+                    <div class="form-group">
+                        <label for="Domain_Code" class="required">{{ l("ADD_ID") }} </label>
+                        <input type="text"
+                            id="Domain_Code"
+                            class="form-control"
+                            placeholder="System Generated"
+                            [(ngModel)]="domain.code"
+                            name="Code"  disabled />
+                    </div>
+
+                    <div class="form-group m-form__group">
+                        <label for="AuthoritativeDocumentName" class="required">{{l("Authoritative Document")}}</label>
+                        <div>
+                            <ng-select [items]="authorativeDocument" [searchable]="true" bindLabel="name"
+                                       bindValue="id" placeholder="Select AuthoritativeDocument"
+                                       [(ngModel)]="domain.authoritativeDocumentId"
+                                       name="AuthoritativeDocumentId">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <input class="form-control"
+                        name="domain.authoritativeDocumentId"
+                        [(ngModel)]="domain.authoritativeDocumentId"
+                        type="text"
+                        required
+                        hidden/>
+                    <div class="form-group">
+                        <label for="Domain_Name" class="required">{{ l("Domain Name") }}</label>
+                        <input type="text"
+                            id="Domain_Name"
+                            class="form-control"
+                            [(ngModel)]="domain.name"
+                            name="Name" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving"
+                        type="button"
+                        class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                        (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit" *ngIf="isReadOnly != 1"
+                        [ngClass]=" isReadOnly==1 ? 'pointerNone' : 'pointerAuto'"
+                        class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                        [disabled]="!domainForm.form.valid"
+                        [buttonBusy]="saving"
+                        [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

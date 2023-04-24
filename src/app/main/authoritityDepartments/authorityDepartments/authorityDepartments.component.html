@@ -1,0 +1,217 @@
+<div [@routerTransition]>
+  <div
+    class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
+  >
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+        <div class="kt-subheader__main">
+          <h3 class="kt-subheader__title">
+            <span>{{ l("Authority Departments") }}</span>
+          </h3>
+          <span
+            class="kt-subheader__separator kt-subheader__separator--v"
+          ></span>
+          <span class="kt-subheader__desc">
+            {{ l("Authority Departments Header Info") }}
+          </span>
+        </div>
+        <div class="kt-subheader__toolbar">
+          <div class="kt-subheader__wrapper">
+            <button
+              (click)="exportToExcel()"
+              *ngIf="exceptionPermission && exportButtonHide"
+              class="btn btn-outline-success"
+            >
+              <i class="fa fa-file-excel"></i>
+              {{ l("ExportToExcel") }}
+            </button>
+            <button
+              *ngIf="isGranted('Pages.OrganizationSetup.AuthorityDepartments.Create')"
+              (click)="createAuthorityDepartment()"
+              class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+            >
+              <i class="fa fa-plus"></i>
+              {{ l("CreateNewAuthorityDepartment") }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+      <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head">
+          <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+              {{l('Authority Departments')}}
+            </h3>
+          </div>
+          <div class="kt-portlet__head-toolbar">            
+            <div class="form-group m-form__group align-items-center kt-margin-b-0">
+              <div class="input-group">
+                <input
+                  [(ngModel)]="filterText"
+                  name="filterText"
+                  autofocus
+                  class="form-control m-input"
+                  [placeholder]="l('SearchWithThreeDot')"
+                  type="text"
+                />
+                <span class="input-group-btn margin-left--5">
+                  <button
+                    (click)="getAuthorityDepartments()"
+                    class="btn btn-primary"
+                    type="submit"
+                  >
+                    <i class="flaticon-search-1"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kt-portlet__body kt-padding-t-10">
+          <div class="row" [hidden]="!advancedFiltersAreShown">
+            <!--<div class="col-md-3">
+              <div class="form-group kt-margin-b-10">
+                <label for="NameFilter">
+                  {{l("Name")}}
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NameFilter"
+                  name="nameFilter"
+                  [(ngModel)]="nameFilter"
+                />
+              </div>
+            </div>-->
+          </div>
+          <!--<div class="row mb-2">
+            <div class="col-sm-12">
+              <span
+                class="clickable-item text-muted"
+                *ngIf="!advancedFiltersAreShown"
+                (click)="advancedFiltersAreShown = !advancedFiltersAreShown">
+                <i class="fa fa-angle-down"></i>
+                {{ l("ShowAdvancedFilters") }}
+              </span>
+              <span
+                class="clickable-item text-muted"
+                *ngIf="advancedFiltersAreShown"
+                (click)="advancedFiltersAreShown = !advancedFiltersAreShown"
+              >
+                <i class="fa fa-angle-up"></i>
+                {{ l("HideAdvancedFilters") }}
+              </span>
+            </div>
+          </div>-->
+          <div class="row align-items-center">         
+            <div
+              class="primeng-datatable-container col-12"
+              [busyIf]="primengTableHelper.isLoading"
+            >
+              <div>
+                <p-table
+                  #dataTable
+                  (onLazyLoad)="getAuthorityDepartments($event)"
+                  [value]="primengTableHelper.records"
+                  [selection]="selectedRowData"
+                  (selectionChange)="onSelectionChange($event)"
+                  rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                  [paginator]="false"
+                  [lazy]="true"
+                  [scrollable]="true"
+                  ScrollWidth="100%"
+                  [responsive]="primengTableHelper.isResponsive"
+                  [resizableColumns]="primengTableHelper.resizableColumns"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>                      
+                      <th
+                        style="width: 10%;"
+                        [hidden]="!isGrantedAny('Pages.OrganizationSetup.AuthorityDepartments.Edit',
+                                                    'Pages.OrganizationSetup.AuthorityDepartments.Delete')"
+                      >
+                        {{ l("Actions") }}
+                      </th>
+                      <th style="width: 88%;" pSortableColumn="name">
+                        {{ l("Name") }}
+                        <p-sortIcon field="authorityDepartment.name"></p-sortIcon>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template
+                    pTemplate="body"
+                    let-rowData
+                    let-record="$implicit"
+                  >
+                    <tr [pSelectableRow]="rowData">                     
+                      <td
+                        style="width: 10%;"
+                        
+                      >
+                        <a  *ngIf="permission.isGranted('Pages.OrganizationSetup.AuthorityDepartments.View')" class="kt-padding-r-20" (click)="createOrEditAuthorityDepartmentModal.show(record.authorityDepartment.id,1)">
+                          <i
+                            class="far fa-eye icon-font-size-1 kt-font-success"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="permission.isGranted('Pages.OrganizationSetup.AuthorityDepartments.Edit')"
+                          (click)="createOrEditAuthorityDepartmentModal.show(record.authorityDepartment.id)"
+                        >
+                          <i
+                            class="fas fa-pencil-alt icon-font-size-1 kt-font-info kt-padding-r-20"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="permission.isGranted('Pages.OrganizationSetup.AuthorityDepartments.Delete')"
+                          (click)="deleteAuthorityDepartment(record.authorityDepartment)"
+                        >
+                          <i
+                            class="fas fa-trash-alt icon-font-size-1 kt-font-danger"
+                          ></i>
+                        </a>
+                      </td>
+                      <td style="width: 88%;">
+                        <span class="ui-column-title">
+                          {{ l("Name") }}
+                        </span>
+                        {{record.authorityDepartment.name}}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div
+                class="primeng-no-data"
+                *ngIf="primengTableHelper.totalRecordsCount == 0"
+              >
+                {{ l("NoData") }}
+              </div>
+              <div class="primeng-paging-container mt-2">
+                <p-paginator
+                  [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                  #paginator
+                  (onPageChange)="getAuthorityDepartments($event)"
+                  [totalRecords]="primengTableHelper.totalRecordsCount"
+                  [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                >
+                </p-paginator>
+                <span class="total-records-count">
+                  {{l("TotalRecordsCount",primengTableHelper.totalRecordsCount)}}
+                </span>
+              </div>
+            </div>
+            <!--<Primeng-Datatable-End>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <createOrEditAuthorityDepartmentModal
+      #createOrEditAuthorityDepartmentModal
+      (modalSave)="getAuthorityDepartments()"
+    ></createOrEditAuthorityDepartmentModal>
+    <!-- <viewAuthorityDepartmentModal #viewAuthorityDepartmentModal></viewAuthorityDepartmentModal> -->
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<!--<span class="input-group-append" *ngIf="data">
+    <i class="la la-info-circle" data-toggle="popover"
+       data-trigger="hover" data-html="true" [popover]="popTemplate"
+       triggers="mouseenter:mouseleave"></i>
+    <ng-template #popTemplate>
+        <span>
+            {{data}}
+        </span>
+    </ng-template>
+</span>-->
+
+<span class="float-right" *ngIf="data.length > showLength">
+    <a id="tooltip_dx_{{index}}" (mouseenter)="toggleDefault(index)"
+       (mouseleave)="toggleDefault(index)"> <i class="font-weight-bold la la-info-circle"></i></a>
+    <dx-tooltip target="#tooltip_dx_{{index}}"
+                position="top"
+                *ngIf="defaultVisible1  == index"
+                [(visible)]="defaultVisible"
+                [hideOnOutsideClick]="false">
+        <dxo-animation>
+            <dxo-show type="slide"
+                      [from]="{ top: -100, opacity: 0 }"
+                      [to]="{ opacity: 1, top: 0 }"></dxo-show>
+            <dxo-hide type="pop"
+                      [from]="{ scale: 1, opacity: 1 }"
+                      [to]="{ opacity: 0, scale: 0.1 }"></dxo-hide>
+        </dxo-animation>
+        <span> {{data}} </span>
+    </dx-tooltip>
+</span>

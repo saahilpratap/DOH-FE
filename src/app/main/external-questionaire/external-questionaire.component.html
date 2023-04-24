@@ -1,0 +1,467 @@
+<p-overlayPanel #op [style]="{width: '450px'}" [showCloseIcon]="true" [appendTo]="'body'" [styleClass]="'custom-overlay'">
+    <ng-template pTemplate>
+        <div>
+            <label>{{'Response Value' | localize}}</label>
+            <div class="kt-form__control"
+                 style="width: 100%;">
+                <ng-select [items]="tableResponseTypes"
+                           [searchable]="false"
+                           bindLabel="name"
+                           bindValue="id"
+                           [(ngModel)]="input.updatedResponseType"
+                           placeholder="Not Selected"
+                           style="float:left;width:100% !important;">
+                </ng-select>
+            </div>
+        </div>
+        <div class="kt-padding-t-10 kt-align-right mt-5">
+            <button type="submit" class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                    (click)="saveOverlayPanel()">
+                <i class="fa fa-save"></i> <span>{{"Save" | localize}}</span>
+            </button>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-padding-0"
+     id="kt_qustionaire">
+    <div class="kt-subheader   kt-grid__item" id="kt_subheader" *ngIf="!headerTab">
+        <div class="kt-container  kt-container--fluid ">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">{{"External Audit Entities" | localize}}</h3>
+                <span class="kt-subheader__separator kt-hidden"></span>
+                <div class="kt-subheader__breadcrumbs">
+                    <a class="kt-subheader__breadcrumbs-home">
+                        <i class="flaticon2-shelter"></i>
+                    </a>
+                    <span class="kt-subheader__breadcrumbs-separator"></span>
+                    <a class="kt-subheader__breadcrumbs-link" routerLink="/app/main/externalAssessments/externalAssessments">
+                        {{"All External Assessments" | localize}}
+                    </a>
+                    <span class="kt-subheader__breadcrumbs-separator"></span>
+                    <a class="kt-subheader__breadcrumbs-link">
+                        {{"Questionaires of assessment" | localize}}
+                    </a>
+                    <span class="kt-subheader__breadcrumbs-separator"></span>
+                </div>
+            </div>
+            <div class="kt-subheader__toolbar" style="color:#000000">
+                <div class="kt-radio-inline kt-padding-r-10">
+                    <label class="kt-radio">
+                        <input type="radio" [checked]="true" (change)="changeView('VerticalView')"
+                               name="vhView">{{"Vertical View" | localize}}
+                        <span></span>
+                    </label>
+                    <label class="kt-radio">
+                        <input type="radio" name="vhView" (change)="changeView('HorizontalView')">{{"Horizontal View" | localize}}
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid pl-0 pr-0">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head kt-portlet__head--lg">
+                <div class="kt-portlet__head-label">
+                    <!--<span>
+            <h3 class="kt-portlet__head-title">
+                {{"Questionaires of assessment" | localize}} :
+                <small>
+                    <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5" style="min-width: 100px" *ngIf="!needsClarification">
+                        {{assessmentStatus[originalAssessmentDetails.status]}}
+                    </span>
+                </small>
+                <small>
+                    <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5" style="min-width: 100px" *ngIf="needsClarification">
+                        {{assessmentStatus[assessmentStatus.NeedsClarification]}}
+                    </span>
+                </small>
+            </h3>
+        </span>-->
+
+
+                    <span class="kt-padding-l-10" [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+                        <span style="border-radius: 5px; color: #4fa6b0 !important" class="kt-font-bolder border text-nowrap kt-padding-5 kt-margin-r-10">
+                            {{"Questions" | localize}} :
+                            <span class="badge badge-light" style="border-radius: 5px;">{{questionCount}}</span>
+                        </span>
+                    </span>
+                    <!--<span [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+            <span style="border-radius: 5px; color: #4fa6b0 !important" class="kt-font-bolder border text-nowrap kt-padding-5 kt-margin-r-10" (click)="goToAuditProjectList()">
+                <u style="cursor: pointer;color:blue !important"> {{entityName}}</u>
+            </span>
+        </span>-->
+
+
+                    <div class="btn-group btn" dropdown *ngIf="isGrantedAny('Pages.AuditManagement.ExternalAssessments.Import')"
+                         [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+                        <button dropdownToggle
+                                type="button"
+                                class="btn btn-outline-success dropdown-toggle btn-sm"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false" [disabled]="reauditPermission && beforeJanPermission">
+                            <i class="far fa-file-excel"></i> {{"Import" |localize}}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-excel-operations"
+                             *dropdownMenu>
+                            <a href="javascript:;" class="no-padding">
+                                <span class="fileinput-button">
+                                    <p-fileUpload customUpload="true"
+                                                  name="ExcelFileUpload"
+                                                  #ExcelFileUpload
+                                                  maxFileSize="10000000"
+                                                  auto="auto"
+                                                  accept=".csv,.xls,.xlsx"
+                                                  (uploadHandler)="importExternalAssessmentResponse($event)" 
+                                                  chooseLabel="{{'ImportFromExcel' | localize}}">
+                                    </p-fileUpload>
+                                </span>
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+                        </div>
+                        <button style="margin-left:5px !important;" (click)="exportToExcel()"
+                                class="btn btn-outline-success btn-sm">
+                            <i class="fa fa-file-excel"></i>
+                            {{ l("Export") }}
+                        </button>
+                    </div>
+                </div>
+                <ng-container >
+                    <div class="kt-portlet__head-toolbar" [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+                        <button type="button"
+                                (click)="savePrimaryAssessmentReview()"
+                                style="background-color: #db1430; border-radius: 5px;"
+                                class="btn btn-brand btn-icon-sm kt-margin-r-5 border-0 btn-sm"
+                                aria-haspopup="true"
+                                aria-expanded="false" [disabled]="reauditPermission">
+                            {{"Save" | localize}}
+                        </button>
+                        <span class="kt-portlet__head-wrapper"
+                              style="padding-right: 10px;">
+                            <button type="button" *ngIf="sendToAuthorityButtonFlag && endAssessmentPermission"
+                                    (click)="showAgreementModal()"
+                                    style="border-radius: 5px;"
+                                    class="btn btn-default btn-icon-sm btn-sm btn-sm btn-icon-sm btn-sm"
+                                    aria-haspopup="true"
+                                    aria-expanded="false" [disabled]="reauditPermission" >
+                                {{"End Assessment" | localize}}
+                            </button>
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="kt-portlet__body kt-portlet__head"
+                 style="padding: 10px 10px;">
+                <div class="kt-form kt-form--label-right kt-margin-t-5 kt-margin-b-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="responseType">{{"Response Type" | localize}}</label>
+                                <ng-select [items]="responseTypes"
+                                           [searchable]="false"
+                                           bindLabel="name"
+                                           bindValue="id"
+                                           placeholder="All"
+                                           (change)="onResponseSelectChange($event)">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="selfAssessmentEntityResponse">{{"Self Assessment Entity Response" | localize}}</label>
+                                <ng-select [items]="responseTypes"
+                                           [searchable]="false"
+                                           bindLabel="name"
+                                           bindValue="id"
+                                           placeholder="All"
+                                           (change)="onSelfAssessmentReponseChange($event)">
+                                </ng-select>
+                            </div>
+                        </div>                     
+                    </div>
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-portlet__body--fit"
+                 style="border-bottom: 1px solid #e3e3e3;">
+                <div class="container1" style="margin-top: 10px;">
+                    <div class="row" style="width: 98%;" [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+                        <div class="col-2" style="text-align: center;">
+                            <span>{{"Overall Progress" | localize}}</span>
+                        </div>
+                        <div class="col-9 overallProgressBar" style="height:10px !important"
+                             [pTooltip]="overallProgress + '%'" tooltipPosition="top">
+                            <div class="progress kt-progress--sm kt-margin-t-5 kt-margin-b-5" style="height: 10px;">
+                                <div class="progress-bar kt--bg-info" role="progressbar" style="background-color:lightgreen" [ngStyle]="{width: overallProgress + '%'}"></div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <span class="kt-font-sm kt-font-bolder">{{overallProgress}}%</span>
+                        </div>
+                    </div>
+                    <div *ngIf="verticalView">
+                        <div class="">
+                            <div class="kt-padding-t-10" style="width:80%; float:right"
+                                 [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+                                <div [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'width': '100%', 'position': 'relative'}">
+                                    <table class="table" *ngIf="assessmentDetails != undefined" style="margin-bottom: 15em !important">
+                                        <thead>
+                                            <tr style="background-color:#e0e0e0; min-height:64px">
+                                                <th class="font-weight-bold" style="width:30px"></th>
+                                                <th class="font-weight-bold" style="width:50px">{{"CRID" | localize}}</th>
+                                                <th class="font-weight-bold" style="width:200px">
+                                                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="font-weight-bold">
+                                                        {{"Control Requirements" | localize}}
+                                                    </div>
+                                                </th>
+                                                <th class="font-weight-bold" style="width:140px;padding-left:0px !important;padding-right:0px !important;">{{"Type" | localize}}</th>
+                                                <th class="font-weight-bold" style="width:200px">{{"Response" | localize}}</th>
+                                                <th class="font-weight-bold" style="width:140px;padding-left:0px !important;padding-right:0px !important;">{{"Updated Res" | localize}}.</th>
+                                                <th class="font-weight-bold" style="width:200px;">
+                                                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="font-weight-bold">
+                                                        {{"Comments / Justification" | localize}}
+                                                    </div>
+                                                </th>
+                                                <th style="width:150px;">
+                                                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="font-weight-bold">
+                                                        {{"SAR" | localize}}
+                                                        <i style="font-size: 18px !important;" class="la la-refresh icon-font-size mouse-hover kt-font-info kt-margin-l-5" (click)="refreshSAR()"></i>
+                                                    </div>
+                                                </th>
+                                                <th style="width:50px" *ngIf="!showFinding">
+                                                </th>
+                                                <th style="width:50px" class="font-weight-bold">{{"Attachments" | localize}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr *ngFor="let item of assessmentDetails.reviews;let i = index">
+                                            <td style="width:30px">
+                                                <i *ngIf="item.reviewQuestions.length>0" class="la la-question-circle icon-font-size mouse-hover kt-font-info"
+                                                   (click)="commonQuestionaire.show(item)"></i>
+                                            </td>
+                                            <td>{{item.controlRequirementOriginalId}}</td>
+                                            <td>
+                                                <div style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                                        -webkit-box-orient: vertical;-webkit-line-clamp: 3;"
+                                                     [title]="item.controlRequirementDescription">
+                                                    {{item.controlRequirementDescription}}
+                                                </div>
+                                            </td>
+                                            <td style="width:140px;"> {{item.additionalComment}}</td>
+                                            <td class="kt-padding-l-0 kt-padding-r-0 form-check-inline" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                                <ng-select [disabled]="!canEditQuestionaire"
+                                                           [items]="responseTypes"
+                                                           [searchable]="false"
+                                                           bindLabel="name"
+                                                           
+                                                           bindValue="id"                                                          
+                                                           [(ngModel)]="item.type"
+                                                           (change)="checkFindingforControl(item)"
+                                                           placeholder="Not Selected"
+                                                           style="float:left;width:150px !important;">
+                                                </ng-select>
+                                                <i *ngIf="item.type!=undefined" style="font-size: 18px !important;float:left;"
+                                                   class="icon-font-size mouse-hover kt-font-info kt-margin-l-5"
+                                                   (click)="op.toggle($event)">
+                                                    <img src="../../../assets/common/images/updated.svg" (click)="updateResponse(item)" width="20" height="20" />
+                                                </i>
+                                            </td>
+                                            <td style="width:140px;cursor:none" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                                <span *ngIf="item.updatedResponseType!=0" style="margin-bottom: 0px !important;"><b>{{getUpdatedResponse(item.updatedResponseType)}}</b></span>
+                                            </td>
+                                            <td [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                                <textarea style="width: 100%;" rows="2" pInputTextarea placeholder="Enter Comment" autoResize="autoResize"
+                                                          [(ngModel)]="item.comment" [readonly]="!canEditQuestionaire">
+                                                     </textarea>
+                                            </td>
+                                            <td>
+                                                <label [title]="item.assessmentName"> {{getSAR(item.controlRequirementId)}}</label>
+                                            <td *ngIf="showFinding">
+                                                <button class="btn btn-sm" (click)="createOrEditFindingModal.show(item.controlRequirementId,BusinessEntityId,assessmentId,vendorId,auditmanagerId,vendorId,auditmanagerId)"><i class="kt-font-boldest kt-font-info kt-font-lg mouse-hover"> <img src="../../../assets/common/images/verify.svg" width="20" height="20" /></i></button>
+                                            </td>
+                                            <td style="width:50px" *ngIf="!showFinding">
+                                                <div [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                                    <i class="kt-font-boldest kt-font-info kt-font-lg mouse-hover" (click)="createOrEditFindingModal.show(item.controlRequirementId,BusinessEntityId,assessmentId,vendorId,auditmanagerId,item.type)">
+                                                        <img src="../../../assets/common/images/verify.svg" width="20" height="20" />
+                                                    </i>
+                                                </div>
+                                            </td>
+                                            <td style="width:50px">
+                                                <div *ngFor=" let data of item.attachments " style="display: inline-flex;">
+                                                    <a class="text-info" tooltip="{{data.fileName}}" (click)="downloadAttachment(data.code)" 
+                                                       style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width:50px; text-decoration: underline">
+                                                        {{ data.fileName }}
+                                                    </a>
+                                                    &nbsp;<img [src]="item.attachments.fileNamefileName"
+                                                               style="cursor: pointer;" />
+                                                    <i class="fa fa-trash-alt text-danger h5 cursor-pointer"
+                                                       (click)="removeAttachment(data.code)" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"></i>
+                                                </div>
+                                                <div *ngIf=" item.attachments.length == 0 " style="text-align: center;" [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}">
+                                                    <img src="assets/common/images/attachment.svg" style="cursor: pointer;" (click)="inputFile.click()" />
+                                                    <input name="file" id="file" (change)=" uploadAttachment( $event, item.id )" type="file"
+                                                           #inputFile
+                                                           hidden />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="kt-padding-l-5 kt-padding-t-10" style="width:20%;">
+                                <div class="border" style="border: 1px solid #e0e0e0 !important;">
+                                    <div class="kt-padding-5 font-weight-bold" style="background-color: #e0e0e0; height: 45px; color:#000; font-weight:500; padding:12px !important; min-height:47px; padding-top:14px !important; text-align:center;">Domains</div>
+                                    <div *ngFor="let item of domainNames; index as i" (click)="getData(item, i)" (click)="lastClicked(i)"
+                                         class="kt-margin-5 kt-padding-10 mouse-hover-vertical-view kt-portlet kt-padding-b-5 border-radius-10 border border-radius-10 kt-margin-t-20 mouse-hover"
+                                         [ngClass]="{ 'selected': i == selectedItem }">
+                                        <div class="kt-font-boldest kt-font-sm">{{item.text1}}</div>
+                                        <div class="kt-font-bold kt-font-sm" style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                -webkit-box-orient: vertical;-webkit-line-clamp: 1;">{{ item.text2 }}</div>
+                                        <div class="row">
+                                            <div class="col-10" style="padding-top:3px !important">
+                                                <div class="progress kt-progress--sm kt-margin-t-5 kt-margin-b-5" style="height: 5px;">
+                                                    <div class="progress-bar kt--bg-info" role="progressbar" [ngStyle]="{width: item.width + '%'}"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 padding-left">
+                                                <span class="kt-font-sm kt-font-bolder">{{item.width}}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="horizontalView">
+                        <div class="kt-portlet kt-margin-b-5">
+                            <div class="border kt-padding-5 kt-margin-l-5 kt-margin-r-5">
+                                <div class="kt-padding-5" style="background-color: #e0e0e0; height: 40px; color:#000; font-weight:500; padding:10px !important">Domains</div>
+                                <div class="row kt-margin-l-5 kt-margin-r-5">
+                                    <div class="col-2 kt-align-center kt-padding-5 border-radius-10 mouse-hover"
+                                         *ngFor="let item of domainNames; index as i"
+                                         (click)="getData(item, i)">
+                                        <div class="kt-portlet kt-padding-5 kt-padding-t-5 kt-margin-b-0 mouse-hover-horizontal-view border-radius-10 border"
+                                             [ngClass]="{ 'selected': i == selectedItem }">
+                                            <div class="kt-font-boldest kt-font-sm">{{item.text1}}</div>
+                                            <div style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                    -webkit-box-orient: vertical;-webkit-line-clamp: 1;"
+                                                 class="kt-font-bold kt-font-sm">{{ item.text2 }}</div>
+                                            <div class="row">
+                                                <div class="col-9" style="padding-top:3px !important">
+                                                    <div class="progress kt-progress--sm kt-margin-t-5 kt-margin-b-5" style="height: 5px;">
+                                                        <div class="progress-bar kt--bg-info" role="progressbar" [ngStyle]="{width: item.width + '%'}"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3 padding-left">
+                                                    <span class="kt-font-sm kt-font-bolder">{{item.width}}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-padding-r-5 kt-padding-l-5 kt-padding-t-15"
+                             [ngClass]=" assessmentStatus[originalAssessmentDetails.status] == 'AuditApproved' ? 'pointerNone' : 'pointerAuto'">
+                            <table class="table" *ngIf="assessmentDetails != undefined" style="margin-bottom: 12em !important">
+                                <thead>
+                                    <tr style="background-color:#e0e0e0">
+                                        <th style="width:30px"></th>
+                                        <th style="width:50px">{{"CRID" | localize}}</th>
+                                        <th style="width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{"Control Requirements" | localize}}</th>
+                                        <th style="width:140px;padding-left:0px !important;padding-right:0px !important;">{{"Type" | localize}}</th>
+                                        <th style="width:200px">{{"Response" | localize}}</th>
+                                        <th style="width:140px;padding-left:0px !important;padding-right:0px !important;">{{"Updated Res" | localize}}.</th>
+                                        <th style="width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{"Comments / Justification" | localize}}</th>
+                                        <th style="width:50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            {{"SAR" | localize}}
+                                            <i style="font-size: 18px !important;" class="la la-refresh icon-font-size mouse-hover kt-font-info kt-margin-l-5" (click)="refreshSAR()"></i>
+                                        </th>
+                                        <th style="width:50px" *ngIf="!showFinding">
+                                        </th>
+                                        <th style="width:100px">{{"Attachments" | localize}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of assessmentDetails.reviews;let i = index">
+                                        <td style="width:30px">
+                                            <i *ngIf="item.reviewQuestions.length>0" class="la la-question-circle icon-font-size mouse-hover kt-font-info"
+                                               (click)="commonQuestionaire.show(item)"></i>
+                                        </td>
+                                        <td style="width:50px">{{item.controlRequirementOriginalId}}</td>
+                                        <td style="width:200px">
+                                            <div style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;
+                                                        -webkit-box-orient: vertical;-webkit-line-clamp: 3;"
+                                                 [title]="item.controlRequirementDescription">
+                                                {{item.controlRequirementDescription}}
+                                            </div>
+                                        </td>
+                                        <td style="width:140px;"> {{item.additionalComment}}</td>
+                                        <td style="width:200px" class="form-check-inline">
+                                            <ng-select [disabled]="!canEditQuestionaire"
+                                                       [items]="responseTypes"
+                                                       [searchable]="false"
+                                                       bindLabel="name"                                                     
+                                                       bindValue="id"
+                                                       [(ngModel)]="item.type"
+                                                       placeholder="Not Selected"
+                                                       (change)="onSelectChange($event)"
+                                                       style="float:left;width:150px !important;">
+                                            </ng-select>
+                                            <i *ngIf="item.type!=undefined" style="font-size: 18px !important;float:left;"
+                                               class="icon-font-size mouse-hover kt-font-info kt-margin-l-5"
+                                               (click)="op.toggle($event)">
+                                                <img src="../../../assets/common/images/updated.svg" (click)="updateResponse(item)" width="20" height="20" />
+                                            </i>
+                                        </td>
+                                        <td style="width:140px;cursor:none">
+                                            <span *ngIf="item.updatedResponseType!=0" style="margin-bottom: 0px !important;"><b>{{getUpdatedResponse(item.updatedResponseType)}}</b></span>
+                                        </td>
+                                        <td style="width:200px">
+                                            <textarea style="width: 100%;min-height:20px" rows="2" pInputTextarea placeholder="Enter Comment" autoResize="autoResize"
+                                                      [(ngModel)]="item.comment" [readonly]="!canEditQuestionaire ">
+                                        </textarea>
+                                        </td>
+                                        <td style="width:50px">
+                                            <label [title]="item.assessmentName"> {{getSAR(item.controlRequirementId)}}</label>
+                                        </td>
+                                        <td style="width:50px">
+                                            <i class="kt-font-boldest kt-font-info kt-font-lg mouse-hover"
+                                               (click)="createOrEditFindingModal.show(item.controlRequirementId,BusinessEntityId,assessmentId,vendorId,auditmanagerId,item.type)">
+                                                <img src="../../../assets/common/images/verify.svg" width="20" height="20" />
+                                            </i>
+                                        </td>
+                                        <td style="width:100px">
+                                            <div *ngFor=" let data of item.attachments " class="w-100" style="display: inline-flex;">
+                                                <a class="w-75 text-info" tooltip="{{data.fileName}}" (click)="downloadAttachment(data.code)"
+                                                   style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-decoration: underline">
+                                                    {{ data.fileName }}
+                                                </a>
+                                                &nbsp;
+                                            </div>
+                                            <div *ngIf=" item.attachments.length == 0" style="text-align: center;">
+                                                <img src="assets/common/images/attachment.svg" style="cursor: pointer;" (click)="inputFile.click()" />
+                                                <input name="file" id="file" (change)=" uploadAttachment( $event, item.id )" type="file" #inputFile hidden />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<lastUpdateResponse #lastUpdateResponse (modalSave)="refreshSAR()"></lastUpdateResponse>
+<createOrEditExternalControlRequirementModal #createOrEditExternalQuestionModal (modalSave)="getAssessmentQuestionares()"></createOrEditExternalControlRequirementModal>
+<externalComplianceQuestionaireModals #externalComplianceQuestionaireModals></externalComplianceQuestionaireModals>
+<commonQuestionaireModals #commonQuestionaire [showResponseType]="true"
+                          (modalSave)="attachReviewData($event)"></commonQuestionaireModals>
+<app-assessment-agreement-modal #assessmentAgreementModal (modalSave)="tryPublish()"></app-assessment-agreement-modal>
+<addUpdateExtAssessmentData #addUpdateExtAssessmentDataModal></addUpdateExtAssessmentData>
+<createOrEditfindingReportModal #createOrEditFindingModal></createOrEditfindingReportModal>

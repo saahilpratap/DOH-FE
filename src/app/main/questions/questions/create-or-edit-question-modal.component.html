@@ -1,0 +1,205 @@
+<div
+    bsModal
+    #createOrEditModal="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="createOrEditModal"
+    aria-hidden="true"
+    [config]="{ backdrop: 'static' }"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form
+                *ngIf="active"
+                #questionForm="ngForm"
+                novalidate
+                (ngSubmit)="save()"
+                autocomplete="off"
+            >
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="question.id && hideButton == 1">{{ l("View Question") }}</span>
+                        <span *ngIf="question.id && hideButton != 1">{{ l("EditQuestion") }}</span>
+                        <span *ngIf="!question.id">{{l("CreateNewQuestion")}}</span>
+                    </h4>
+                    <button
+                        type="button"
+                        class="close"
+                        (click)="close()"
+                        aria-label="Close"
+                        [disabled]="saving"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Question_Code">
+                                        {{
+                                        l("QuestionID")
+                                        }}
+                                    </label>
+                                    <input type="text"
+                                           id="Question_Code"
+                                           class="form-control"
+                                           [(ngModel)]="question.code"
+                                           placeholder="System Generated"
+                                           name="Code"
+                                           disabled />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Question_Name" class="required">
+                                        {{
+                                        l("Name")
+                                        }}
+                                    </label>
+                                    <input required
+                                           type="text"
+                                           id="Question_Name"
+                                           class="form-control"
+                                           [(ngModel)]="question.name"
+                                           name="Name" />
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Question_Mandatory">
+                                        {{l("Mandatory")}}
+                                    </label>
+                                    <br />
+                                    <p-inputSwitch [(ngModel)]="question.mandatory" name="mandatory"></p-inputSwitch>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="Question_Description"  class="required">{{
+                                        l("Description")
+                                    }}</label>
+                                    <textarea
+                                        required
+                                        type="text"
+                                        id="Question_Description"
+                                        class="form-control"
+                                        [(ngModel)]="question.description"
+                                        name="Description"
+                                    >
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="Answer_Type">
+                                        {{
+                                        l("Answer Type")
+                                        }}
+                                    </label>
+                                    <select (change)="onAnswerTypeChange()"
+                                            class="form-control"
+                                            name="Type"
+                                            id="Answer_Type"
+                                            [(ngModel)]="question.answerType">
+                                        <option value="1">
+                                            {{
+                                            l("List")
+                                            }}
+                                        </option>
+
+                                        <option value="2">
+                                            {{
+                                            l("Logical")
+                                            }}
+                                        </option>
+                                        <option value="3">
+                                            {{
+                                            l("Input")
+                                            }}
+                                        </option>
+
+                                        <option value="4">
+                                            {{
+                                            l("Multiselect")
+                                            }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="container">
+                                    <div class="row"
+                                         *ngIf="hasAnyAnswerOption()">
+                                        <div class="col-sm-5">
+                                            <label> {{ l("Answer Option")}}</label>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <label>{{l("Answer Score")}}</label>
+                                        </div>
+                                        <div class="col-sm-1"
+                                             *ngIf="!isAnswerTypeLogical()">
+                                            <button type="button" style="background-color: blue; color: #fff;"
+                                                    class="border-0" (click)="addAnswerOption()">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row"
+                                         *ngFor="let answerOption of question.answerOptions;let i = index">
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <input type="text" name="answerOption.value{{i}}"
+                                                       class="form-control" [(ngModel)]="answerOption.value" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <input type="text" name="answerOption.score{{i}}"
+                                                       class="form-control" [(ngModel)]="answerOption.score" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-1" *ngIf="i != 0 && !isAnswerTypeLogical()">
+                                            <button type="button" style="background-color:red; color:#fff"
+                                                    class="border-0"
+                                                    (click)="deleteAnswerOption(answerOption)">
+                                                <span class="fa fa-times"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        [disabled]="saving"
+                        type="button"
+                        class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                        (click)="close()"
+                    >
+                        {{ l("Cancel") }}
+                    </button>
+                    <button
+                        type="submit" *ngIf="hideButton != 1"
+                        [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'"
+                        class="btn btn-brand btn-icon-sm btn-sm border-radius-5"
+                        [disabled]="!questionForm.form.valid"
+                        [buttonBusy]="saving"
+                        [busyText]="l('SavingWithThreeDot')"
+                    >
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

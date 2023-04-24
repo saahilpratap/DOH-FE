@@ -1,0 +1,25 @@
+name: Check PR message pattern
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main
+
+jobs:
+  check-pr-pattern:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check PR message pattern
+      run: |
+        if ! grep -q "^DOH-[0-9]*: " <<< "${{github.event.pull_request.title}}"; then
+          echo "PR message pattern not met"
+          exit 1
+        else
+          echo "PR message pattern met"
+        fi
+    - name: Notify
+      if: failure()
+      run: |
+        echo "This pull request does not meet the pattern"
+        echo "Cancelling the pull request"
+        curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -d '{"state":"closed","body":"This pull request does not meet the pattern. It should be DOH-ticket_number: message, Cancelling the pull request."}' https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}

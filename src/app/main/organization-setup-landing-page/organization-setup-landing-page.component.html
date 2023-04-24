@@ -1,0 +1,284 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" style="background-color:#fff">
+    <div class="kt-subheader kt-grid__item border-bottom">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Organization Setup" | localize}}</span>
+                </h3>
+                <span class="label label-lg  kt-align-center kt-align-left" style="width:300px ; margin-left: 10px !important;">
+                    <ng-select [items]="healthcare" [searchable]="true" bindLabel="companyName" style="margin-left: 10px !important;"
+                               bindValue="id" placeholder="Select HealthCare Entity" (change)="onhelthcareChange(businessEntityId)"
+                               [(ngModel)]="businessEntityId"
+                               name="healthcare" class="kt-align-left">
+                    </ng-select>
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="row">
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Internal Assessments')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.internalAssessmentCount }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('External Assessments')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.externalAssessmentCount }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('Findings')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.findingCount }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 com-md-6 col-sm-6">
+                <div class="kt-portlet shadow-none border">
+                    <div class="kt-portlet__body">
+                        <div class="kt-widget4">
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    <i style="font-size:25px" class="la la-university"></i>
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__text">
+                                        {{l('External Audit Findings')}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-font-lg kt-font-boldest kt-padding-t-20">{{healthcareDashboard.externalAuditFindingCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border" style="min-height:200px">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-0 kt-padding-t-10">
+                        <ngx-charts-bar-vertical-2d [scheme]="colorScheme"
+                                                    [results]="multi"
+                                                    [gradient]="gradient"
+                                                    [xAxis]="showXAxis"
+                                                    [yAxis]="showYAxis"
+                                                    [legend]="false"
+                                                    [maxXAxisTickLength]="9"
+                                                    [maxYAxisTickLength]="5"
+                                                    [showXAxisLabel]="showXAxisLabel"
+                                                    [showYAxisLabel]="showYAxisLabel"
+                                                    [xAxisLabel]="xAxisLabel"
+                                                    [yAxisLabel]="yAxisLabel"
+                                                    [legendTitle]="false"
+                                                    (select)="onSelect($event)"
+                                                    (activate)="onActivate($event)"
+                                                    (deactivate)="onDeactivate($event)">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-0 kt-padding-t-10" style="min-height:200px">
+                        <div class="kt-widget14">
+                            <div class="row kt-widget14__content">                               
+                                <div class="col-lg-6 col-sm-6">
+                                    <ngx-charts-pie-chart [results]="IncidentExceptionFindings"
+                                                          [view]="[200,200]"
+                                                          [doughnut]="true" [legend]="false" [labels]="false"
+                                                          [scheme]="colorScheme" [animations]="false"
+                                                          [tooltipDisabled]="true">
+                                    </ngx-charts-pie-chart>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 kt-widget14__legends"
+                                     *ngIf="IncidentExceptionFindings.length">
+                                    <a class="kt-widget14__legend" *ngFor="let item of IncidentExceptionFindings; index as i" style="cursor:pointer"
+                                       [routerLink]="['item?.label']">
+                                        <span class="kt-widget14__bullet " [style.backgroundColor]="colorScheme.domain[i]"></span>
+                                        <span class="kt-widget14__stats">
+                                            {{item?.label}}
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-0 kt-padding-t-10" style="min-height:200px">
+                        <!--<div class="row list-separated text-center">
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <h6>
+                Incidents
+            </h6>
+            <div>
+                <span class="kt-font-danger kt-font-bolder">.</span>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <h6>
+                Exceptions
+            </h6>
+            <div class="uppercase font-hg font-green-haze">
+
+                <span class="kt-font-warning kt-font-bolder">.</span>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <h6>
+                Business Risks
+            </h6>
+            <div class="uppercase font-hg font-purple">
+
+                <span class="kt-font-success kt-font-bolder">.</span>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <h6>
+                Findings
+            </h6>
+            <div class="uppercase font-hg font-blue-sharp">
+                <span class="kt--font-info kt-font-bolder">.</span>
+            </div>
+        </div>
+    </div>-->
+
+                        <div class="row list-separated text-center">
+                            <div class="col-md-3 col-sm-3 col-xs-6">
+                                <h6>
+                                    Incidents
+                                </h6>
+                                <div style="cursor:pointer"
+                                     [routerLink]="['/app/main/incidents/incidents']">
+                                    <span counto class="kt-font-danger kt-font-bolder">{{incidentTotal}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-6">
+                                <h6>
+                                    Exceptions
+                                </h6>
+                                <div class="uppercase font-hg font-green-haze"
+                                     [routerLink]="['/app/main/exceptions/exceptions']">
+                                    <span counto class="kt-font-warning kt-font-bolder">{{exceptionTotal}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-6">
+                                <h6>
+                                    Business Risks
+                                </h6>
+                                <a class="uppercase font-hg font-purple" 
+                                  [routerLink]="['/app/main/businessRisks/businessRisks']" >
+                                    <span counto class="kt--font-info kt-font-bolder">{{businessRiskTotal}}</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-6">
+                                <h6>
+                                    Findings
+                                </h6>
+                                <div class="uppercase font-hg font-blue-sharp"
+                                     [routerLink]="['/app/main/findingReportings/findingReportings-internal']">
+                                    <span counto class="kt--font-info kt-font-bolder">{{findingTotal}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ngx-charts-area-chart-stacked [results]="result"
+                                                       [showXAxisLabel]="true" showYAxisLabel="true" [xAxis]="true" [yAxis]="true"
+                                                       [showGridLines]="false" [tooltipDisabled]="false">
+                        </ngx-charts-area-chart-stacked>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <div class="kt-portlet kt-portlet--mobile kt-portlet--height-fluid shadow-none border" style="min-height:200px">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                            </h3>
+                        </div>
+                        <div class="kt-portlet__head-toolbar">
+
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body kt-padding-0 kt-padding-t-10">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

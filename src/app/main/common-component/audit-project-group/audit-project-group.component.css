@@ -1,0 +1,35 @@
+.background-color-test {
+    background-color: #f7f8fa
+}
+
+.btn-widget {
+    background-color: #9c227d !important;
+    color: #fff !important;
+}
+
+.kt-widget4 .kt-widget4__item {
+    border: none !important;
+}
+.selected {
+    background-color: #f3f6f9 !important;
+    border-radius:5px;
+}
+.selectEntity {
+    width: 150px;
+    height: 30px;
+    border-radius: 0px;
+}
+.sticky1 {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;   
+    overflow-x: hidden;
+    padding-top: 20px;
+    padding-left:400px !important
+}
+.sidenav {
+   
+}

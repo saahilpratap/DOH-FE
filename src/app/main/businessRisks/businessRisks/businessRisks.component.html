@@ -1,0 +1,272 @@
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{l("BusinessRisks")}}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        {{l("BusinessRisksHeaderInfo")}}
+                    </span>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button (click)="exportToExcel()" *ngIf="permission.isGranted('Pages.BusinessRisks.Export')" class="btn btn-outline-success"><i class="fa fa-file-excel"></i> {{l("ExportToExcel")}}</button>
+                        <button *ngIf="isGranted('Pages.BusinessRisks.Create')" (click)="createBusinessRisk()"
+                                class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+                            <i class="fa fa-plus"></i> {{l("CreateNewBusinessRisk")}} 
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{l("Business Risks")}}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <!--<button type="button" class="btn btn-danger btn-sm kt-margin-r-20" (click)="deleteAllRecord()" *ngIf="allDelete">
+                            <i class="fas fa-trash-alt icon-font-size-1"></i>
+                            {{l('Delete All')}}
+                        </button>-->
+                        <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                            <div class="input-group">
+                                <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                <span class="input-group-btn margin-left--5">
+                                    <button (click)="getBusinessRisks()" class="btn btn-primary" type="submit"><i class="flaticon-search-1"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <form class="kt-form" autocomplete="off">
+                        <div class="row" [hidden]="!advancedFiltersAreShown">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="TitleFilter">{{l("Title")}}</label>
+                                    <input type="text" class="form-control" id="TitleFilter" name="titleFilter" [(ngModel)]="titleFilter">
+                                </div>
+                            </div>
+                            <!--<div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="MinIdentificationDateFilter">{{l("IdentificationDateRange")}}</label>
+                                    <div class="input-group">
+                                        <input class="form-control m-input" id="MinIdentificationDateFilter"
+                                               name="MinIdentificationDateFilter" type="datetime" bsDatepicker placeholder="{{l('MinValue')}}"
+                                               [(ngModel)]="minIdentificationDateFilter"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                        <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxIdentificationDateFilter"
+                                               name="MaxIdentificationDateFilter" type="datetime" bsDatepicker placeholder="{{l('MaxValue')}}"
+                                               [(ngModel)]="maxIdentificationDateFilter"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>-->
+                            <!--<div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="VulnerabilityFilter">{{l("Vulnerability")}}</label>
+                                    <input type="text" class="form-control" id="VulnerabilityFilter" name="vulnerabilityFilter" [(ngModel)]="vulnerabilityFilter">
+                                </div>
+                            </div>-->
+                           <!-- <div class="col-md-3">-->
+                                <!--<div class="form-group">
+                                    <label for="RemediationPlanFilter">{{l("RemediationPlan")}}</label>
+                                    <input type="text" class="form-control" id="RemediationPlanFilter" name="remediationPlanFilter" [(ngModel)]="remediationPlanFilter">
+                                </div>-->
+                            <!--</div>-->
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="MinExpectedClosureDateFilter">{{l("ExpectedClosureDateRange")}}</label>
+                                    <div class="input-group">
+                                        <input class="form-control m-input" id="MinExpectedClosureDateFilter"
+                                               name="MinExpectedClosureDateFilter" type="datetime"
+                                               bsDatepicker placeholder="{{l('MinValue')}}"
+                                               [(ngModel)]="minExpectedClosureDateFilter"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                        <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxExpectedClosureDateFilter"
+                                               name="MaxExpectedClosureDateFilter" type="datetime"
+                                               bsDatepicker placeholder="{{l('MaxValue')}}" [(ngModel)]="maxExpectedClosureDateFilter"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="MinCompletionDateFilter">{{l("CompletionDateRange")}}</label>
+                                    <div class="input-group">
+                                        <input class="form-control m-input" id="MinCompletionDateFilter"
+                                               name="MinCompletionDateFilter" type="datetime"
+                                               bsDatepicker placeholder="{{l('MinValue')}}"
+                                               [(ngModel)]="minCompletionDateFilter"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                        <span style="line-height: 40px;padding: 0 15px 0 15px;"> &mdash; </span>
+                                        <input class="form-control m-input" id="MaxCompletionDateFilter"
+                                               name="MaxCompletionDateFilter" type="datetime"
+                                               bsDatepicker placeholder="{{l('MaxValue')}}"
+                                               [(ngModel)]="maxCompletionDateFilter"
+                                               [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                               autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>-->
+                            <!--<div class="col-md-3">
+                                <label for="IsRemediationCompletedFilterSelect">{{l("IsRemediationCompleted")}}</label>
+                                <select class="form-control" name="IsRemediationCompletedFilter" id="IsRemediationCompletedFilterSelect" [(ngModel)]="isRemediationCompletedFilter">
+                                    <option value="-1">{{l("All")}}</option>
+                                    <option value="0">{{l("False")}}</option>
+                                    <option value="1">{{l("True")}}</option>
+                                </select>
+                            </div>-->
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <span class="clickable-item text-muted" *ngIf="!advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-down"></i> {{l("ShowAdvancedFilters")}}</span>
+                                <span class="clickable-item text-muted" *ngIf="advancedFiltersAreShown" (click)="advancedFiltersAreShown=!advancedFiltersAreShown"><i class="fa fa-angle-up"></i> {{l("HideAdvancedFilters")}}</span>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row align-items-center">
+                        <!--<Primeng-Datatable-Start>-->
+                        <div class="primeng-datatable-container col-12"
+                             [busyIf]="primengTableHelper.isLoading">
+                            <div>
+                                <p-table #dataTable
+                                     (onLazyLoad)="getBusinessRisks($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true" frozenWidth="150px"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns"
+                                     [selection]="selectedRowData" (selectionChange)="onSelectionChange($event)">
+                                <ng-template pTemplate="frozenheader">
+                                    <tr  [hidden]="!isGrantedAny('Pages.BusinessRisks.View', 'Pages.BusinessRisks.Edit', 'Pages.BusinessRisks.Delete')">
+                                        <th style="width: 30px !important">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <th style="width: 130px" class="kt-align-center">
+                                            {{'Action' |localize}}
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="frozenbody" let-record let-rowData>
+                                    <tr [pSelectableRow]="rowData"  [hidden]="!isGrantedAny('Pages.BusinessRisks.View', 'Pages.BusinessRisks.Edit', 'Pages.BusinessRisks.Delete')">
+                                        <td style="width: 30px !important">
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>
+                                        <td style="width: 130px">
+                                            <a (click)="viewBusinessRiskModal.show(record)" *ngIf="permission.isGranted('Pages.BusinessRisks.View')">
+                                                <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                            </a>
+                                            <a class="kt-padding-l-20" *ngIf="permission.isGranted('Pages.BusinessRisks.Edit')"
+                                               (click)="editBusinessRisk(record.businessRisk.id)">
+                                                <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                            </a>
+                                            <a class="kt-padding-l-20" *ngIf="permission.isGranted('Pages.BusinessRisks.Delete')"
+                                               (click)="deleteBusinessRisk(record.businessRisk)">
+                                                <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 100px" class="text-nowrap">
+                                            {{l('Business Risk ID')}}
+                                        </th>
+                                        <th style="width: 300px">
+                                            {{ l("Health Care Entity") }}                                           
+                                        </th>
+                                        <th style="width: 300px" pSortableColumn="title">
+                                            {{l('Title')}}
+                                            <p-sortIcon field="businessRisk.title"></p-sortIcon>
+                                        </th>                                        
+                                        <th style="width: 170px" pSortableColumn="expectedClosureDate">
+                                            {{l('ExpectedClosureDate')}}
+                                            <p-sortIcon field="businessRisk.expectedClosureDate"></p-sortIcon>
+                                        </th>                                        
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                    <tr [pSelectableRow]="rowData">
+                                        <td style="width:100px">
+                                            {{record.businessRisk.code}}
+                                        </td>
+                                        <td style="width:300px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.businessRisk.businessEntityName" tooltipPosition="bottom">
+                                                {{record.businessRisk.businessEntityName}}
+                                            </div>
+                                        </td>
+                                        <td style="width:300px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.businessRisk.title" tooltipPosition="bottom">
+                                                {{record.businessRisk.title}}
+                                            </div>
+                                        </td>
+                                        <!--<td style="width:150px">
+                                            <span *ngIf="record.businessRisk.identificationDate">
+                                                {{record.businessRisk.identificationDate | momentFormat:'L'}}
+                                            </span>
+                                            <span *ngIf="!record.businessRisk.identificationDate">-</span>
+                                        </td>
+                                        <td style="width:200px">
+                                            <div class="table-text-wrap"
+                                                 [pTooltip]="record.businessRisk.vulnerability" tooltipPosition="bottom">
+                                                {{record.businessRisk.vulnerability}}
+                                            </div>
+                                        </td>-->
+                                        <td style="width:170px">
+                                            <span *ngIf="record.businessRisk.expectedClosureDate">
+                                                {{record.businessRisk.expectedClosureDate | momentFormat:'L'}}
+                                            </span>
+                                            <span *ngIf="!record.businessRisk.expectedClosureDate">-</span>
+                                        </td>
+                                        <!--<td style="width:200px">
+                                            <span class="ui-column-title"> {{l('IsRemediationCompleted')}}</span>
+                                            <div *ngIf="record.businessRisk.isRemediationCompleted" class="text-center"><i class="fa fa-check-circle kt--font-success" title="True"></i></div>
+                                            <div *ngIf="!record.businessRisk.isRemediationCompleted" class="text-center"><i class="fa fa-times-circle" title="False"></i></div>
+                                        </td>-->
+
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            </div>
+                            <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                              {{l('NoData')}}
+                            </div>
+                            <div class="primeng-paging-container">
+                                <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                             #paginator
+                                             (onPageChange)="getBusinessRisks($event)"
+                                             [totalRecords]="primengTableHelper.totalRecordsCount"
+                                             [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <viewBusinessRiskModal #viewBusinessRiskModal></viewBusinessRiskModal>
+    </div>
+</div>

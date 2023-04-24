@@ -1,0 +1,221 @@
+<div bsModal
+     #createEditTemplateTypeModals="bs-modal"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="createEditTemplateTypeModals"
+     aria-hidden="true"
+     [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-xl border-grey">
+        <div class="modal-content">
+            <form *ngIf="active"
+                  #templateForm="ngForm"
+                  novalidate
+                  (ngSubmit)="save()"
+                  autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title" *ngIf="!template.id">
+                        {{"Add Template & Checklists" | localize}}
+                    </h4>
+                    <h4 class="modal-title" *ngIf="template.id && hideButton != 1">
+                        {{"Edit Template & Checklists" | localize}}
+                    </h4>
+                    <h4 class="modal-title" *ngIf="template.id && hideButton == 1">
+                        {{"View Template & Checklists" | localize}}
+                    </h4>
+                </div>               
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("ID")}}</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="code"
+                                           [(ngModel)]="template.code"
+                                           placeholder="System Generated"
+                                           disabled />
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="required">{{l("Title")}}</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           [(ngModel)]="template.title"
+                                           name="titles"
+                                           placeholder="Title" required #Title="ngModel" />
+                                    <validation-messages [formCtrl]="Title"></validation-messages>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="required">{{l("Type")}}</label>
+                                    <ng-select [items]="type" [searchable]="true" bindLabel="name"
+                                               bindValue="id" placeholder="Select Type"
+                                               [(ngModel)]="template.templateTypeId" [required]="true"
+                                               name="templateTypeId" #Type="ngModel">
+                                    </ng-select>
+                                    <validation-messages [formCtrl]="Type"></validation-messages>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Is Read Only")}}</label>
+                                    <br />
+                                    <p-inputSwitch [(ngModel)]="template.isReadOnly"
+                                                   name="isReadOnly"></p-inputSwitch>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Related AD")}}</label>
+                                    <p-multiSelect [style]="{'width': '100%'}"
+                                                   [options]="authorativeDocument"
+                                                   [maxSelectedLabels]="1"
+                                                   [filter]="true"
+                                                   placeholder="Select Releated AD"
+                                                   optionLabel="title"
+                                                   [(ngModel)]="selectedAuthorativeDocument"
+                                                   name="document"
+                                                   (onChange)="autorativeDocumentChange($event)"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Audit Vendor")}}</label>
+                                    <ng-select [items]="businessentity" [searchable]="true" bindLabel="companyName"
+                                               bindValue="id" placeholder="Select Audit Vendor"
+                                               [(ngModel)]="template.vendorId"
+                                               name="vendorId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{l("Description")}}</label>
+                                    <textarea type="text"
+                                              class="form-control"
+                                              name="desciption"
+                                              [(ngModel)]="template.description"
+                                              placeholder="Description"
+                                              style="height: 100px !important;"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="border-bottom kt-padding-b-5 kt-margin-b-5">
+                                <h5>Categorization</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label>{{l("Control Type")}}</label>
+                                        <ng-select [items]="controlTypes" [searchable]="true" bindLabel="label"
+                                                   bindValue="value" placeholder="Select Control Type"
+                                                   [(ngModel)]="template.appEntityType"
+                                                   name="appEntityType">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label>{{l("Category")}}</label>
+                                        <ng-select [items]="Category" [searchable]="true" bindLabel="name"
+                                                   bindValue="id" placeholder="Select Category"
+                                                   [(ngModel)]="template.categoryId"
+                                                   name="categoryId">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label>{{l("Facility Type")}}</label>
+                                        <ng-select [items]="facilityTypesLookUp" [searchable]="true" bindLabel="name"
+                                                   bindValue="id" placeholder="Select Facility Type"
+                                                   [(ngModel)]="template.facilityTypeId"
+                                                   name="facilityTypeId">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="border-bottom kt-padding-b-5 kt-margin-b-5">
+                                    <h5>Content</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="border-bottom kt-padding-10">
+                                            <span class="h6">{{l('Document Type')}}</span>
+                                        </div>
+                                        <div class="form-group kt-margin-b-10" style="padding-top:10px !important">
+                                            <label class="kt-radio kt-padding-r-15">
+                                                <input class="kt-padding-r-15" [checked]="attachment" type="radio" checked name="inlineRadioOptions" value="0" (change)="documentType($event,0)">{{l('Attachment')}}
+                                                <span></span>
+                                            </label>
+                                            <label class="kt-radio kt-padding-r-15">
+                                                <input class="kt-padding-r-15" [checked]="inSystem" type="radio" name="inlineRadioOptions" value="1" (change)="documentType($event,1)">{{l('InSystem')}}
+                                                <span></span>
+                                            </label>
+                                            <label class="kt-radio kt-padding-r-15">
+                                                <input class="kt-padding-r-15" [checked]="url" type="radio" name="inlineRadioOptions" value="2" (change)="documentType($event,2)">{{l('URL')}}
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12" *ngIf="selectedvalue==2">
+                                        <div class="form-group">
+                                            <label>{{l("URL / Link")}}</label>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           name="URL"
+                                                           placeholder=""
+                                                           [(ngModel)]="template.inSystem" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12" *ngIf="selectedvalue==0">
+                                        <div class="form-group">
+                                            <div class="w-100">
+                                                <file-upload [name]="'Template Type'"
+                                                             [attachedFile]="attachedFileCodes"
+                                                             [multiple]="true"
+                                                             [attachedfileSize]="2000000"
+                                                             [noFileUpload]="100"
+                                                             (attachmentData)="getAttachment($event)"></file-upload>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-10" *ngIf="selectedvalue==1">
+                                        <summernote-text-editor [name]="'New SummerNote'"
+                                                                (setSummerNoteData)="setSummerNoteData($event)"
+                                                                [getSummerNoteData]="getSummerNoteData"></summernote-text-editor>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default btn-icon-sm btn-sm btn-sm"
+                            (click)="close()">
+                        {{"Cancel" | localize}}
+                    </button>
+                    <button type="submit" *ngIf="hideButton != 1" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'" class="btn btn-sm btn-info" [disabled]="!templateForm.form.valid" (click)="Save()">
+                        <i class="fa fa-save"></i> <span>{{"Save" | localize}}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="public bg-white primeng-datatable-container"
+     [busyIf]="primengTableHelper.isLoading">
+
+    <!-- For Screen size more than 767.98px -->
+    <div class="public-header position-fixed w-100 bg-white Lg-Header shadow-sm">
+        <div class="align-items-center mb-2 row pl-0 pr-4">
+            <div class="col-3">
+                <img src="assets/common/images/AAMENlogin.svg" class="AAMENlogin" height="100" width="200" />
+            </div>
+            <div class="col-6" align="center">
+                <span class="h2 text-center p-1 mb-0 groupName">{{data.groupName}}</span>
+            </div>
+            <div class="col-3" align="right">
+                <img src="assets/common/images/DOH-RGB-horizontal.svg" class="DOH-RGB-horizontal" height="100" width="200" />
+            </div>
+        </div>
+
+        <div class="hr-new" style="border-bottom:solid; border-color: #4fa6b0"></div>
+    </div>
+    <!-- For Screen size less than 767.98px -->
+    <div class="public-header position-fixed w-100 bg-white mobile-header d-none  shadow-sm">
+        <div class="align-items-center mb-2 row pl-0 pr-4 ">
+            <div class="col-12">
+                <diV class="row">
+                    <div class="col-6">
+                        <img src="assets/common/images/AAMENlogin.svg" class="AAMENlogin" height="75" width="150" />
+                    </div>
+                    <div class="col-6" style="text-align:right;">
+                        <img src="assets/common/images/DOH-RGB-horizontal.svg" class="DOH-RGB-horizontal" height="75" width="150" />
+                    </div>
+                </diV>
+            </div>
+        </div>
+        <div class="col-12 mt-1 mb-1" align="center">
+            <span class="h2 text-center p-1 mb-0 groupName">Mobile {{data.groupName}}</span>
+        </div>
+        <div class="hr-new" style="border-bottom:solid; border-color: #4fa6b0"></div>
+    </div>
+    <div *ngIf="checkData">
+        <div *ngIf="data.submitted" class="public-body position-relative bg-white">
+            <div class="align-center p-5" style="height:84vh">
+                <div class="align-center p-5">
+                    <h1 class="text-center" style="color: #4fa6b0">{{'Thanks you!'}}</h1>
+                    <h4 class="text-center">{{'Your response was submitted.'}}</h4>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!data.submitted">
+            <div *ngIf="data!=undefined" class="public-body position-relative">
+                <table-top-exercise-home [data]="data" [ttxId]="ttxId"></table-top-exercise-home>
+            </div>
+        </div>
+    </div>
+</div>
+

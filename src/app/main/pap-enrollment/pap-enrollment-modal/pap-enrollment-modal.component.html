@@ -1,0 +1,164 @@
+<div appBsModal #pAPEnrollmentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pAPEnrollmentModal" aria-hidden="true"
+     [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-xl" id="fix_modal_body">
+        <div class="modal-content" style=" border: 1px solid !important;">
+            <form *ngIf="active" #pAPEnrollmentModalForm="ngForm" novalidate autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{l('PAP Enrollment Form')}} <span *ngIf="statusName!=''" class="kt-badge kt-badge--primary kt-badge--inline kt-badge--pill w-80 text-capitalize">{{statusName}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body kt-margin-l-15 kt-margin-r-15" [perfectScrollbar]="{wheelPropagation: false}" [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="form-group">
+                        <label class="font-weight-bold" for="questiondetails">{{"Kindly choose from the following as per the description" | localize}} </label>
+                    </div>
+                    <div *ngIf="('Pages.PAPEnrollment.Entity' | permission)">
+                        <div class="form-group form-check-inline">
+                            <label class="col-form-label required" for="patientAuthentication">{{"Are you connecting to Patient Authentication Platform for the first time?" | localize}}</label>
+                            <div class="col-form-label kt-radio-inline ml-4">
+                                <label class="kt-radio mt-1">
+                                    <input type="radio" name="patientAuthentication" [disabled]="papID != 0" [value]="true" [checked]="input.connecting === true" required (change)="changeValue(true)">
+                                    <span></span>{{'Yes' | localize}}
+                                </label>
+                                <label class="kt-radio mt-1">
+                                    <input type="radio" name="patientAuthentication" [disabled]="papID != 0" [value]="false" required [checked]="input.connecting === false" (change)="changeValue(false)">
+                                    <span></span>{{'No' | localize}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="FacilityName">{{"Group Name" | localize}} </label>
+                            <input id="FacilityName" disabled [(ngModel)]="input.groupName" placeholder="Group Name" type="text" name="FacilityName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="FacilityLicenseNumber" class="required">{{"Facility License Number" | localize}} </label>
+                            <button type="button" class="bnt btn-brand ml-4 border-0" (click)="op.toggle($event)" [disabled]="entityList.length == 0">
+                                <i class="far fa-eye icon-font-size-1"></i>
+                            </button>
+                            <p-multiSelect name="FacilityLicenseNumber" [disabled]="BusinessEntityAdminField" required [options]="entityList" [(ngModel)]="selectedentityList" [style]="{'width': '100%'}" optionLabel="name" optionValue="id"></p-multiSelect>
+                        </div>
+                        <div class="form-group">
+                            <label for="ContactInformation">{{"Additional Information (Optional)" | localize}} </label>
+                            <textarea name="additionalInformation" [disabled]="BusinessEntityAdminField" class="form-control" placeholder="" [(ngModel)]="input.additionalInformation" rows="4"></textarea>
+                        </div>
+                        <div>
+                            <label for="contactInfo" class="required">{{'Contact Information'}}</label>
+                            <table class="table kt-margin-t-10 table-bordered">
+                                <thead>
+                                    <tr class="tr-bg-color" style="background-color: #4fa6b0 !important;">
+                                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm" style="width:5%">
+                                            <lable class="" for="no">{{l('No')}}</lable>
+                                        </th>
+                                        <th class="kt-font-bold kt-align-center width-12 kt-font-light kt-font-sm">
+                                            <lable class="" for="fNAme">{{l('First Name')}}</lable>
+                                        </th>
+                                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">
+                                            <lable class="" for="lName">{{l('Last Name')}}</lable>
+                                        </th>
+                                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">
+                                            <lable class="" for="mpNo">{{l('Mobile Phone Number')}}</lable>
+                                        </th>
+                                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm">
+                                            <lable class="" for="emailAddress">{{l('Email Address')}}</lable>
+                                        </th>
+                                        <th class="kt-font-bold kt-align-center width-10 kt-font-light kt-font-sm" style="width:5%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let info of contactInfo; let i = index;">
+                                        <td class="kt-align-center">
+                                            {{i+1}}
+                                        </td>
+                                        <td>
+                                            <input id="fName{{i}}" #fName [disabled]="BusinessEntityAdminField && contactFlag" type="text" name="fName{{i}}" [(ngModel)]="info.firstName" class="form-control" placeholder="First Name" required>
+                                        </td>
+                                        <td>
+                                            <input id="lName{{i}}" #lName [disabled]="BusinessEntityAdminField && contactFlag" type="text" name="lName{{i}}" [(ngModel)]="info.lastName" class="form-control" placeholder="Last Name" required>
+                                        </td>
+                                        <td>
+                                            <input id="mpNo{{i}}" #mpNo type="text" maxlength="11"
+                                                   [disabled]="BusinessEntityAdminField && contactFlag "
+                                                   name="mpNo{{i}}" [(ngModel)]="info.mobilePhoneNumber"
+                                                   class="form-control" placeholder="Mobile Phone Number"
+                                                   pattern="[\+]{0,1}(\d{10,13}|[\(][\+]{0,1}\d{2,}[\13)]*\d{5,13}|\d{2,6}[\-]{1}\d{2,13}[\-]*\d{3,13})"
+                                                   required>
+                                            <validation-messages [formCtrl]="mpNo"></validation-messages>
+                                        </td>
+                                        <td>
+                                            <input id="email{{i}}" #email type="text"
+                                                   [disabled]="BusinessEntityAdminField && contactFlag"
+                                                   name="email{{i}}" [(ngModel)]="info.emailAddress"
+                                                   class="form-control"
+                                                   placeholder="Email Address" required pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$">
+                                            <validation-messages [formCtrl]="email"></validation-messages>
+                                        </td>
+                                        <td class="kt-align-center">
+                                            <button type="button" [disabled]="BusinessEntityAdminField && contactFlag" class="btn btn-sm btn-label-skype-o2" (click)="addItem(info)" *ngIf="i == 0">
+                                                <i class="fa fa-plus p-0"></i>
+                                            </button>
+                                            <button type="button" [disabled]="BusinessEntityAdminField && contactFlag" class="btn btn-sm btn-label-danger" (click)="removeItem(i,info,contactInfo)" *ngIf="i != 0">
+                                                <i class="fa fa-trash-alt p-0"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="separator separator-dashed my-5"></div>                    
+                    <div>
+                        <div class="form-group">
+                            <label for="ContactInformation">{{"DOH Comment" | localize}} </label>
+                            <textarea name="dohComment" [(ngModel)]="input.comment1" [disabled]="SuperAdminField" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="form-group" *ngIf="(BusinessEntityAdminField && statusName == 'Completed') && !isUser._user.isAdmin ">
+                            <file-upload [name]="'PAP'"
+                                         [attachedFile]="attachedFileCodes"
+                                         [multiple]="true"
+                                         [attachedfileSize]="52386000"
+                                         [noFileUpload]="100"
+                                         [showRollWise]="SuperAdminField"
+                                         (attachmentData)="getAttachment($event)"
+                                         (deleteCode)="getDeleteCode($event)"></file-upload>
+                        </div>
+                        <div class="form-group" *ngIf="(('Pages.PAPEnrollment.AuthorityAttachment' | permission) && isUser._user.isAdmin) && (isUser._user.type == 0 || isUser._user.type == 3) ">
+                            <file-upload [name]="'PAP'"
+                                         [attachedFile]="attachedFileCodes"
+                                         [multiple]="true"
+                                         [attachedfileSize]="52386000"
+                                         [noFileUpload]="100"
+                                         [showRollWise]="(isUser._user.isAdmin || !SuperAdminField) && SuperAdminField"
+                                         (attachmentData)="getAttachment($event)"
+                                         (deleteCode)="getDeleteCode($event)"></file-upload>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" [buttonBusy]="saving" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" *ngIf="submitBussonFlag" [disabled]="!pAPEnrollmentModalForm.form.valid || !btnDisable" (click)="save(0)">{{"Submit" | localize}}</button>
+                    <button type="button" [buttonBusy]="saving1" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" *ngIf="InprogressFlag || completedFlag" (click)="save(4)">{{"Save" | localize}}</button>
+                    <button type="button" [buttonBusy]="saving1" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" *ngIf="!contactFlag" [disabled]="!pAPEnrollmentModalForm.form.valid" (click)="save(4)">{{"Save" | localize}}</button>
+                    <button type="button" [buttonBusy]="saving" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" *ngIf="InprogressFlag" (click)="save(1)">{{"Under Process" | localize}}</button>
+                    <button type="button" [buttonBusy]="saving" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" *ngIf="completedFlag" (click)="save(2)">{{"Completed" | localize}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<p-overlayPanel #op [style]="{width: '450px'}" [showCloseIcon]="false" [appendTo]="'body'" [styleClass]="'custom-overlay'">
+    <ng-template pTemplate>
+        <div>
+            <p-table [value]="selectedentityList" [paginator]="true" [rows]="5" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10,25,50]">
+                <ng-template pTemplate="header">
+                </ng-template>
+                <ng-template pTemplate="body" let-record>
+                    <tr>
+                        <td>{{record.name}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </ng-template>
+</p-overlayPanel>

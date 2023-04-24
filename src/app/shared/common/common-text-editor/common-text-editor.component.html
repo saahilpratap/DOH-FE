@@ -1,0 +1,17 @@
+<div>
+   
+    <p-editor formControlName="description" [(ngModel)]="textData" [style]="{'height':'320px'}">
+        <ng-template pTemplate="header">
+            <span class="ql-format-group">
+                <span title="Bold" class="ql-format-button ql-bold"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Italic" class="ql-format-button ql-italic"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Underline" class="ql-format-button ql-underline"></span>
+                <span class="ql-format-separator"></span>
+                <span title="Strikethrough" class="ql-format-button ql-strike"></span>
+            </span>
+        </ng-template>
+    </p-editor>
+</div>
+{{textData}}

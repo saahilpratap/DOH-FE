@@ -1,0 +1,161 @@
+<div [@routerTransition]>
+  <div
+    class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+      <div [class]="containerClass">
+        <div class="kt-subheader__main">
+          <h3 class="kt-subheader__title">
+            <span>{{l("Alert / Notification Templates")}}</span>
+          </h3>
+          <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+          <span class="kt-subheader__desc">
+            {{l("Notification Templates")}}
+          </span>
+        </div>
+        <div class="kt-subheader__toolbar">
+          <div class="kt-subheader__wrapper">
+            <button
+              *ngIf="isGranted('Pages.Templates.Create')"
+              (click)="createTemplate()"
+              class="btn btn-brand btn-icon-sm btn-sm border-radius-5">
+              <i class="fa fa-plus"></i> {{l("Create New Template")}}
+            </button>          
+          </div>
+        </div>
+      </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+      <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head">
+          <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+              {{l("Templates List")}}
+            </h3>
+          </div>
+          <div class="kt-portlet__head-toolbar kt-margin-b-0">
+            <div
+              class="form-group m-form__group align-items-center kt-margin-b-0"
+            >
+              <!--<div class="input-group">
+                <input
+                  [(ngModel)]="filterText"
+                  name="filterText"
+                  autofocus
+                  class="form-control m-input"
+                  [placeholder]="l('SearchWithThreeDot')"
+                  type="text"
+                />
+                <span class="input-group-btn margin-left--5">
+                  <button
+                    (click)="getTemplates()"
+                    class="btn btn-primary"
+                    type="submit">
+                    <i class="flaticon-search-1"></i>
+                  </button>
+                </span>
+              </div>-->
+            </div>
+          </div>
+        </div>
+        <div class="kt-portlet__body">
+          <div
+            class="row align-items-center">          
+            <!--<Primeng-Datatable-Start>-->
+            <div
+              class="primeng-datatable-container col-12"
+              [busyIf]="primengTableHelper.isLoading"
+            >
+              <div>
+                <p-table
+                  #dataTable
+                  (onLazyLoad)="getTemplates($event)"
+                  [value]="primengTableHelper.records"
+                  rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                  [paginator]="false"
+                  [lazy]="true"
+                  [scrollable]="true"
+                  ScrollWidth="100%"
+                  [responsive]="primengTableHelper.isResponsive"
+                  [resizableColumns]="primengTableHelper.resizableColumns"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <!--<th style="width: 10px !important;">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                      </th>-->
+                      <th style="width: 50px;">{{l('Actions')}}</th>
+                      <th style="width: 150px;" pSortableColumn="templateTitle">
+                        {{l('Title')}}
+                      </th>
+                      <th
+                        style="width: 150px;"
+                        pSortableColumn="templateSubject"
+                      >
+                        {{l('Subject')}}
+                      </th>
+                      <th style="width: 150px;" pSortableColumn="templateBody">
+                        {{l('Body')}}
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template
+                    pTemplate="body"
+                    let-rowData
+                    let-record="$implicit"
+                  >
+                    <tr [pSelectableRow]="rowData">                     
+                      <!--<td style="width: 10px !important;">
+                        <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                      </td>-->
+                      <td style="width: 50px;">
+                        <a *ngIf="isGranted('Pages.Templates.Edit')"
+                          class="kt-padding-r-20"
+                          (click)="createTemplateModal.show(record.id)">
+                          <i
+                            class="fas fa-pencil-alt icon-font-size-1 kt-font-info"
+                          ></i>
+                        </a>
+                        <a *ngIf="isGranted('Pages.Templates.Delete')"
+                          class="kt-padding-r-20" (click)="deleteTemplate(record)">
+                          <i
+                            class="far fa-trash-alt icon-font-size-1 kt-font-danger"
+                          ></i>
+                        </a>
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title">
+                          {{l('templateTitle')}}</span
+                        >
+                        {{record.templateTitle}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title">
+                          {{l('templateSubject')}}</span
+                        >
+                        {{record.templateSubject}}
+                      </td>
+                      <td style="width: 150px;">
+                        <span class="ui-column-title">
+                          {{l('templateBody')}}</span
+                        >
+                        <span [innerHtml]="record.templateBody"></span>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>          
+            <div
+              class="primeng-no-data align-items-center col-12 text-center"
+              *ngIf="primengTableHelper.totalRecordsCount === 0">              
+                No Data
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <createTemplateModal
+      #createTemplateModal (modalSave)="getTemplates($event)"
+    ></createTemplateModal>
+  </div>
+</div>

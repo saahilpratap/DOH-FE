@@ -1,0 +1,889 @@
+
+<p-overlayPanel #rv [styleClass]="'custom-overlay'" [style]="{'width': '300px'}" [dismissable]="true" [appendTo]="'body'">
+    <ng-template pTemplate>
+        <div style="min-height:100px">
+            <div *ngFor="let user of selectedBusinessEntity" class="kt-padding-5">
+                <span class="form-check-inline">
+                    <span class="kt-padding-l-5 kt-font-bold">{{ user.companyName }}</span>
+                </span>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<div>
+    <ul id="tab-nav" class="w-100 nav nav-tabs nav-tabs-line12 nav-tabs-line-info nav-tabs-line-2x nav-tabs-line-left" role="tablist">
+        <li class="nav-item" [ngClass]="{ 'selectedTab': 1 == selectedItem }" (click)="selectTab(1)">
+            <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                {{'Audit Project' | localize}}
+            </a>
+        </li>
+        <ng-container *ngIf="('Pages.AuditProject.Meetings' | permission)">
+            <li class="nav-item" (click)="selectTab(3)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 3 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'Message Plans And Meeting' | localize}}
+                </a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="('Pages.AuditManagement.FindingReports' | permission) && isStatusCheckAuditProject">
+            <li class="nav-item" (click)="selectTab(4)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 4 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'External Audit Findings' | localize}}
+                </a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="('Pages.AuditProject.Templates' | permission)">
+            <li class="nav-item" (click)="selectTab(5)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 5 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'Templates' | localize}}
+                </a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="('Pages.AuditProject.Checklists' | permission)">
+            <li class="nav-item" (click)="selectTab(6)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 6 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'Check Lists' | localize}}
+                </a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="('Pages.AuditProject.ExternalAssessments' | permission)">
+            <li class="nav-item" (click)="selectTab(7)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 7 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'External Assessments' | localize}}
+                </a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="('Pages.AuditProject.SelfAssessment' | permission)">
+            <li class="nav-item" (click)="selectTab(8)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 8 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'Self Assessment' | localize}}
+                </a>
+            </li>
+        </ng-container>
+        <ng-container>
+            <li class="nav-item" (click)="selectTab(9)" *ngIf="auditProID" [ngClass]="{ 'selectedTab': 9 == selectedItem }">
+                <a class="nav-link kt-padding-l-10 kt-padding-r-15">
+                    {{'Pre Audit Questionnaire' | localize}}
+                </a>
+            </li>
+        </ng-container>
+    </ul>
+</div>
+<div class="w-100">
+    <div *ngIf="selectedItem == 1">
+        <div class="kt-padding-l-20 kt-padding-r-20" >
+            <div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <div class="row border-bottom w-100">
+                            <div class="col-4">
+                                <h5 class="kt-section__title-sm">{{"Audit Information" | localize}}</h5>
+                            </div>
+                            <div class="col-8 kt-align-right" *ngIf="('Pages.AuditProject.ReportTab.FinalAuditReport' | permission)">
+                                <ng-container *ngIf="auditProID">
+                                    <dev-express-report [btnName]="'Generate Consolidated Final Report'" *ngIf="showAuditstatusButton" [reportName]="'Audit_Project_Consolidated_Report'"
+                                                        [ids]="auditProID"></dev-express-report>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit ID" | localize}}</label>
+                                    <input type="text" disabled class="form-control" name="code" [(ngModel)]="auditProject.code" placeholder="System Generated">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="required">{{"Fiscal Year" | localize}}</label>
+                                    <input type="text" class="form-control" name="fiscalYear" [(ngModel)]="auditProject.fiscalYear" [disabled]="!isadminandExternalAdmin || auditProject.id" placeholder="Fiscal Year" (keypress)="numberOnly($event)">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="Assessment_Type" class="required">{{ l("Assessment Type") }}</label>
+                                    <ng-select [items]="auditTypes" [searchable]="true" bindLabel="name" [disabled]="!isadminandExternalAdmin || auditProject.id"
+                                               bindValue="id" placeholder="Select Assessment Type"
+                                               [(ngModel)]="auditProject.auditTypeId"
+                                               name="assessmentTypeId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="required">{{"Audit Title" | localize}}</label>
+                                    <input type="text" class="form-control" name="auditTitle" [(ngModel)]="auditProject.auditTitle" placeholder="Audit Title" [disabled]="!isadminandExternalAdmin || reauditPermission">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="required">{{"Audit Type" | localize}}</label>
+
+                                    <ng-select [items]="assessmentTypes" [searchable]="true" bindLabel="name" [disabled]="(!isadminandExternalAdmin ||auditProject.id) && !auditProject.isClone"
+                                               bindValue="id" placeholder="Select Audit Type"
+                                               [(ngModel)]="auditProject.auditStageId"
+                                               name="auditTypeId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Area" | localize}}</label>
+                                    <ng-select [items]="auditAreas" [searchable]="true" bindLabel="name" [disabled]="!isadminandExternalAdmin || reauditPermission" 
+                                               bindValue="id" placeholder="Select Audit Area"
+                                               [(ngModel)]="auditProject.auditAreaId"
+                                               name="auditAreaId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="authoritativeId" class="required">{{ l("Authoritative Documents") }}</label>
+                                    <p-multiSelect name="authoritativeIdDocuments" [disabled]="auditProject.id || !isadminandExternalAdmin" [options]="authoritavuieDocuments" placeholder="Select Authoritative Documents " optionLabel="name" [(ngModel)]="selectedAuthorativeDocuments" (onChange)="authDocumentChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group kt-margin-b-10" style="padding-top:10px !important">
+                                    <div class="kt-radio-inline">
+                                        <label class="kt-radio kt-radio--success">                                           
+                                            <input class="form-check-input " type="radio" checked name="inlineRadioOptionses"  [disabled]="!isadminandExternalAdmin || reauditPermission" [value]="true" [(ngModel)]="auditProject.remoteDesktopAudit">{{l('Remote Audit')}}
+                                            <span></span>
+                                        </label>
+                                        <label class="kt-radio kt-radio--success">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptionses" [value]="false" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.remoteDesktopAudit">{{l('OnSite')}}
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <!--<div class="form-check form-check-inline kt-radio">
+                                        <input class="form-check-input " type="radio" checked name="inlineRadioOptionses" [disabled]="!showAuditstatusButton || reauditPermission" [value]="true" [(ngModel)]="auditProject.remoteDesktopAudit">
+                                        <label class="form-check-label" for="inlineRadio1">{{l('Remote Audit')}}</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptionses" [value]="false" [disabled]="!showAuditstatusButton || reauditPermission" [(ngModel)]="auditProject.remoteDesktopAudit">
+                                        <label class="form-check-label" for="inlineRadio1">{{l('OnSite')}}</label>
+                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <h5 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-10">{{"Entity/Auditee Team" | localize}}</h5>
+                        <div class="form-group row">
+                            <div class="col-sm-10" *ngIf="!auditProject.id">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" checked name="inlineRadioOptions" value="1" (change)="onItemChange($event,1)" [disabled]="reauditPermission">
+                                    <label class="form-check-label" for="inlineRadio1">{{l('Entity Group')}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" value="2" (change)="onItemChange($event,2)" [disabled]="reauditPermission">
+                                    <label class="form-check-label" for="inlineRadio1">{{l('HealthCare Entity')}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" value="3" (change)="onItemChange($event,3)" [disabled]="reauditPermission">
+                                    <label class="form-check-label" for="inlineRadio1">{{l('Insurance Facilities')}}</label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="selectedvalue==1">
+                                <div class="form-group">
+                                    <label for="businessEntLookUp" class="required"> Entity Group </label>
+                                    <ng-select [items]="entityGroup" [searchable]="true" bindLabel="name" [disabled]="auditProject.id > 0 || !isadminandExternalAdmin || reauditPermission" required
+                                               bindValue="id" placeholder="Select Entity Group" (change)="onEntityChange(auditProject.entityGroupId)"
+                                               [(ngModel)]="auditProject.entityGroupId"
+                                               name="EntityGroup">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="selectedvalue==1">
+                                <div class="form-group">
+                                    <label for="businessEntLookUp" class="required"> HealthCare Entity </label>
+
+                                    <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5 btn-label-info" (click)="rv.toggle($event)"
+                                            style="border-radius: 7px;" for="setPrimaryKey">
+                                        {{ l("View")}}
+                                    </button>
+                                    <button type="button" class="btn pull-right kt-padding-0 kt-padding-l-5 kt-padding-r-5"
+                                            [ngStyle]="reauditPermission ? {'pointer-events':'none'} : {'pointer-events': 'auto'}"
+                                            *ngIf="('Pages.AuditProject.AdditionalEntity' | permission) && auditProject.id > 0" (click)="healthCareEntity.show(auditProjectId)">
+                                        <i class="flaticon-plus"></i>
+                                    </button>
+                                    <p-multiSelect name="belookup" [disabled]="auditProject.id > 0 || !isadminandExternalAdmin || reauditPermission" [options]="businessentity" placeholder="Select Business Entities" optionLabel="companyName" [(ngModel)]="selectedBusinessEntity" (onChange)="businessentitiyChange($event)" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="selectedvalue==2 ||selectedvalue==3">
+                                <div class="form-group">
+                                    <label for="businessEntLookUp" class="required"> HealthCare Entity  </label>
+                                    <ng-select [items]="businessEntitiesLookUp" [searchable]="true" bindLabel="name"
+                                               [disabled]="auditProject.id > 0|| dropdownDisabled && !isadminandExternalAdmin" (change)="loadEntityUsers(auditProject.businessEntityId)"
+                                               bindValue="id" placeholder="Select HealthCare Entity"
+                                               [(ngModel)]="auditProject.businessEntityId"
+                                               name="businessEntityId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="auditProject.id > 0">
+                                <div class="form-group">
+                                    <label>{{"Auditees" | localize}}</label>
+                                    <p-multiSelect name="bdt" [options]="beAuditees" [disabled]="!isadminandBusinessentityAdmin || reauditPermission" optionLabel="name" [(ngModel)]="auditee" filter="true" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="auditProject.id > 0">
+                                <div class="form-group">
+                                    <label>{{"Audit Contact (Auditee Team)" | localize}}</label>
+                                    <p-multiSelect name="act" [options]="beAuditees" optionLabel="name" [disabled]="!isadminandBusinessentityAdmin || reauditPermission" [(ngModel)]="auditeeTeam" filter="true" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="auditProject.id > 0">
+                                <div class="form-group">
+                                    <label>{{"Audit Coordinator" | localize}}</label>
+                                    <ng-select [items]="beAuditees" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandBusinessentityAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Audit Coordinator"
+                                               [(ngModel)]="auditProject.auditCoordinatorId"
+                                               name="businessEntityId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"General Contact(s)" | localize}}</label>
+                                    <p-multiSelect name="gct" [options]="contactUsersGeneral" [disabled]="!isadminandBusinessentityAdmin || reauditPermission" optionLabel="fullName" [(ngModel)]="generalContacts" filter="true" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Technical Contact(s)" | localize}}</label>
+                                    <p-multiSelect name="tct" [options]="contactUsersTechnical" [disabled]="!isadminandBusinessentityAdmin || reauditPermission" optionLabel="fullName" [(ngModel)]="technicalContacts" filter="true" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-10">{{"Audit Schedule" | localize}}</h5>
+                            </div>
+                        </div>
+                        <h6>{{"Stage 1"}}</h6>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Start Date" | localize}}</label>
+                                    <div id="startDate" class="kt-input-icon">
+                                        <input id="startDatePicker"
+                                               type="text"
+                                               #startDatePicker
+                                               name="startDatePicker"
+                                               class="form-control"                                               
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.startDate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"End Date" | localize}}</label>
+                                    <div id="endDate" class="kt-input-icon">
+                                        <input id="endDatePicker"
+                                               type="text"
+                                               #endDatePicker
+                                               name="endDatePicker"
+                                               class="form-control"
+                                               [isDisabled]="reauditPermission"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.endDate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Duration (Days)" | localize}}</label>
+                                    <input type="text" class="form-control" name="auditDuration" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.auditDuration" placeholder="Audit Duration (Days)" (keypress)="numberOnly($event)">
+                                </div>
+                            </div>
+                        </div>
+                        <h6>Stage 2</h6>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Start Date" | localize}}</label>
+                                    <div id="stageStartDate" class="kt-input-icon">
+                                        <input id="stageStartDateDatePicker"
+                                               type="text"
+                                               #stageStartDateDatePicker
+                                               [isDisabled]="reauditPermission"
+                                               name="stageStartDateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.stageStartDate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"End Date" | localize}}</label>
+                                    <div id="stageEndDate" class="kt-input-icon">
+                                        <input id="stageEndDateDatePicker"
+                                               type="text"
+                                               #stageEndDateDatePicker
+                                               name="stageEndDateDatePicker"
+                                               class="form-control"
+                                               [isDisabled]="reauditPermission"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               (bsValueChange)="onDayChange($event)"
+                                               [(date)]="auditProject.stageEndDate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Duration (Days)" | localize}}</label>
+                                    <input type="text" class="form-control" name="stageAuditDuration" [disabled]="!isadminandExternalAdmin" [(ngModel)]="auditProject.stageAuditDuration || reauditPermission" placeholder="Audit Duration (Days)" (keypress)="numberOnly($event)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <h5 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-10">{{" Audit Service Provider" | localize}}</h5>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="ExternalAssessment_Vendors" class="required">{{"Audit Services Provider" | localize}} </label>
+                                    <select class="form-control"
+                                            name="vendorsList"
+                                            id="ExternalAssessment_Vendors"
+                                            [(ngModel)]="auditProject.vendorId" required
+                                            [disabled]="dropdownDisabled" (change)="loadVendorUsers(auditProject.vendorId)">
+                                        <option value="0" disabled selected> --- Select--- </option>
+                                        <option *ngFor="let auditeeCompany of auditCompaniesLookUp"
+                                                [ngValue]="auditeeCompany.businessEntity.id">
+                                            {{ auditeeCompany.businessEntity.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label class="required">{{"Audit Planner" | localize}}</label>
+                                    <ng-select [items]="auditAgencyAdmins" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Audit Planner"
+                                               [(ngModel)]="auditProject.auditManagerId"
+                                               name="auditManagerId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Lead Auditor" | localize}}</label>
+                                    <ng-select [items]="auditAgencyAdmins" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Lead Auditor"
+                                               [(ngModel)]="auditProject.leadAuditorId"
+                                               name="leadAuditorId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Team (Auditors)" | localize}}</label>
+                                    <p-multiSelect name="adt" [options]="auditAgencyAdmins" [disabled]="!isadminandExternalAdmin || reauditPermission" placeholder="Select  Auditors" optionLabel="name" [(ngModel)]="auditorTeam" filter="true" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <h5 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-10">{{"Audit Details" | localize}}</h5>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Status" | localize}}</label>
+                                    <ng-select [items]="auditNewStatus" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Audit Status "
+                                               [(ngModel)]="auditProject.auditNewStatusId"
+                                               name="auditNewStatus">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"CAPA Status" | localize}}</label>
+                                    <ng-select [items]="capaStatus" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select CAPA Status"
+                                               [(ngModel)]="auditProject.capaStatusId"
+                                               name="capastatus">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Outcome Report" | localize}}</label>
+                                    <ng-select [items]="AuditOutcomeReport" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Audit OutCome Report"
+                                               [(ngModel)]="auditProject.auditOutcomeReportId"
+                                               name="auditoutcomereport">
+                                    </ng-select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Payment Details" | localize}}</label>
+                                    <ng-select [items]="PaymentDetail" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Payment Details"
+                                               [(ngModel)]="auditProject.paymentDetailsId"
+                                               name="PaymentDetails">
+                                    </ng-select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Evidence Submission Timeline" | localize}}</label>
+                                    <ng-select [items]="EvidenceSubmission" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Evidence Submission Timeline"
+                                               [(ngModel)]="auditProject.evidenceSubmTimeiClosedId"
+                                               name="EvidenceSubmissionTimeline">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Evidence shared status " | localize}}</label>
+                                    <ng-select [items]="Evidencesharedstatus" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Evidence shared status"
+                                               [(ngModel)]="auditProject.evidenceStatusId"
+                                               name="Evidencesharedstatus ">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Overall Status " | localize}}</label>
+                                    <ng-select [items]="OverallStatus" [searchable]="true" bindLabel="name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="id" placeholder="Select Overall Status"
+                                               [(ngModel)]="auditProject.overallStatusId"
+                                               name="OverallStatus ">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Report Date" | localize}}</label>
+                                    <div id="AuditReportDate" class="kt-input-icon">
+                                        <input id="AuditReportDateDateDatePicker"
+                                               type="text"
+                                               #AuditReportDateDatePicker
+                                               name="AuditReportDateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.actualAuditReportDate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"CAPA Submission Date" | localize}}</label>
+                                    <div id="capAsubmissiondate" class="kt-input-icon">
+                                        <input id="capAsubmissiondateDatePicker"
+                                               type="text"
+                                               #capAsubmissiondateDatePicker
+                                               name="capAsubmissiondateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.capAsubmissiondate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Date of Releasing 1st Revised" | localize}}</label>
+                                    <div id="Releasing1st" class="kt-input-icon">
+                                        <input id="Releasing1stDatePicker"
+                                               type="text"
+                                               #Releasing1stDateDatePicker
+                                               name="Releasing1stDateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.date_of_releasing_1st_Revised"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Date of  Releasing 2nd Revised" | localize}}</label>
+                                    <div id="DateofReleasing" class="kt-input-icon">
+                                        <input id="Releasing2nd"
+                                               type="text"
+                                               #Releasing2ndDatePicker
+                                               name="Releasing2ndDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.date_of_releasing_2nd_Revised"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Outcome report released date" | localize}}</label>
+                                    <div id="Outcomereport" class="kt-input-icon">
+                                        <input id="Outcomereport"
+                                               type="text"
+                                               #OutcomereportDateDateDatePicker
+                                               name="OutcomereportDateDateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.outcomeReportReleasedDate"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Re-audit score 1"}}</label>
+                                    <div id="Reauditscore1" class="kt-input-icon">
+                                        <input id="Reauditscore1dateDatePicker"
+                                               type="text"
+                                               #Reauditscore1dateDatePicker
+                                               name="Reauditscore1dateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.reAuditScoreOne"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Re-audit score 2"}}</label>
+                                    <div id="Reauditscore2" class="kt-input-icon">
+                                        <input id="Reauditscore2s"
+                                               type="text"
+                                               #Reauditscore2DateDatePicker
+                                               name="Reauditscore2DateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.reAuditScoreTwo"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Date of releasing Reaudit 1"}}</label>
+                                    <div id="releasingReaudit1" class="kt-input-icon">
+                                        <input id="releasingReaudit1"
+                                               type="text"
+                                               #releasingReaudit1DatePicker
+                                               name="releasingReaudit1DatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.dateofReleasingReauditOne"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Date of releasing Reaudit 2"}}</label>
+                                    <div id="releasingReaudit2" class="kt-input-icon">
+                                        <input id="releasingReaudit2"
+                                               type="text"
+                                               #releasingReaudit2dateDatePicker
+                                               name="releasingReaudit2dateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.dateofReleasingReauditTwo"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"90 Days Timeline"}}</label>
+                                    <div id="90DaysTimeline" class="kt-input-icon">
+                                        <input id="90DaysTimeline"
+                                               type="text"
+                                               #90DaysTimelineDateDatePicker
+                                               name="90DaysTimelineDateDatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="true"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.daysTimeline"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Evidence Shared Date 1"}}</label>
+                                    <div id="EvidenceShareddate1" class="kt-input-icon">
+                                        <input id="EvidenceShareddate1"
+                                               type="text"
+                                               #EvidenceShareddate1DatePicker
+                                               name="EvidenceShareddate1DatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY'}"
+                                               [(date)]="auditProject.evidenceSharedDateOne"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Evidence Shared Date 2"}}</label>
+                                    <div id="EvidenceShareddate2" class="kt-input-icon">
+                                        <input id="EvidenceShareddate2"
+                                               type="text"
+                                               #EvidenceShareddate2DatePicker
+                                               name="EvidenceShareddate2DatePicker"
+                                               class="form-control"
+                                               bsDatepicker
+                                               datePickerMomentModifier [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               [bsConfig]="{ adaptivePosition: true, dateInputFormat:'DD-MMM-YYYY' }"
+                                               [(date)]="auditProject.evidenceSharedDateTwo"
+                                               autocomplete="off" />
+                                        <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                            <span><i class="flaticon-calendar-1"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Remarks "}}</label>
+                                    <textarea type="text" class="form-control" placeholder="Remarks " name="Remarks " [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.remarks" style="height:100px !important"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Comments" | localize}}</label>
+                                    <textarea type="text" class="form-control" placeholder="Comments" name="comments" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.comments" style="height:100px !important"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Scope" | localize}}</label>
+                                    <textarea type="text" class="form-control" placeholder="Description" name="auditScope" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.auditScope" style="height:100px !important"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Objectives" | localize}}</label>
+                                    <textarea type="text" class="form-control" placeholder="Description" name="auditObjective" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.auditObjective" style="height:100px !important"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Audit Criteria" | localize}}</label>
+                                    <textarea type="text" class="form-control" placeholder="Description" name="auditCriteria" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.auditCriteria" style="height:100px !important"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <h5 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-10">{{"Questionnaire Group" | localize}}</h5>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Questionnaire Group" | localize}}</label>
+                                    <p-multiSelect name="Questionnairetitle" [options]="questionGroup" [disabled]="!isadminandExternalAdmin || reauditPermission" placeholder="Questionnaire Group" optionLabel="questionnaireTitle" [(ngModel)]="selectedQuestionGroup" (onChange)="questionGroupChange($event)" filter="true" [style]="{'width': '100%'}"></p-multiSelect>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                        <h5 class="kt-section__title kt-section__title-sm border-bottom kt-padding-b-10">{{"Address" | localize}}</h5>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Address" | localize}}</label>
+                                    <input type="text" class="form-control" placeholder="Address" name="address" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.address">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Address Line" | localize}}</label>
+                                    <input type="text" class="form-control" placeholder="Address Line" [disabled]="!isadminandExternalAdmin || reauditPermission" name="addressLine" [(ngModel)]="auditProject.addressLine">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"City/District" | localize}}</label>
+                                    <input type="text" class="form-control" placeholder="City/District" name="city" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.city">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"State/Province" | localize}}</label>
+                                    <input type="text" class="form-control" placeholder="State/Province" name="state" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.state">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Postal Code" | localize}}</label>
+                                    <input type="text" class="form-control" placeholder="Postal Code" name="postalCode" [disabled]="!isadminandExternalAdmin || reauditPermission" [(ngModel)]="auditProject.postalCode" (keypress)="numberOnly($event)">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label>{{"Country" | localize}}</label>
+                                    <ng-select [items]="countriesLookUp" [searchable]="true" bindLabel="country.name"
+                                               [disabled]="!isadminandExternalAdmin || reauditPermission"
+                                               bindValue="country.id" placeholder="Select Country"
+                                               [(ngModel)]="auditProject.countryId"
+                                               name="CountryId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 3">
+        <grid-meeting [auditProId]="auditProID" [reauditPermission]="reauditPermission" [vendorId]="vendorId" meetingType="true" (showTab)="showTab($event)"></grid-meeting>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 4">        
+        <external-finding-grid [auditProId]="auditProID" [reauditPermission]="reauditPermission" (showTabExAuditFinding)="showTabExAuditFinding($event)"></external-finding-grid>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 5">
+        <grid-template-type auditProjectBtn="auditProjectBtn" [reauditPermission]="reauditPermission" (showTab)="showTab($event)" [auditProId]="auditProID" [vendorId]="vendorId" [selectedItem]="entityTypeId"></grid-template-type>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 6">
+        <grid-template-type auditProjectBtn="auditProjectBtn" [reauditPermission]="reauditPermission" (showTab)="showTab($event)" [auditProId]="auditProID" [vendorId]="vendorId" [selectedItem]="entityTypeIds"></grid-template-type>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 7">
+        <grid-external-assessment [auditProId]="auditProID" [reauditPermission]="reauditPermission"></grid-external-assessment>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 8">
+        <div class="w-100">
+            <grid-all-assessments [auditProId]="auditProID" [reauditPermission]="reauditPermission"></grid-all-assessments>
+        </div>
+    </div>
+    <div class="w-100 kt-padding-l-10 kt-padding-r-10" *ngIf="selectedItem == 9">
+        <div class="w-100">
+            <tab-question-group [auditProId]="auditProID" [reauditPermission]="reauditPermission"></tab-question-group>
+        </div>
+    </div>
+</div>
+<healthCareEntityPopupModal #healthCareEntity (modalSave)="ngOnInit()"></healthCareEntityPopupModal>
+

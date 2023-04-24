@@ -1,0 +1,441 @@
+<div appBsModal #createOrEditFindingModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="createOrEditFindingModal" style="z-index: 1 !important;opacity:9 !important" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <form *ngIf="active" #findingReportForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="kt-subheader__title">
+                        <span>{{ l("External Finding") }}</span>
+                    </h4>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span *ngIf="isInternal()" class="kt-subheader__desc kt-padding-5">
+                        <span *ngIf="findingReportId==undefined || findingReportId==0">{{l("New Internal Finding")}}</span>
+                        <span *ngIf="hideButton != 1 && findingReportId!=undefined && findingReportId!=0">{{l("Edit Internal Finding")}}</span>
+                        <span *ngIf="hideButton == 1 && findingReportId!=undefined && findingReportId!=0">{{l("View Internal Finding")}}</span>
+                    </span>
+                    <span *ngIf="!isInternal()" class="kt-subheader__desc kt-padding-5">
+                        <span *ngIf="findingReportId==undefined || findingReportId==0">{{l("External Audit Finding")}}</span>
+                        <span *ngIf="hideButton != 1 && findingReportId!=undefined && findingReportId!=0">{{l("Edit External Audit Finding")}}</span>
+                        <span *ngIf="hideButton == 1 && findingReportId!=undefined && findingReportId!=0">{{l("View External Audit Finding")}}</span>
+                    </span>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc kt-padding-5">
+                        {{"Status" | localize}}
+                    </span>
+                    <span class="label label-lg label-light-primary label-inline kt-align-center kt-padding-5" style="min-width: 100px" *ngIf="findingReport.status">
+                        <span *ngIf="findingReport.status==1  || findingReport.status==null || findingReport.status==undefined"
+                              class="kt-badge1 kt-badge--unified-dark kt-badge--inline kt-badge--pill w-100">{{'New'|localize}}</span>
+                        <span *ngIf="findingReport.status==2"
+                              class="kt-badge1 kt-badge--warning kt-badge--inline kt-badge--pill w-100">{{'Capa Submitted'|localize}}</span>
+                        <span *ngIf="findingReport.status==3"
+                              class="kt-badge1 kt-badge--warning kt-badge--inline kt-badge--pill w-100">{{'Clarification Request'|localize}}</span>
+                        <span *ngIf="findingReport.status==4" class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill w-100">
+                            {{'CAPA Accepted' |localize}}
+                        </span>
+                        <span *ngIf="findingReport.status==5"
+                              class="kt-badge1 kt-badge--danger kt-badge--inline kt-badge--pill w-100">{{'CAPA Open' |localize}}</span>
+                        <span *ngIf="findingReport.status==6"
+                              class="kt-badge1 kt-badge--info kt-badge--inline kt-badge--pill w-100">{{'Work-in-Progress'|localize}}</span>
+                        <span *ngIf="findingReport.status==7"
+                              class="kt-badge1 kt-badge--success kt-badge--inline kt-badge--pill w-100">{{'CAPA Closed'|localize}}</span>
+                        <span *ngIf="findingReport.status==8"
+                              class="kt-badge1 kt-badge--success kt-badge--inline kt-badge--pill w-100">{{'CAPA Approved'|localize }}</span>
+                    </span>
+                    <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" [perfectScrollbar]="{wheelPropagation: false}"
+                     [ngStyle]="{'max-height': '75vh', 'position': 'relative'}">
+                    <div class="kt-portlet kt-portlet--mobile shadow-none">
+                        <div class="kt-portlet__body kt-padding-5">
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10">
+                                <h5>{{l('Finding Information')}}</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Code">{{ l("FindingReport ID") }} </label>
+                                        <input type="text"
+                                               id="findingReport_Code"
+                                               class="form-control"
+                                               placeholder="System Generated"
+                                               name="Code"
+                                               [(ngModel)]="findingReport.code"
+                                               disabled  />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>{{"Created On" | localize}}</label>
+                                        <div id="creationTime" class="kt-input-icon">
+                                            <input id="creationTimePicker" [readonly]="readonlyall"
+                                                   type="text" disabled
+                                                   #creationTimePicker
+                                                   name="creationTimePicker"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.creationTime"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="businessEntLookUp" class="required">{{'HealthCare Entity'|localize}} </label>
+                                        <ng-select [items]="BusinessEntity" [searchable]="true" bindLabel="name" [disabled]="findingReport.id  || bussinessEntityId || reauditPermission" [required]="true"
+                                                   bindValue="id" placeholder="Select HealthCare Entity " (change)="initializeBeLookUpFields(findingReport.businessEntityId)"
+                                                   [(ngModel)]="findingReport.businessEntityId" class="kt-align-left"
+                                                   name="BusinessEntityIds">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10" *ngIf="!isInternal()">
+                                <h5>{{l('Audit Team Response')}}</h5>
+                            </div>
+                            <div class="row" *ngIf="!isInternal()">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Auditorname" class="required">{{ l("Auditor Vendor") }} </label>
+                                        <select class="form-control"
+                                                name="vendorsList"
+                                                [disabled]="!isExternalAuditor || findingReport.vendorId || reauditPermission"
+                                                id="ExternalAssessment_Vendors"
+                                                [(ngModel)]="findingReport.vendorId" (change)="initializeAuditUsersLookUp()" disabled>
+                                            <option [ngValue]="0">
+                                                Not Selected
+                                            </option>
+                                            <option *ngFor="let auditeeCompany of auditCompaniesLookUp"
+                                                    [ngValue]="auditeeCompany.businessEntity.id">
+                                                {{ auditeeCompany.businessEntity.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label for="findingReport_Auditorname" class="required">{{ l("Auditor Name") }} </label>
+                                    <div class="form-group">
+                                        <ng-select [items]="auditUsers" [searchable]="true" bindLabel="name" [required]="true"
+                                                   bindValue="id" placeholder="Select Auditor Name"
+                                                   [(ngModel)]="findingReport.auditorId" class="kt-align-left" [disabled]="!isExternalAuditor || findingReport.auditorId || reauditPermission"
+                                                   name="AuditorType">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_assessmentName" class="required">{{ l("Assessment Name") }} </label>
+                                        <select class="form-control"
+                                                name="assessmentType"
+                                                id="findingReport_assessmentName"
+                                                [disabled]="!isExternalAuditor ||findingReport.assessmentId || reauditPermission"
+                                                [(ngModel)]="findingReport.assessmentId">
+                                            <option *ngFor="let assessment of assessmentsLookUp"
+                                                    [ngValue]="assessment.id">
+                                                {{ assessment.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10">
+                                <h5>{{l('Identification')}}</h5>
+                            </div>
+                            <div class="row ">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Title" class="required">{{ l("Title") }} </label>
+                                        <input type="text"
+                                               id="findingReport_Title"
+                                               class="form-control"
+                                               name="title"
+                                              [disabled]="!isExternalAuditor || reauditPermission"                                              
+                                              [(ngModel)]="findingReport.title"  [required]="true" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Category">{{ l("Type") }} </label>
+                                        <select class="form-control" name="FindingReportType" id="FindingReportType" [(ngModel)]="findingReport.type" [disabled]="true || reauditPermission">
+                                            <option [ngValue]="1">{{'Internal'|localize}}</option>
+                                            <option [ngValue]="2"> {{'External'|localize}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_Category" class="required">{{ l("Category") }} </label>
+                                        <select class="form-control"
+                                                name="CategoryType"
+                                                id="findingReport_Category"
+                                                [(ngModel)]="findingReport.category" required
+                                                [disabled]="!isExternalAuditor || reauditPermission">
+                                            <option [ngValue]="undefined" selected disabled>{{'Select Category'|localize}}</option>
+                                            <option [ngValue]="1">{{'Stage 1'|localize}}</option>
+                                            <option [ngValue]="2">{{'Stage 2'|localize}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="filter_from_data">{{ l("Date Found") }} </label>
+                                        <div id="DateFound" class="kt-input-icon">
+                                            <input id="DateFoundPicker"
+                                                   type="datetime"
+                                                   #DateFoundPicker
+                                                   name="DateFoundPicker"
+                                                   class="form-control"
+                                                   [disabled]="!isExternalAuditor || reauditPermission"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.dateFound"
+                                                   [bsConfig]="{ dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4" *ngIf="isOtherCategorySelected()">
+                                    <div class="form-group">
+                                        <label for="findingReport_categoryName" class="required">{{ l("Category Name") }} </label>
+                                        <input type="text" id="findingReport_categoryName" class="form-control" name="findingReport_categoryName" required [disabled]="!isExternalAuditor || reauditPermission" [(ngModel)]="findingReport.categoryName" />
+                                    </div>
+                                </div>
+                                <div class="col-4" *ngIf="isInternal()">
+                                    <div class="form-group">
+                                        <label for="findingReport_finder" class="required">{{ l("Found By") }} </label>
+
+                                        <ng-select [items]="beAuditees" [searchable]="true" bindLabel="name" [required]="true"
+                                                   bindValue="id" placeholder="Select Found By"
+                                                   [(ngModel)]="findingReport.finderId" class="kt-align-left"
+                                                   name="finderType">
+                                        </ng-select>
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_details" class="required">
+                                            {{l("Finding Details")}}
+                                        </label>
+                                        <textarea id="otherCategoryName" required wrap="soft"
+                                                  class="form-control" [disabled]="!isExternalAuditor || reauditPermission" data-toggle="tooltip" title="{{findingReport.otherCategoryName}}"
+                                                  name="otherCategoryName"
+                                                  [(ngModel)]="findingReport.otherCategoryName"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_details">
+                                            {{l("Reference")}}
+                                        </label>
+                                        <textarea id="reference" wrap="soft"
+                                                  class="form-control" [disabled]="!isExternalAuditor || reauditPermission" data-toggle="tooltip" title="{{findingReport.reference}}"
+                                                  name="reference"
+                                                  [(ngModel)]="findingReport.reference"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4" *ngIf="isdiable">
+                                    <div class="form-group">
+                                        <label for="findingReport_details">
+                                            {{l("Review Comment")}}
+                                        </label>
+                                        <textarea id="reviewComment" wrap="soft"
+                                                  class="form-control" [disabled]="!isExternalAuditor || reauditPermission" data-toggle="tooltip" title="{{findingReport.reviewComment}}"
+                                                  name="reviewComment"
+                                                  [(ngModel)]="findingReport.reviewComment"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="border-bottom kt-padding-l-0 kt-margin-b-10">
+                                <h5>{{l('Corrective Action Plan')}}</h5>
+                            </div>
+                            <div class="row ">                              
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="filter_from_data" class="required">{{ l("Expected Closure Date") }}</label>
+                                        <div id="actionResponseDatePicker" class="kt-input-icon">
+                                            <input id="actionResponseDatePicker"
+                                                   type="text"
+                                                   #actionResponseDatePicker
+                                                   name="actionResponseDatePicker" [disabled]="!isAuditee || reauditPermission"
+                                                   class="form-control"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.actionResponseDate"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="filter_from_data">{{'Date Closed'|localize}}</label>
+                                        <div id="dateClosedPicker" class="kt-input-icon">
+                                            <input id="dateClosedPicker"
+                                                   type="text"
+                                                   #dateClosedPicker
+                                                   name="dateClosedPicker"
+                                                   class="form-control" [disabled]="!isAuditee || reauditPermission"
+                                                   bsDatepicker
+                                                   datePickerMomentModifier
+                                                   [(date)]="findingReport.dateClosed"
+                                                   [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD-MMM-YYYY' }"
+                                                   autocomplete="off" />
+                                            <span class="kt-input-icon__icon kt-input-icon__icon--right">
+                                                <span><i class="flaticon-calendar-1"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_relatedcrs">{{l("Control Requirements") }} </label>
+                                        <select class="form-control"
+                                                name="ControlRequirementName"
+                                                id="findingReport_relatedcrs"
+                                                [disabled]="findingReport.controlRequirementId && findingReport.type==2 || reauditPermission"
+                                                [(ngModel)]="findingReport.controlRequirementId">
+                                            <optgroup *ngFor="let cs of controlRequirementsLookUp" label="{{ cs.domainName }}">
+                                                <option *ngFor="let c of cs.controlRequirementList" [ngValue]="c.id">{{c.controlStandardName}}-{{c.code}}-{{c.originalId}}</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_AssignedTo">{{ l("Assigned To") }} </label>
+                                        <ng-select [items]="beAuditees" [searchable]="true" bindLabel="name"
+                                                   bindValue="id" placeholder="Select Assigned To" [disabled]="!isAuditee || reauditPermission"
+                                                   [(ngModel)]="findingReport.assignedToUserId" class="kt-align-left"
+                                                   name="assignedTo">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_details" class="required">
+                                            {{l("Corrective Action Response")}}
+                                        </label>
+                                        <textarea id="findingReport_details" wrap="soft"
+                                                  class="form-control" [disabled]="!isAuditee || reauditPermission" data-toggle="tooltip" data-placement="top" title="{{findingDetails}}"
+                                                  name="details"
+                                                  [(ngModel)]="findingDetails"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_details">
+                                            {{l("Actual Root Cause")}}
+                                        </label>
+                                        <textarea id="findingActualRootCause" wrap="soft"
+                                                  class="form-control" [disabled]="!isAuditee || reauditPermission" data-toggle="tooltip" data-placement="top" title="{{findingActualRootCause}}"
+                                                  name="findingActualRootCause"
+                                                  [(ngModel)]="findingActualRootCause"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_AssignedTo">{{ l("Status") }} </label>
+                                        <select class="form-control" *ngIf="findingReport.status==8"
+                                                name="FindingStatusType"
+                                                id="FindingStatusType" [disabled]="findingReport.status==8 || reauditPermission"
+                                                [(ngModel)]="findingReport.findingCAPAStatus">
+                                            <option value="null" selected disabled>Select Status</option>
+                                            <option value="5">CAPA Open</option>
+                                            <option value="7">CAPA Closed</option>
+                                        </select>
+                                        <select class="form-control" *ngIf="findingReport.status!=8"
+                                                name="FindingStatusType"
+                                                id="FindingStatusType" [disabled]="!isAuditee || reauditPermission"
+                                                [(ngModel)]="findingReport.findingCAPAStatus">
+                                            <option value="5" selected> Open</option>
+                                            <option value="7">Close</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="findingReport_details">
+                                            {{l("Auditor Remarks")}}
+                                        </label>
+                                        <textarea id="findingauditorRemark" wrap="soft"
+                                                  class="form-control" [disabled]="!isExternalAuditor || reauditPermission" data-toggle="tooltip" data-placement="top" title="{{findingReport.auditorRemark}}"
+                                                  name="findingauditorRemark"
+                                                  [(ngModel)]="findingReport.auditorRemark"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="form-group" [disabled]="!isExternalAuditor || reauditPermission">
+                                        <label for="findingReport_details">
+                                            {{l("CAPA Update required")}}
+                                        </label>
+
+                                        <div class="form-group kt-margin-b-10" style="padding-top:10px !important"  [disabled]="!isExternalAuditor || reauditPermission">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" checked name="inlineRadioOptionses" [value]="true" [(ngModel)]="findingReport.capaUpdateRequired">
+                                                <label class="form-check-label" for="inlineRadio1">{{l('Yes')}}</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="inlineRadioOptionses" [value]="false" [disabled]="!isExternalAuditor || reauditPermission" [(ngModel)]="findingReport.capaUpdateRequired">
+                                                <label class="form-check-label" for="inlineRadio1">{{l('No')}}</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>                           
+                                <p-accordion>
+                                    <p-accordionTab header="Attachments" [disabled]="reauditPermission">
+                                        <div class="w-100">                                           
+                                            <file-upload [name]="'Findding Report'"
+                                                         [attachedFile]="attachedFileCodes"
+                                                         [multiple]="true"
+                                                         [fileFormat]="fileFormat"
+                                                         [attachedfileSize]="2097150"
+                                                         [noFileUpload]="100"
+                                                         [showRollWise]="checkReadOnly"                                                        
+                                                         [showDelete]="!checkReadOnly"
+                                                         (attachmentData)="getAttachment($event)"
+                                                         (deleteCode)="deleteAttachmentInput($event)"></file-upload>
+                                        </div>
+                                    </p-accordionTab>
+                                    <div class="border-bottom kt-padding-l-0 kt-margin-b-10" *ngIf="isEdit1 && isInternal()">
+                                        <h5>{{'Review and Approvals'|localize}}</h5>
+                                    </div>
+                                    <p-accordionTab header="Entity Review & Approval" *ngIf="isEdit && isInternal()">
+                                        <entity-review-approval *ngIf="beUsers.length > 0" [entityReviewers]="beUsers" [entityApprovers]="beUsers" [irm]="findingReport.entityIRMRelations" [entityUserSignaturePad]="entityUserSignaturePad" [primaryReviewerId]="primarReviwerId" [primaryApproverId]="primaryApproverId" [isEdit]="isEdit" [recordId]="recordId" [pageId]="pageId"></entity-review-approval>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Authority Review & Approval" *ngIf="isEdit && isInternal()">
+                                        <authority-review-approval *ngIf="authorityUsers.length > 0" [authorityReviewers]="authorityUsers" [authorityApprovers]="authorityUsers" [irm]="findingReport.authorityIRMRelations" [authorityUserSignaturePad]="authorityUserSignaturePad" [isEdit]="isEdit" [recordId]="recordId" [pageId]="pageId"></authority-review-approval>
+                                    </p-accordionTab>
+                                </p-accordion>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="close()">{{"Cancel" | localize}}</button>
+                    <button type="submit" *ngIf="hideButton != 1" [ngClass]=" hideButton==1 ? 'pointerNone' : 'pointerAuto'" class="btn btn-brand btn-icon-sm btn-sm border-radius-5" [disabled]="!findingReportForm.form.valid || reauditPermission" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

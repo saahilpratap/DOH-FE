@@ -1,0 +1,18 @@
+.color-yellow {
+    background-color: yellow;
+}
+.color-green {
+    background-color: green;
+}
+.color-red {
+    background-color: red;
+}
+.color-gray {
+    background-color: gray;
+}
+.legend-label-text{
+    color:black!important;
+}
+[ngx-charts-legend-entry]{
+    color:black!important;
+}

@@ -1,0 +1,154 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div [class]="containerClass">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{"Audit Project Group" | localize}}</span>
+                </h3>
+            </div>
+            <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__wrapper">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="row w-100 align-items-center">
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div class="row w-100">
+                            <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xl-6 pl-0 pr-0">
+                                <div class="kt-portlet__head-title kt-padding-t-5" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <span class="kt-font-bolder">{{"Audit Project" | localize}} &nbsp;-</span>
+                                    <span class="kt-font-bolder kt-font-skype" *ngIf="auditproject">{{auditproject.auditTitle}}</span>
+                                </div>
+                            </div>
+                            <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                                <div class="label label-lg label-light-primary label-inline kt-padding-5 kt-margin-l-25" style="min-width:80px"
+                                     *ngIf="auditproject">{{auditproject.startDate|date}}</div>
+                            </div>
+                            <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                                <div class="">
+                                    <div class="label label-lg label-light-warning label-inline kt-padding-5 kt-margin-l-25" style="min-width:80px"
+                                         *ngIf="auditproject">{{auditproject.stageStartDate|date}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div class="row w-100">
+                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 pl-0 pr-0" *ngIf="auditproject.entityGroupId">
+                                <label class="kt-font-bolder text-nowrap">{{"Entity Group" | localize}}</label><span>
+                                    <p-inputSwitch class="kt-padding-10 align-bottom" [(ngModel)]="auditproject.entityGroupId"></p-inputSwitch>
+                                </span>
+                                <span>
+                                    <select class="selectEntity kt-padding-l-5  width-135" [(ngModel)]="auditproject.entityGroupId" disabled>
+                                        <option *ngFor="let businessEntity of entityGroup" [ngValue]="businessEntity.id">
+                                            {{businessEntity.name}}
+                                        </option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                <span class="kt-font-bolder kt-padding-l-5 ">{{"Entity Name" | localize}}</span>
+                                <select class="selectEntity kt-padding-l-5 kt-margin-l-10" [(ngModel)]="entityId" (change)="getbusinessEntity(entityId)">
+                                    <option *ngFor="let businessEntity of businessentity" [ngValue]="businessEntity.id">
+                                        {{businessEntity.companyName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kt-portlet__body kt-padding-t-10">
+                <div class="row" data-sticky-container>
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <div class="selector sticky left-auto" data-margin-top="130" data-sticky-for="1023" data-sticky-class="is-sticky">
+                            <div class="kt-padding-t-0 " *ngFor="let item of auditName; index as i" (click)="selectTab(i)">
+                                <div class="card-body kt-padding-5" [ngClass]="{ 'selected': i == selectedItem }">
+                                    <div class="mb-6">
+                                        <div class="d-flex align-items-center flex-grow-1">
+                                            <i class="kt-margin-r-15 font-15" [class]="item.icon"></i>
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between w-100">
+                                                <div class="d-flex flex-column align-items-cente">
+                                                    <a class="text-dark-75 font-weight-bold text-hover-primary font-size-lg mb-1 kt-font-md">{{item.name}}</a>
+                                                    <div class="table-text-wrap" [pTooltip]="item.description">
+                                                        <span class="text-muted kt-font-md">{{item.description}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-md-10 col-sm-12">
+                        <div class="kt-portlet">
+                            <div class="kt-portlet__body">
+                                <div class="row border-radius-5 kt-padding-t-15" style="background-color:#f3f6f9 !important">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <p class="">{{'Contact Person or Person Nominated as Management Representative for ADHICS Audits / Certification:' | localize}}</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row" *ngIf="auditproject.entityGroup">
+                                            <label class="col-lg-5 col-lg-5 col-sm-12 kt-font-boldest kt-font-md">{{"Group Name" | localize}}</label>
+                                            <div class="col-lg-7 col-md-7 col-sm-12">
+                                                <span class="kt-font-md kt-font-skype">{{auditproject.entityGroup.name}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-5 col-lg-5 col-sm-12 kt-font-boldest kt-font-md">{{"Registered Office address" | localize}}</label>
+                                            <div class="col-lg-7 col-md-7 col-sm-12">
+                                                <span class="kt-font-md kt-font-skype" *ngIf="auditproject">{{keycontact.companyAddress+","+keycontact.cityOrDisctrict+","+keycontact.postalCode}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group row">
+                                            <label class="col-lg-5 col-lg-5 col-sm-12 kt-font-boldest kt-font-md">{{"Email" | localize}}</label>
+                                            <div class="col-lg-7 col-md-7 col-sm-12">
+                                                <span class="kt-font-md kt-font-skype" *ngIf="auditproject">{{keycontact.owner_Email}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-5 col-lg-5 col-sm-12 kt-font-boldest kt-font-md">{{"Mobile" | localize}}</label>
+                                            <div class="col-lg-7 col-md-7 col-sm-12">
+                                                <span class="kt-font-md kt-font-skype" *ngIf="auditproject">{{keycontact.owner_Mobile}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row kt-padding-t-10">
+                                    <div class="col-12 kt-padding-0">
+                                        <div *ngIf="questionGroup.length>0">
+
+                                        </div>
+                                        <audit-project-group-dashboard [auditProjectId]="auditProjectId" *ngIf="selectedItem == 0"></audit-project-group-dashboard>
+                                        <audit-plan [auditproject]="auditproject" [businessEntity]="businessEntity" *ngIf="selectedItem == 1"></audit-plan>
+                                        <self-assessment *ngIf="selectedItem == 2" [auditProjectId]="auditProjectId"></self-assessment>
+                                        <external-assessment *ngIf="selectedItem == 3" [auditProjectId]="auditProjectId"></external-assessment>
+                                        <finding *ngIf="selectedItem == 4" [auditprojectinfo]="auditprojectgroup"></finding>
+                                        <audit-report *ngIf="selectedItem == 5" [auditprojectinfo]="auditprojectgroup"></audit-report>
+                                        <corrective-action-plan *ngIf="selectedItem == 6"></corrective-action-plan>
+                                        <surviellance-program [entityGroupId]="entityGroupId" [businessEntityId]="entityId" [vendorId]="vendorId" [auditProjectId]="auditProjectId" *ngIf="selectedItem == 7"></surviellance-program>
+                                        <certification-proposal *ngIf="selectedItem == 8" [auditProjectId]="auditProjectId"></certification-proposal>
+                                        <decision [auditProjectId]="auditProjectId" [businessEntityId]="entityId" *ngIf="selectedItem == 9"></decision>
+                                        <certificate *ngIf="selectedItem == 10"></certificate>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="kt-portlet__foot--sm kt-padding-20">
+                                <button class="btn btn-skype border-radius-5" [disabled]="selectedItem===0" (click)="previous(selectedItem)">Previous</button>
+                                <button class="btn btn-skype border-radius-5 pull-right" [disabled]="selectedItem===10" (click)="nextStep(selectedItem)">NEXT STEP</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

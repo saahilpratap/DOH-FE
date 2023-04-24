@@ -1,0 +1,276 @@
+<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <div class="kt-subheader kt-grid__item">
+        <div class="kt-container kt-container--fluid">
+            <div class="kt-subheader__main">
+                <h3 class="kt-subheader__title">
+                    <span>{{'Workflow Configuration' | localize}}</span>
+                </h3>
+                <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                <span class="kt-subheader__desc">
+                    {{"Application Workflow Configuration" | localize}}
+                </span>
+            </div>
+            <div class="kt-subheader__toolbar">
+
+            </div>
+        </div>
+    </div>
+    <div class="kt-grid__item kt-grid__item--fluid kt-padding-l-20 kt-padding-r-20">
+        <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        {{l('Create New Alert / Notification')}}
+                    </h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">
+                    <button type="button" class="btn btn-default btn-icon-sm btn-sm btn-sm" (click)="back()"> {{l('Back')}}</button>
+                </div>
+            </div>
+            <div class="kt-portlet__body">
+                <form #editForm="ngForm" novalidate (ngSubmit)="saveState()">
+                    <div class="row align-items-center">                      
+                        <div class="col-2">
+                            {{'Type' | localize}}
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group kt-margin-b-5">
+                                <div class="checkbox-list row">
+                                    <label class="checkbox col-6">
+                                        <input type="radio" class="kt-margin-5" name="radio" style="position: relative; top: 3px;" [checked]="!createworkFlow.isStateOpen" (change)="onItemChange($event,2)">
+                                        <span></span><span class="kt-font-bold">{{l('Email Notification')}}</span>
+                                    </label>
+                                    <label class="checkbox col-6">
+                                        <input type="radio" class="kt-margin-5" name="radio" style="position: relative; top: 3px;" [checked]="createworkFlow.isStateOpen" (change)="onItemChange($event,1)">
+                                        <span></span><span class="kt-font-bold">{{l('Field Update')}}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-2">
+                            {{'Page Name' | localize}}
+                        </div>
+                        <div class="col-4">
+                            <ng-select [items]="workflow"
+                                       [searchable]="false"
+                                       bindLabel="pageName"
+                                       bindValue="id"
+                                       [(ngModel)]="createworkFlow.workFlowPageId"
+                                       placeholder="Page Name"
+                                       (change)="onWorkflowChange()"
+                                       name="name" required>
+                            </ng-select>
+                        </div>
+                        <div class="col-2">
+                            {{'Deadline' | localize}}
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group kt-margin-b-5">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="number" name="stateDeadline" [(ngModel)]="createworkFlow.stateDeadline" class="form-control" min="0" onkeydown="javascript: return event.keyCode === 8 ||
+event.keyCode === 46 ? true : !isNaN(Number(event.key))" required />
+                                    </div>
+                                    <div class="col-6">
+                                        <ng-select [items]="actionTimeType"
+                                                   [searchable]="false"
+                                                   bindLabel="name"
+                                                   bindValue="id"
+                                                   style="width:100% !important;"
+                                                   [(ngModel)]="createworkFlow.actionTimeType"
+                                                   placeholder="Deadline"
+                                                   name="actionTimeType" required>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-25 align-items-center">
+                        <div class="col-2">
+                            {{'State' | localize}}
+                        </div>
+                        <div class="col-4">
+                            <ng-select [items]="state"
+                                       [searchable]="false"
+                                       bindLabel="name"
+                                       bindValue="name"
+                                       [(ngModel)]="createworkFlow.stateName"
+                                       placeholder="State"
+                                       name="stateApplicability" required>
+                            </ng-select>
+                        </div>
+                        <div class="col-2" *ngIf="isFilter == false">
+                            {{'Filter Field' | localize}}
+                        </div>
+                        <div class="col-4" *ngIf="isFilter == false">
+                            <ng-select [items]="propertiesName"
+                                       [searchable]="false"
+                                       class="position-relative"
+                                       [disabled]="!createworkFlow.workFlowPageId"
+                                       bindLabel="pageName"
+                                       bindValue="id"
+                                       [(ngModel)]="createworkFlow.filterField"
+                                       name="bodyProperty" required>
+                            </ng-select>
+                        </div>
+                    </div>
+
+                    <div class="row kt-padding-t-25 align-items-center">
+                        <div class="col-2">
+                            {{'Is Active' | localize}}
+                        </div>
+                        <div class="col-4">
+                            <p-inputSwitch [(ngModel)]="createworkFlow.isStateActive" name="isStateActive"></p-inputSwitch>
+                        </div>
+
+                        <!--<div class="col-6" *ngIf="createworkFlow.workFlowPageId==2 || createworkFlow.workFlowPageId==6">
+                            <br />
+                        </div>-->
+                        <div class="col-2" *ngIf="createworkFlow.workFlowPageId==2 || createworkFlow.workFlowPageId==6">
+                            {{'Status' | localize}}
+                        </div>
+                        <div class="col-4" *ngIf="createworkFlow.workFlowPageId==2 || createworkFlow.workFlowPageId==6">
+                            <ng-select [items]="auditStatus"
+                                       [searchable]="false"
+                                       class="position-relative"
+                                       bindLabel="name"
+                                       bindValue="id"
+                                       [(ngModel)]="createworkFlow.auditProjectStatus"
+                                       name="bodyauditProjectStatus" required>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-25 align-items-center" [hidden]="!createworkFlow.isStateOpen" *ngIf="createworkFlow.workFlowPageId==2">
+
+                        <div class="col-6">
+                        </div>
+                        <div class="col-2">
+                            {{'Target Value' | localize}}
+                        </div>
+                        <div class="col-4">
+                            <ng-select [items]="auditStatus"
+                                       [searchable]="false"
+                                       class="position-relative"
+                                       bindLabel="name"
+                                       bindValue="id"
+                                       [disabled]="!createworkFlow.workFlowPageId"
+                                       [(ngModel)]="createworkFlow.targetFiled"
+                                       name="targetFiledValue" required>
+                            </ng-select>
+                        </div>
+
+                    </div>
+
+                    <div class="kt-align-right kt-padding-t-10 kt-padding-b-10">
+                        <button type="submit" class="btn btn-brand btn-sm" [disabled]="!editForm.form.valid">{{'Save' | localize}}</button>
+                    </div>
+                </form>
+                <div class="border-top kt-padding-t-15" [hidden]="createworkFlow.isStateOpen">
+                    <div class="kt-align-center kt-margin-b-20">
+                        <button type="button" class="btn border btn-width btn-bg-color kt-margin-r-20 kt-padding-0" (click)="beforeModal.show(stateId,0)"
+                                [ngClass]="{'btn-bg-color-selected': selectedBtn === 1}">
+                            <span class="btn" (click)="selectBtn(1)">
+                                <span>{{'Before' | localize}}</span>
+                                <i class="la la-plus-square kt-padding-l-20"></i>
+                            </span>
+                        </button>
+                        <button type="button" class="btn border btn-width btn-bg-color kt-margin-r-20 kt-padding-0" (click)="onDayModal.show(stateId,0)"
+                                [ngClass]="{'btn-bg-color-selected': selectedBtn === 2}">
+                            <span class="btn" (click)="selectBtn(2)">
+                                <span>{{'On Day' | localize}}</span>
+                                <i class="la la-plus-square kt-padding-l-20"></i>
+                            </span>
+                        </button>
+                        <button type="button" class="btn border btn-width btn-bg-color kt-margin-r-20 kt-padding-0" (click)="afterModal.show(stateId,0)"
+                                [ngClass]="{'btn-bg-color-selected': selectedBtn === 3}">
+                            <span class="btn" (click)="selectBtn(3)">
+                                <span>{{'After' | localize}}</span>
+                                <i class="la la-plus-square kt-padding-l-20"></i>
+                            </span>
+                        </button>
+                        <button type="button" class="btn border btn-width btn-bg-color kt-margin-r-20 kt-padding-0" (click)="escalationModal.show(stateId,0)"
+                                [ngClass]="{'btn-bg-color-selected': selectedBtn === 4}">
+                            <span class="btn" (click)="selectBtn(4)">
+                                <span>{{'Escalation' | localize}}</span>
+                                <i class="la la-plus-square kt-padding-l-20"></i>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="kt-padding-r-100 kt-padding-l-100">
+                        <div class="row align-items-center">
+                            <!--<Primeng-Datatable-Start>-->
+                            <div class="primeng-datatable-container col-12"
+                                 [busyIf]="primengTableHelper.isLoading">
+                                <div>
+                                    <p-table #dataTable
+                                             (onLazyLoad)="getAction($event)"
+                                             [value]="primengTableHelper.records"
+                                             rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                             [paginator]="false"
+                                             [lazy]="true"
+                                             [scrollable]="true"
+                                             ScrollWidth="100%"
+                                             [responsive]="primengTableHelper.isResponsive"
+                                             [resizableColumns]="primengTableHelper.resizableColumns">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 20%">{{l('Actions')}}</th>
+                                                <th style="width: 40%">{{'Time / Deadline'}}</th>
+                                                <th style="width: 40%">{{'Action Category Type'}}</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-record="$implicit">
+                                            <tr>
+                                                <td style="width: 20%">
+                                                    <a class="kt-padding-l-20" (click)="editStateAction(record)">
+                                                        <i class="far fa fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                                                    </a>
+                                                    <a class="kt-padding-l-20" (click)="deleteStateAction(record, event)">
+                                                        <i class="fa fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                                                    </a>
+                                                </td>
+                                                <td style="width:40%">
+                                                    <span class="ui-column-title"> {{l('Deadline')}}</span>
+                                                    <span *ngIf="record.actionTimeType!=0"> {{l(record.actionTime)+" "+(actionTimeTypes[record.actionTimeType])}}</span>
+                                                    <span *ngIf="record.actionTimeType==0"> {{l(record.actionTime)}}</span>
+                                                </td>
+                                                <td style="width:40%">
+                                                    <span class="ui-column-title"> {{l('Category Type')}}</span>
+                                                    {{l(actionCategory[record.actionCategory])}}
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                                <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                    {{l('NoData')}}
+                                </div>
+                                <div class="primeng-paging-container">
+                                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                                 #paginator
+                                                 (onPageChange)="getAction($event)"
+                                                 [totalRecords]="primengTableHelper.totalRecordsCount"
+                                                 [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                                    </p-paginator>
+                                    <span class="total-records-count">
+                                        {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                                    </span>
+                                </div>
+                            </div>
+                            <!--<Primeng-Datatable-End>-->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <afterModals #afterModal (modalSave)="getAction($event)"></afterModals>
+    <beforeModals #beforeModal (modalSave)="getAction($event)"></beforeModals>
+    <escalationModals #escalationModal (modalSave)="getAction($event)"></escalationModals>
+    <onDayModals #onDayModal (modalSave)="getAction($event)"></onDayModals>
+</div>
+

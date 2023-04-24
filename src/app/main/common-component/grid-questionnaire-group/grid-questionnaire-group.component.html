@@ -1,0 +1,107 @@
+<div class="row align-items-center no-margin">
+    <div class="primeng-datatable-container"
+         [busyIf]="primengTableHelper.isLoading">
+        <div>
+            <p-table #dataTable
+                 (onLazyLoad)="getQuestionGroups($event)"
+                 [value]="primengTableHelper.records"
+                 [lazy]="true"
+                 [scrollable]="true"
+                 ScrollWidth="100%"
+                 frozenWidth="150px"
+                 [responsive]="primengTableHelper.isResponsive"
+                 [resizableColumns]="primengTableHelper.resizableColumns">
+            <ng-template pTemplate="frozenheader">
+                <tr>
+                    <th style="width: 150px" class="kt-align-center">
+                        {{'Action' |localize}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="frozenbody" let-record let-rowData>
+                <tr [pSelectableRow]="rowData">
+                    <td style="width: 150px" class="kt-align-center">
+                        <a class="kt-padding-r-20" (click)="editQuestionnaireGroup(record.id,1)" *ngIf="'Pages.ComplianceManagement.QuestionnaireGroup.View' | permission">
+                            <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                        </a>
+                        <a class="kt-padding-r-20" (click)="editQuestionnaireGroup(record.id)" *ngIf="'Pages.ComplianceManagement.QuestionnaireGroup.Edit' | permission">
+                            <i class="fas fa-pencil-alt icon-font-size-1 kt-font-info"></i>
+                        </a>
+                        <a class="kt-padding-r-20" (click)="deleteQuestionGroup(record.id)" *ngIf="'Pages.ComplianceManagement.QuestionnaireGroup.Delete' | permission">
+                            <i class="far fa-trash-alt icon-font-size-1 kt-font-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 80px">
+                        {{'ID' |localize}}
+                    </th>
+                    <th style="width: 250px" pSortableColumn="questionnaireTitle">
+                        {{'Title' |localize}}
+                        <p-sortIcon field="record.questionnaireTitle"></p-sortIcon>
+                    </th>
+                    <th style="width: 120px">
+                        {{'Type' |localize}}
+                    </th>
+                    <th style="width: 150px">
+                        {{'Related AD' |localize}}
+                    </th>
+                    <th style="width: 150px">
+                        {{'Audit Vendor' |localize}}
+                    </th>
+                    <th style="width: 250px">
+                        {{'Description' |localize}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                <tr [pSelectableRow]="rowData">
+                    <td style="width: 80px">
+                        {{record.code}}
+                    </td>
+                    <td style="width: 250px">
+                        <div class="table-text-wrap"
+                             [pTooltip]="record.questionnaireTitle" tooltipPosition="bottom">
+                            {{record.questionnaireTitle}}
+                        </div>
+
+                    </td>
+                    <td style="width: 120px">
+                        <span *ngIf="record.groupType==1">{{'Internal' |localize}}</span>
+                        <span *ngIf="record.groupType==2">{{'External' |localize}}</span>
+                    </td>
+                    <td style="width: 150px">
+                        <div class="table-text-wrap"  [pTooltip]="record.authoritativeDocName" tooltipPosition="bottom"> {{record.authoritativeDocName}}</div>
+                    </td>
+                    <td style="width: 150px">
+                        <div *ngIf="record.auditVendorName !=null" class="table-text-wrap" [pTooltip]="record.auditVendorName" tooltipPosition="bottom"> {{record.auditVendorName}}</div>
+                        <span *ngIf="record.auditVendorName ==null"> N/A </span>
+                    </td>
+                    <td style="width: 250px">
+                        <div class="table-text-wrap"  [pTooltip]="record.description" tooltipPosition="bottom">
+                            {{record.description}}
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        </div>
+        <div class="primeng-no-data"
+                       *ngIf="primengTableHelper.totalRecordsCount == 0 ">
+            {{ l("NoData") }}
+        </div>
+        <div class="primeng-paging-container mt-2">
+            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                         #paginator
+                         (onPageChange)="getQuestionGroups($event)"
+                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage ">
+            </p-paginator>
+            <span class="total-records-count">
+                {{l("TotalRecordsCount", primengTableHelper.totalRecordsCount ) }}
+            </span>
+        </div>
+    </div>
+</div>

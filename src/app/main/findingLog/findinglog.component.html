@@ -1,0 +1,201 @@
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>{{l("External Finding Log")}}</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            {{l('Finding Log')}}
+                        </h3>
+                    </div>
+                    <div class="kt-portlet__head-toolbar">
+                        <div class="form-group m-form__group align-items-center kt-margin-b-0">
+                            <div class="input-group">
+                                <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                <span class="input-group-btn margin-left--5">
+
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-portlet__body kt-padding-t-10">
+                    <form class="kt-form" autocomplete="off">
+                    </form>
+                    <div class="row align-items-center">
+                        <div class="primeng-datatable-container col-12"
+                             [busyIf]="primengTableHelper.isLoading">
+                            <div>
+                                <p-table #dataTable
+                                         (onLazyLoad)="getFindinglog($event)"
+                                         [value]="primengTableHelper.records"
+                                         rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                         [paginator]="false"
+                                         [lazy]="true"
+                                         [scrollable]="true"
+                                         ScrollWidth="100%"
+                                         [responsive]="primengTableHelper.isResponsive"
+                                         [resizableColumns]="primengTableHelper.resizableColumns"
+                                         [selection]="selectedRowData">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+
+                                            <th style="width: 100px">
+                                                {{l('Actions')}}
+                                            </th>
+                                            <th style="width: 80px">
+                                                {{l('FL ID')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('UserName')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Updated FieldName')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Finding Details')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update Finding Details')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Reference')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update Reference')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('CAP')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update CAP')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Actual Root Cause ')}}
+                                            </th>
+                                            <th style="width:150px">
+                                                {{l('Update Actual Root Cause')}}
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-record="$implicit">
+                                        <tr [pSelectableRow]="rowData">
+                                            <td style="width: 100px">
+                                                <a class="kt-padding-r-20">
+                                                    <i class="far fa-eye icon-font-size-1 kt-font-success"></i>
+                                                </a>
+                                            </td>
+                                            <td style="width:80px">
+                                                {{ record.id }}
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.userName" tooltipPosition="bottom">
+                                                    {{record.userName}}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.updatedFieldName" tooltipPosition="bottom">
+                                                    {{ record.updatedFieldName }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_FindingDetails" tooltipPosition="bottom">
+                                                    {{ record.old_FindingDetails }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_FindingDetails" tooltipPosition="bottom">
+                                                    {{ record.new_FindingDetails }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_Reference" tooltipPosition="bottom">
+                                                    {{ record.old_Reference }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_Reference" tooltipPosition="bottom">
+                                                    {{ record.new_Reference }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_CorrectiveActionResponse" tooltipPosition="bottom">
+                                                    {{ record.old_CorrectiveActionResponse }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_CorrectiveActionResponse" tooltipPosition="bottom">
+                                                    {{ record.new_CorrectiveActionResponse }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.old_ActualRootCause" tooltipPosition="bottom">
+                                                    {{ record.old_ActualRootCause }}
+                                                </div>
+                                            </td>
+                                            <td style="width:150px">
+                                                <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+                                                     -webkit-box-orient: vertical; -webkit-line-clamp: 3;"
+                                                     [pTooltip]="record.new_ActualRootCause" tooltipPosition="bottom">
+                                                    {{ record.new_ActualRootCause }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                {{l('NoData')}}
+                            </div>
+                            <div class="primeng-paging-container">
+                                <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                             #paginator
+                                             (onPageChange)="getFindinglog($event)"
+                                             [totalRecords]="primengTableHelper.totalRecordsCount"
+                                             [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                                </p-paginator>
+                                <span class="total-records-count">
+                                    {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title"> {{"Radar Chart" | localize}} </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <ng-select [items]="dataGroup" [searchable]="true" bindLabel="name"
+                       bindValue="id" placeholder="Select" name="name" [(ngModel)]="selectedValue" (change)="getData()">
+            </ng-select>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        <p-chart type="radar" [data]="data"></p-chart>
+    </div>
+</div>
